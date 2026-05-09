@@ -3,27 +3,26 @@ package model;
 
 import org.postgresql.shaded.com.ongres.stringprep.Stringprep;
 
-import java.util.ArrayList;
+
 import java.util.Date;
 
 public class Account {
-
+    // attributi in account:
     protected String nome;
     protected int id;
     protected String password;
     protected Date dataCreazione;
 
-    protected ArrayList<Account> seguiti;
-
+    //Creazione del costruttore
     public Account(String nome,int id,String password,Date dataCreazione)
     {
         this.nome = nome;
         this.id = id;
         this.password = password;
-        this.dataCreazione = dataCreazione;
-        this.seguiti = new ArrayList<>();
-    }
+        this.dataCreazione = new Date();//costruisce l'oggetto data,che da la data nell' istante in cui viene creata
 
+    }
+    //get e set
     public String getNome() {
         return nome;
     }
@@ -36,14 +35,6 @@ public class Account {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -52,8 +43,7 @@ public class Account {
         return dataCreazione;
     }
 
-    public void setDataCreazione(Date dataCreazione) {
-        this.dataCreazione = dataCreazione;
-    }
 }
 
+
+//mancano metodi per cambiare sia il nome che la password
