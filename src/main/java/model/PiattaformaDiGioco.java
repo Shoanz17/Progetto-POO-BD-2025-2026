@@ -15,4 +15,25 @@ public class PiattaformaDiGioco {
         this.produttore = produttore;
         this.portatile = portatile;
     }
+
+    public void addGioco(EdizioneGioco gioco){
+        if (gioco == null) {
+            throw new IllegalArgumentException("Gioco non esistente");
+        }
+        giochi.add(gioco);
+    }
+
+    //getter e setter
+    public String getNome() {return nome;}
+    public String getProduttore() {return produttore;}
+    public boolean isPortatile() {return portatile;}
+    public ArrayList<EdizioneGioco> getGiochi() {return giochi;}
+    public int getId() {return id;}
+
+    public void setProduttore(String produttore) {
+        this.produttore = produttore;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
 }
