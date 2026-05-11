@@ -12,7 +12,6 @@ public class Gioco {
     private ArrayList<Genere> generi = new ArrayList<>();
     private ArrayList<EdizioneGioco> edizioni = new ArrayList<>();
     private ArrayList<GiocoInPromozione> promozioni = new ArrayList<>();
-    private ArrayList<Fattura> fatture = new ArrayList<>();
 
     public Gioco(String titolo, String categoria, int pegi, Sviluppatore sviluppatore, Genere genere, EdizioneGioco edizione) {
 
@@ -30,13 +29,6 @@ public class Gioco {
             throw new IllegalArgumentException("Promozione non esistente");
         }
         promozioni.add(promozione);
-    }
-
-    public void addFattura(Fattura fattura){
-        if (fattura == null){
-            throw new IllegalArgumentException("Fattura non esistente");
-        }
-        fatture.add(fattura);
     }
 
     public void addGenere(Genere genere){
@@ -60,6 +52,10 @@ public class Gioco {
     public Sviluppatore getSviluppatore() {return sviluppatore;}
     public ArrayList<Genere> getGeneri() {return generi;}
     public ArrayList<EdizioneGioco> getEdizioni() {return edizioni;}
+    public ArrayList<GiocoInPromozione> getPromozioni() {return promozioni;}
 
-
+    //Lista di set
+    public void setTitolo(String titolo) {this.titolo = titolo;}
+    public void setCategoria(String categoria) {this.categoria = categoria;}
+    public void setPegi(int pegi) {this.pegi = pegi;}
 }
