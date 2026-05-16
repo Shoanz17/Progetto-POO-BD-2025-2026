@@ -36,7 +36,7 @@ public class Account {
     public String getNome() {return nome;}
     public void setNome(String nome)
     {
-        if(nome.length()>24)
+        if(nome == null || nome.length()>24)
         { throw new IllegalArgumentException("il nome che hai scelto \""+ nome +"\" è troppo lungo");}
         this.nome = nome;
     }//nome deve essere grande quanto il var char in db
@@ -51,7 +51,7 @@ public class Account {
         boolean haNumero = false;
         boolean haSpeciale = false;
         // qui controlliamo se la password contiene almeno 8 caratteri
-        if (password.length()<8) {
+        if (password == null || password.length()<8) {
             throw new IllegalArgumentException("La password richiede almeno 8 caratteri.");
         }
         //usiamo il ciclo for per controllare ogni carattere, la password deve avere almeno una maiuscola
