@@ -7,7 +7,7 @@ public class PiattaformaDiGioco {
     private String produttore;
     private final boolean portatile;
 
-    private ArrayList<EdizioneGioco> giochi = new ArrayList<>();
+    private ArrayList<EdizioneGioco> edizioni = new ArrayList<>();
 
     public PiattaformaDiGioco(String nome, String produttore, boolean portatile){
         if (nome == null || nome.trim().isEmpty() || nome.length() > 20){
@@ -18,18 +18,18 @@ public class PiattaformaDiGioco {
         this.portatile = portatile;
     }
 
-    public void addGioco(EdizioneGioco gioco){
-        if (gioco == null) {
-            throw new IllegalArgumentException("Gioco non esistente");
+    public void addEdizione(EdizioneGioco edizione){
+        if (edizione == null) {
+            throw new IllegalArgumentException("Edizione non esistente");
         }
-        giochi.add(gioco);
+        edizioni.add(edizione);
     }
 
     //getter e setter
     public String getNome() {return nome;}
     public String getProduttore() {return produttore;}
     public boolean isPortatile() {return portatile;}
-    public ArrayList<EdizioneGioco> getGiochi() {return giochi;}
+    public ArrayList<EdizioneGioco> getEdizioni() {return edizioni;}
 
     public void setProduttore(String produttore) {
         if (produttore == null || produttore.trim().isEmpty() || produttore.length() > 20){
