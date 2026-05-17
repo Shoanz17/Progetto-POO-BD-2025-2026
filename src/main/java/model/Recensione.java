@@ -19,6 +19,14 @@ public class Recensione {
         this.fattura = fattura;
     }
 
+    //Costruttore per il Dao (Solo per la differenzaLike praticamente)
+    public Recensione (int voto, String descrizione, int differenzaLike, Fattura fattura){
+        this.voto = voto;
+        this.descrizione = descrizione;
+        this.differenzaLike = differenzaLike;
+        this.fattura = fattura;
+    }
+
     //setter
     public void setVoto (int voto){
         if(voto < 0 || voto > 100){
@@ -34,11 +42,18 @@ public class Recensione {
         this.descrizione = descrizione;
     }
 
-    public void setDifferenzaLike(int differenzaLike) {this.differenzaLike = differenzaLike;}
-
     //getter
     public int getVoto() {return voto;}
     public String getDescrizione() {return descrizione;}
     public int getDifferenzaLike() {return differenzaLike;}
     public Fattura getFattura() {return fattura;}
+
+    //metodi
+    public void mettiLike() {
+        this.differenzaLike++;
+    }
+
+    public void mettiDislike() {
+        this.differenzaLike--;
+    }
 }
