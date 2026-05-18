@@ -7,7 +7,7 @@ import org.postgresql.shaded.com.ongres.stringprep.Stringprep;
 import java.time.LocalDate;
 
 
-public class Account {
+public abstract class Account {
     // attributi in account:
         private String nome;
         private int id;
@@ -59,14 +59,11 @@ public class Account {
         for(int i = 0; i < password.length(); i++)
         {
             char lettera = password.charAt(i);
-            if(Character.isUpperCase(lettera))
-            {haMaiuscola = true;}
-            else if (Character.isDigit(lettera))
-            {haNumero = true;}
-            else if (!Character.isLetterOrDigit(lettera)&& !Character.isWhitespace(lettera))
-            {haSpeciale = true;}
+            if(Character.isUpperCase(lettera)) {haMaiuscola = true;}
+            else if (Character.isDigit(lettera)) {haNumero = true;}
+            else if (!Character.isLetterOrDigit(lettera)&& !Character.isWhitespace(lettera)) {haSpeciale = true;}
         }
-        // qui nel ciclo if se non ho maiuscola o numero o speciale lanciamo la throw
+        // qui nel ciclo if se non ho maiuscola o numero o speciale facciamo la throw
         if(!haMaiuscola||!haNumero||!haSpeciale)
         {throw new IllegalArgumentException
                 ("La password deve contenere almeno una maiuscola," +  " un numero e un carattere speciale.");}
@@ -76,4 +73,15 @@ public class Account {
 
     public LocalDate getDataCreazione() {return dataCreazione;}
 
+
+    @Override
+    public boolean equals(Object oggetto)
+    {
+        if(this == oggetto) return true;
+
+        else if(oggetto == null||getClass()!= oggetto.getClass()) return false;
+
+        Account og = (Account) oggetto;
+        return this.id == og.id;
+    }
 }
