@@ -14,36 +14,45 @@ public class Gioco {
     private ArrayList<EdizioneGioco> edizioni = new ArrayList<>();
     private ArrayList<GiocoInPromozione> promozioni = new ArrayList<>();
 
-    public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, Genere genere, EdizioneGioco edizione) {
-
-        setTitolo(titolo);
-        setCategoria(categoria);
-        setPegi(pegi);
+    //Costruttore per la GUI
+    //Il gioco nasce senza edizioni o promozioni perché queste non posso nascere senza un riferimento a un gioco
+    public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, ArrayList<Genere> generi) {
 
         if (sviluppatore == null) {
             throw new IllegalArgumentException("Lo sviluppatore non é valido (?)");
         }
-        this.sviluppatore = sviluppatore;
+        if(generi == null || generi.isEmpty()) {
+            throw new IllegalArgumentException("Non esiste gioco senza generi");
+        }
 
-        addGenere(genere);
-        addEdizione(edizione);
+        setTitolo(titolo);
+        setCategoria(categoria);
+        setPegi(pegi);
+        this.sviluppatore = sviluppatore;
+        this.generi.addAll(generi);
     }
 
     //Costruttore per Database
-    public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi, ArrayList<Genere> generi, ArrayList<EdizioneGioco> edizioni, ArrayList<GiocoInPromozione> promozioni) {
+    public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi) {
+        if (sviluppatore == null) {
+            throw new IllegalArgumentException("DB Corrotto: Sviluppatore mancante!");
+        }
+
         this.sviluppatore = sviluppatore;
         this.id = id;
         this.titolo = titolo;
         this.categoria = categoria;
         this.pegi = pegi;
-        this.generi = generi;
-        this.edizioni = edizioni;
-        this.promozioni = promozioni;
+
+        //obbligatorio per il controller riempire gli arraylist successivamente a questo
     }
 
     public void addPromozione(GiocoInPromozione promozione){
         if (promozione == null){
             throw new IllegalArgumentException("Promozione non esistente");
+        }
+        if (this.promozioni.contains(promozione)){
+            throw new IllegalArgumentException("Il gioco ha già partecipato ha questa promozione");
         }
         promozioni.add(promozione);
     }
@@ -52,12 +61,18 @@ public class Gioco {
         if (genere == null){
             throw new IllegalArgumentException("Genere non disponibile");
         }
+        if (this.generi.contains(genere)){
+            throw new IllegalArgumentException("Il gioco ha già questo genere");
+        }
         generi.add(genere);
     }
 
     public void addEdizione(EdizioneGioco edizione){
         if (edizione == null){
             throw new IllegalArgumentException("Edizione di gioco non disponibile");
+        }
+        if (this.edizioni.contains(edizione)){
+            throw new IllegalArgumentException("Questa edizione del gioco è già uscita");
         }
         edizioni.add(edizione);
     }
@@ -78,14 +93,6 @@ public class Gioco {
             throw new IllegalArgumentException("Il titolo massimo 40 caratteri");
         }
         this.titolo = titolo;
-    }
-
-    public enum Categoria {
-        INDIE,
-        A,
-        AA,
-        AAA,
-        AAAA
     }
 
     public void setCategoria(Categoria categoria) {
