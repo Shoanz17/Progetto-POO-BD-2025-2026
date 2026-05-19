@@ -84,4 +84,9 @@ public abstract class Account {
         Account og = (Account) oggetto;
         return this.id == og.id;
     }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id);
+    }
 }
