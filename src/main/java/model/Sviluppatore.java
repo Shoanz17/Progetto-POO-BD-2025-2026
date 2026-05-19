@@ -8,7 +8,9 @@ public class Sviluppatore extends Account{
     private int strike;
     private String descrizione;//massimo 500 caratteri
     private int fondi;
-    private ArrayList<Gioco> listaGiochi = new ArrayList<>();//
+    private ArrayList<Gioco> listaGiochi = new ArrayList<>();
+    private ArrayList<Utente> seguiti = new ArrayList<>();
+
 
 
 public Sviluppatore(String nome,String password, String descrizione)
@@ -37,14 +39,12 @@ public Sviluppatore(String nome, int id, String password,
     }
 
     public ArrayList<Gioco> getListaGiochi(){return listaGiochi;}
+    public ArrayList<Utente> getSeguiti() {return seguiti;}
 
     public int getFondi(){return fondi;}
 
-    public void setFondi(int fondi){this.fondi = fondi;}
-
 
     public String getDescrizione() {return descrizione;}
-
     public void setDescrizione(String descrizione)
     {
         if(descrizione == null||descrizione.trim().isEmpty())
@@ -58,6 +58,9 @@ public Sviluppatore(String nome, int id, String password,
 
     }
 
+    public void aggiungiFondi(int importo) {this.fondi+=importo;}
+
+    public void aggiungiGioco(Gioco gioco) {this.listaGiochi.add(gioco);}
 
 }
 
