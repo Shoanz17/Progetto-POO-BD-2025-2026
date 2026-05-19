@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class Gioco {
+    private int id;
     private String titolo;
     private Categoria categoria;
     private int pegi;
@@ -26,6 +27,18 @@ public class Gioco {
 
         addGenere(genere);
         addEdizione(edizione);
+    }
+
+    //Costruttore per Database
+    public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi, ArrayList<Genere> generi, ArrayList<EdizioneGioco> edizioni, ArrayList<GiocoInPromozione> promozioni) {
+        this.sviluppatore = sviluppatore;
+        this.id = id;
+        this.titolo = titolo;
+        this.categoria = categoria;
+        this.pegi = pegi;
+        this.generi = generi;
+        this.edizioni = edizioni;
+        this.promozioni = promozioni;
     }
 
     public void addPromozione(GiocoInPromozione promozione){
@@ -57,6 +70,7 @@ public class Gioco {
     public ArrayList<Genere> getGeneri() {return generi;}
     public ArrayList<EdizioneGioco> getEdizioni() {return edizioni;}
     public ArrayList<GiocoInPromozione> getPromozioni() {return promozioni;}
+    public int getId() {return id;}
 
     //Lista di set
     public void setTitolo(String titolo) {
@@ -86,5 +100,18 @@ public class Gioco {
             throw new IllegalArgumentException("Il PEGI deve essere tra 3 e 18 anni");
         }
         this.pegi = pegi;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Gioco gioco = (Gioco) o;
+        return id == gioco.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }
