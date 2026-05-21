@@ -58,9 +58,23 @@ public Sviluppatore(String nome, int id, String password,
 
     }
 
-    public void aggiungiFondi(int importo) {this.fondi+=importo;}
+    public void aggiungiFondi(int importo)
+    {
+        if(importo < 0)throw new IllegalArgumentException();
 
-    public void aggiungiGioco(Gioco gioco) {this.listaGiochi.add(gioco);}
+        this.fondi+=importo;
+    }
+
+    public void addGioco(Gioco gioco)
+    {
+        if(gioco == null)
+            throw new IllegalArgumentException();
+
+        if(this.listaGiochi.contains(gioco))
+            throw new IllegalArgumentException("il gioco è già presente");
+
+        this.listaGiochi.add(gioco);
+    }
 
 }
 
