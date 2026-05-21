@@ -38,6 +38,8 @@ public abstract class Account {
     {
         if(nome == null || nome.length()>24)
         { throw new IllegalArgumentException("il nome che hai scelto \""+ nome +"\" è troppo lungo");}
+        if(nome.trim().isEmpty())
+        { throw new IllegalArgumentException("il nome che hai scelto è vuoto ");}
         this.nome = nome;
     }//nome deve essere grande quanto il var char in db
 
