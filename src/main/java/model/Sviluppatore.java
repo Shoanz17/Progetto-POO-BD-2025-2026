@@ -13,24 +13,25 @@ public class Sviluppatore extends Account{
 
 
 
-public Sviluppatore(String nome,String password, String descrizione)
-{
-    super(nome,password);
-    this.strike = 0;
-    setDescrizione(descrizione);
-    this.fondi = 0;
-}
-//costruttore per il DAO
-public Sviluppatore(String nome, int id, String password,
-                    LocalDate dataCreazione,int strike,String descrizione,int fondi)
-{
-    super(nome,id,password,dataCreazione);
-    this.strike = strike;
-    this.descrizione = descrizione;
-    this.fondi = fondi;
-}
+    public Sviluppatore(String nome,String password, String descrizione)
+    {
+        super(nome,password);
+        this.strike = 0;
+        setDescrizione(descrizione);
+        this.fondi = 0;
+    }
+    //costruttore per il DAO
+    public Sviluppatore(String nome, int id, String password,
+                        LocalDate dataCreazione,int strike,String descrizione,int fondi)
+    {
+        super(nome,id,password,dataCreazione);
+        this.strike = strike;
+        this.descrizione = descrizione;
+        this.fondi = fondi;
+    }
     public int getStrike(){return strike;}
-    public void aggiungiStrike()
+
+    public void addStrike()
     {
         if(this.strike>=3)
         {throw new IllegalArgumentException("l'utente è già bannato");}
@@ -48,9 +49,9 @@ public Sviluppatore(String nome, int id, String password,
     public void setDescrizione(String descrizione)
     {
         if(descrizione == null||descrizione.trim().isEmpty())
-    {
+        {
             throw new IllegalArgumentException("la descrizione è vuota.");
-    }
+        }
         else if (descrizione.length()>500)
         throw new IllegalArgumentException("la descrizione è troppo lunga.");
 
@@ -58,11 +59,17 @@ public Sviluppatore(String nome, int id, String password,
 
     }
 
-    public void aggiungiFondi(int importo)
+    public void addFondi(int importo)
     {
         if(importo < 0)throw new IllegalArgumentException();
 
         this.fondi+=importo;
+    }
+
+    public void removeFondi(int importo)
+    {
+        if(importo>this.fondi)throw new IllegalArgumentException();
+        this.fondi-=importo;
     }
 
     public void addGioco(Gioco gioco)
