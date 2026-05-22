@@ -77,6 +77,37 @@ public class Gioco {
         edizioni.add(edizione);
     }
 
+    //metodi per admin
+    public void removeEdizione(EdizioneGioco edizione){
+        if (edizione == null){
+            throw new IllegalArgumentException("Edizione di gioco non disponibile");
+        }
+        if (!this.edizioni.contains(edizione)){
+            throw new IllegalArgumentException("Questa edizione é giá stata rimossa");
+        }
+        edizioni.remove(edizione);
+    }
+
+    public void removeGenere(Genere genere){
+        if (genere == null){
+            throw new IllegalArgumentException("Genere non disponibile");
+        }
+        if (!this.generi.contains(genere)){
+            throw new IllegalArgumentException("Il gioco giá non ha questo genere");
+        }
+        generi.remove(genere);
+    }
+
+    public void removePromozione(GiocoInPromozione promozione){
+        if (promozione == null){
+            throw new IllegalArgumentException("Promozione non esistente");
+        }
+        if (!this.promozioni.contains(promozione)){
+            throw new IllegalArgumentException("Il gioco giá non ha partecipato a questa promozione");
+        }
+        promozioni.remove(promozione);
+    }
+
     //Lista di get
     public String getTitolo() {return titolo;}
     public Categoria getCategoria() {return categoria;}
