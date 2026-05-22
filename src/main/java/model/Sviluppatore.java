@@ -13,7 +13,7 @@ public class Sviluppatore extends Account{
 
 
 
-    public Sviluppatore(String nome,String password, String descrizione)
+    public Sviluppatore(String nome,String password, String descrizione) throws CampoNonValidoException
     {
         super(nome,password);
         this.strike = 0;
@@ -31,10 +31,10 @@ public class Sviluppatore extends Account{
     }
     public int getStrike(){return strike;}
 
-    public void addStrike()
+    public void addStrike() throws CampoNonValidoException
     {
         if(this.strike>=3)
-        {throw new IllegalArgumentException("l'utente è già bannato");}
+        {throw new CampoNonValidoException("l'utente è già bannato");}
 
         this.strike++;
     }
@@ -46,39 +46,39 @@ public class Sviluppatore extends Account{
 
 
     public String getDescrizione() {return descrizione;}
-    public void setDescrizione(String descrizione)
+    public void setDescrizione(String descrizione) throws CampoNonValidoException
     {
         if(descrizione == null||descrizione.trim().isEmpty())
         {
-            throw new IllegalArgumentException("la descrizione è vuota.");
+            throw new CampoNonValidoException("la descrizione è vuota.");
         }
         else if (descrizione.length()>500)
-        throw new IllegalArgumentException("la descrizione è troppo lunga.");
+        throw new CampoNonValidoException("la descrizione è troppo lunga.");
 
         this.descrizione = descrizione;
 
     }
 
-    public void addFondi(int importo)
+    public void addFondi(int importo) throws CampoNonValidoException
     {
-        if(importo < 0)throw new IllegalArgumentException();
+        if(importo < 0)throw new CampoNonValidoException("L'importo non può essere negativo");
 
         this.fondi+=importo;
     }
 
-    public void removeFondi(int importo)
+    public void removeFondi(int importo) throws CampoNonValidoException
     {
-        if(importo>this.fondi)throw new IllegalArgumentException();
+        if(importo>this.fondi)throw new CampoNonValidoException("L'importo supera i fondi");
         this.fondi-=importo;
     }
 
-    public void addGioco(Gioco gioco)
+    public void addGioco(Gioco gioco) throws CampoNonValidoException
     {
         if(gioco == null)
-            throw new IllegalArgumentException();
+            throw new CampoNonValidoException("Il gioco non esiste");
 
         if(this.listaGiochi.contains(gioco))
-            throw new IllegalArgumentException("il gioco è già presente");
+            throw new CampoNonValidoException("il gioco è già presente");
 
         this.listaGiochi.add(gioco);
     }

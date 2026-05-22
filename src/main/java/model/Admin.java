@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Admin extends Account{
 
-    public Admin( String nome, String password)
+    public Admin( String nome, String password) throws CampoNonValidoException
     {super(nome,password);}
 
     //costruttore per il DAO

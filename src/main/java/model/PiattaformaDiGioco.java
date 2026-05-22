@@ -10,21 +10,21 @@ public class PiattaformaDiGioco {
 
     private ArrayList<EdizioneGioco> edizioni = new ArrayList<>();
 
-    public PiattaformaDiGioco(String nome, String produttore, boolean portatile){
+    public PiattaformaDiGioco(String nome, String produttore, boolean portatile) throws CampoNonValidoException {
         if (nome == null || nome.trim().isEmpty() || nome.length() > 20){
-            throw new IllegalArgumentException("Nome non valido");
+            throw new CampoNonValidoException("Nome non valido");
         }
         this.nome = nome;
         setProduttore(produttore);
         this.portatile = portatile;
     }
 
-    public void addEdizione(EdizioneGioco edizione){
+    public void addEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null) {
-            throw new IllegalArgumentException("Edizione non esistente");
+            throw new CampoNonValidoException("Edizione non esistente");
         }
         if (edizioni.contains(edizione)){
-            throw new IllegalArgumentException("L'edizione é giá stata aggiunta");
+            throw new CampoNonValidoException("L'edizione é giá stata aggiunta");
         }
         edizioni.add(edizione);
     }
@@ -35,9 +35,9 @@ public class PiattaformaDiGioco {
     public boolean isPortatile() {return portatile;}
     public ArrayList<EdizioneGioco> getEdizioni() {return edizioni;}
 
-    public void setProduttore(String produttore) {
+    public void setProduttore(String produttore) throws CampoNonValidoException {
         if (produttore == null || produttore.trim().isEmpty() || produttore.length() > 20){
-            throw new IllegalArgumentException("Produttore non valido");
+            throw new CampoNonValidoException("Produttore non valido");
         }
         this.produttore = produttore;
     }

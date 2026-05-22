@@ -11,13 +11,13 @@ public class GiocoInPromozione {
     private Promozione promozione;
 
     //costruttore normale
-    public GiocoInPromozione(int percentuale,Gioco gioco, Promozione promozione){
+    public GiocoInPromozione(int percentuale,Gioco gioco, Promozione promozione) throws CampoNonValidoException {
 
         if(gioco == null){
-            throw new IllegalArgumentException("Gioco non esistente");
+            throw new CampoNonValidoException("Gioco non esistente");
         }
         if(promozione == null){
-            throw new IllegalArgumentException("Promozione non esistente");
+            throw new CampoNonValidoException("Promozione non esistente");
         }
 
         this.gioco = gioco;
@@ -26,13 +26,13 @@ public class GiocoInPromozione {
     }
 
     //costruttore per DAO
-    public GiocoInPromozione(int id, int percentuale,Gioco gioco, Promozione promozione){
+    public GiocoInPromozione(int id, int percentuale,Gioco gioco, Promozione promozione) throws CampoNonValidoException {
 
         if(gioco == null){
-            throw new IllegalArgumentException("Gioco non esistente");
+            throw new CampoNonValidoException("Gioco non esistente");
         }
         if(promozione == null){
-            throw new IllegalArgumentException("Promozione non esistente");
+            throw new CampoNonValidoException("Promozione non esistente");
         }
 
         this.id = id;
@@ -42,9 +42,9 @@ public class GiocoInPromozione {
     }
 
     //setter
-    public void setPercentuale(int percentuale) {
+    public void setPercentuale(int percentuale) throws CampoNonValidoException {
         if(percentuale < 0 || percentuale > 100){
-            throw new IllegalArgumentException("Lo sconto non puó essere minore di 0 o maggiore di 100");
+            throw new CampoNonValidoException("Lo sconto non puó essere minore di 0 o maggiore di 100");
         }
         this.percentuale = percentuale;
     }

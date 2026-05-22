@@ -16,13 +16,13 @@ public class Gioco {
 
     //Costruttore per la GUI
     //Il gioco nasce senza edizioni o promozioni perché queste non posso nascere senza un riferimento a un gioco
-    public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, ArrayList<Genere> generi) {
+    public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, ArrayList<Genere> generi) throws CampoNonValidoException {
 
         if (sviluppatore == null) {
-            throw new IllegalArgumentException("Lo sviluppatore non é valido (?)");
+            throw new CampoNonValidoException("Lo sviluppatore non é valido (?)");
         }
         if(generi == null || generi.isEmpty()) {
-            throw new IllegalArgumentException("Non esiste gioco senza generi");
+            throw new CampoNonValidoException("Non esiste gioco senza generi");
         }
 
         setTitolo(titolo);
@@ -33,9 +33,9 @@ public class Gioco {
     }
 
     //Costruttore per Database
-    public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi) {
+    public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi) throws CampoNonValidoException {
         if (sviluppatore == null) {
-            throw new IllegalArgumentException("DB Corrotto: Sviluppatore mancante!");
+            throw new CampoNonValidoException("DB Corrotto: Sviluppatore mancante!");
         }
 
         this.sviluppatore = sviluppatore;
@@ -47,63 +47,63 @@ public class Gioco {
         //obbligatorio per il controller riempire gli arraylist successivamente a questo
     }
 
-    public void addPromozione(GiocoInPromozione promozione){
+    public void addPromozione(GiocoInPromozione promozione) throws CampoNonValidoException {
         if (promozione == null){
-            throw new IllegalArgumentException("Promozione non esistente");
+            throw new CampoNonValidoException("Promozione non esistente");
         }
         if (this.promozioni.contains(promozione)){
-            throw new IllegalArgumentException("Il gioco ha già partecipato ha questa promozione");
+            throw new CampoNonValidoException("Il gioco ha già partecipato ha questa promozione");
         }
         promozioni.add(promozione);
     }
 
-    public void addGenere(Genere genere){
+    public void addGenere(Genere genere) throws CampoNonValidoException {
         if (genere == null){
-            throw new IllegalArgumentException("Genere non disponibile");
+            throw new CampoNonValidoException("Genere non disponibile");
         }
         if (this.generi.contains(genere)){
-            throw new IllegalArgumentException("Il gioco ha già questo genere");
+            throw new CampoNonValidoException("Il gioco ha già questo genere");
         }
         generi.add(genere);
     }
 
-    public void addEdizione(EdizioneGioco edizione){
+    public void addEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null){
-            throw new IllegalArgumentException("Edizione di gioco non disponibile");
+            throw new CampoNonValidoException("Edizione di gioco non disponibile");
         }
         if (this.edizioni.contains(edizione)){
-            throw new IllegalArgumentException("Questa edizione del gioco è già uscita");
+            throw new CampoNonValidoException("Questa edizione del gioco è già uscita");
         }
         edizioni.add(edizione);
     }
 
     //metodi per admin
-    public void removeEdizione(EdizioneGioco edizione){
+    public void removeEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null){
-            throw new IllegalArgumentException("Edizione di gioco non disponibile");
+            throw new CampoNonValidoException("Edizione di gioco non disponibile");
         }
         if (!this.edizioni.contains(edizione)){
-            throw new IllegalArgumentException("Questa edizione é giá stata rimossa");
+            throw new CampoNonValidoException("Questa edizione é giá stata rimossa");
         }
         edizioni.remove(edizione);
     }
 
-    public void removeGenere(Genere genere){
+    public void removeGenere(Genere genere) throws CampoNonValidoException {
         if (genere == null){
-            throw new IllegalArgumentException("Genere non disponibile");
+            throw new CampoNonValidoException("Genere non disponibile");
         }
         if (!this.generi.contains(genere)){
-            throw new IllegalArgumentException("Il gioco giá non ha questo genere");
+            throw new CampoNonValidoException("Il gioco giá non ha questo genere");
         }
         generi.remove(genere);
     }
 
-    public void removePromozione(GiocoInPromozione promozione){
+    public void removePromozione(GiocoInPromozione promozione) throws CampoNonValidoException {
         if (promozione == null){
-            throw new IllegalArgumentException("Promozione non esistente");
+            throw new CampoNonValidoException("Promozione non esistente");
         }
         if (!this.promozioni.contains(promozione)){
-            throw new IllegalArgumentException("Il gioco giá non ha partecipato a questa promozione");
+            throw new CampoNonValidoException("Il gioco giá non ha partecipato a questa promozione");
         }
         promozioni.remove(promozione);
     }
@@ -119,23 +119,23 @@ public class Gioco {
     public int getId() {return id;}
 
     //Lista di set
-    public void setTitolo(String titolo) {
+    public void setTitolo(String titolo) throws CampoNonValidoException {
         if (titolo == null || titolo.trim().isEmpty() || titolo.length() > 40){
-            throw new IllegalArgumentException("Il titolo massimo 40 caratteri");
+            throw new CampoNonValidoException("Il titolo massimo 40 caratteri");
         }
         this.titolo = titolo;
     }
 
-    public void setCategoria(Categoria categoria) {
+    public void setCategoria(Categoria categoria) throws CampoNonValidoException {
         if (categoria == null) {
-            throw new IllegalArgumentException("La categoria non puó essere vuota");
+            throw new CampoNonValidoException("La categoria non puó essere vuota");
         }
         this.categoria = categoria;
     }
 
-    public void setPegi(int pegi) {
+    public void setPegi(int pegi) throws CampoNonValidoException {
         if (pegi < 3 || pegi > 18){
-            throw new IllegalArgumentException("Il PEGI deve essere tra 3 e 18 anni");
+            throw new CampoNonValidoException("Il PEGI deve essere tra 3 e 18 anni");
         }
         this.pegi = pegi;
     }

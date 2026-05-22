@@ -12,7 +12,7 @@ public abstract class Account {
         private LocalDate dataCreazione;
 
     //Creazione del costruttore
-    public Account(String nome,String password)
+    public Account(String nome,String password) throws CampoNonValidoException
     {
         setNome(nome);
         setPassword(password);
@@ -31,12 +31,12 @@ public abstract class Account {
 
     //get e set
     public String getNome() {return nome;}
-    public void setNome(String nome)
+    public void setNome(String nome) throws CampoNonValidoException
     {
         if(nome == null || nome.length()>24)
-        { throw new IllegalArgumentException("il nome che hai scelto \""+ nome +"\" è troppo lungo");}
+        { throw new CampoNonValidoException("il nome che hai scelto \""+ nome +"\" è troppo lungo");}
         if(nome.trim().isEmpty())
-        { throw new IllegalArgumentException("il nome che hai scelto è vuoto ");}
+        { throw new CampoNonValidoException("il nome che hai scelto è vuoto ");}
         this.nome = nome;
     }//nome deve essere grande quanto il var char in db
 
@@ -45,13 +45,13 @@ public abstract class Account {
     public String getPassword() {
         return password;
     }
-    public void setPassword(String password) {
+    public void setPassword(String password) throws CampoNonValidoException {
         boolean haMaiuscola = false;
         boolean haNumero = false;
         boolean haSpeciale = false;
         // qui controlliamo se la password contiene almeno 8 caratteri
         if (password == null || password.length()<8||password.length()>32) {
-            throw new IllegalArgumentException("La password richiede almeno 8 e massimo 32 caratteri");
+            throw new CampoNonValidoException("La password richiede almeno 8 e massimo 32 caratteri");
         }
         //usiamo il ciclo for per controllare ogni carattere, la password deve avere almeno una maiuscola
         // un numero e un carattere speciale
@@ -64,7 +64,7 @@ public abstract class Account {
         }
         // qui nel ciclo if se non ho maiuscola o numero o speciale facciamo la throw
         if(!haMaiuscola||!haNumero||!haSpeciale)
-        {throw new IllegalArgumentException
+        {throw new CampoNonValidoException
                 ("La password deve contenere almeno una maiuscola," +  " un numero e un carattere speciale.");}
 
         this.password = password;

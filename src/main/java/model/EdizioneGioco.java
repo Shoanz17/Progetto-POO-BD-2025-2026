@@ -19,17 +19,17 @@ public class EdizioneGioco {
     public Gioco getGioco() { return gioco; }
     public PiattaformaDiGioco getPiattaforma() { return piattaforma; }
 
-    public void setPrezzo(int prezzo) {
-        if(prezzo < 0) throw new IllegalArgumentException("Stai mettendo un prezzo negativo (Cos'è sei così disperato da addirittura pagare la gente per giocare al tuo gioco?)");
+    public void setPrezzo(int prezzo) throws CampoNonValidoException {
+        if(prezzo < 0) throw new CampoNonValidoException("Stai mettendo un prezzo negativo (Cos'è sei così disperato da addirittura pagare la gente per giocare al tuo gioco?)");
 
         this.prezzo = prezzo;
     }
 
-    public void setDataRilascio(LocalDate dataRilascio){
-        if(dataRilascio == null) throw new IllegalArgumentException("Questa data non esiste");
+    public void setDataRilascio(LocalDate dataRilascio) throws CampoNonValidoException {
+        if(dataRilascio == null) throw new CampoNonValidoException("Questa data non esiste");
 
         LocalDate primoVideogioco = LocalDate.of(1952, 1, 1);
-        if(dataRilascio.isBefore(primoVideogioco)) throw new IllegalArgumentException("Non puoi riscrivere la storia (non sei così speciale bro)");
+        if(dataRilascio.isBefore(primoVideogioco)) throw new CampoNonValidoException("Non puoi riscrivere la storia (non sei così speciale bro)");
 
         this.dataRilascio = dataRilascio;
     }
@@ -51,9 +51,9 @@ public class EdizioneGioco {
 
     //costruttore
     //per la GUI
-    public EdizioneGioco(Gioco gioco, PiattaformaDiGioco piattaforma, int prezzo, LocalDate dataRilascio){
-        if(gioco == null) throw new IllegalArgumentException("Il Gioco non esiste");
-        if(piattaforma == null) throw new IllegalArgumentException("La piattaforma non esiste");
+    public EdizioneGioco(Gioco gioco, PiattaformaDiGioco piattaforma, int prezzo, LocalDate dataRilascio) throws CampoNonValidoException {
+        if(gioco == null) throw new CampoNonValidoException("Il Gioco non esiste");
+        if(piattaforma == null) throw new CampoNonValidoException("La piattaforma non esiste");
 
         this.gioco = gioco;
         this.piattaforma = piattaforma;
@@ -62,9 +62,9 @@ public class EdizioneGioco {
     }
 
     //per il DB
-    public EdizioneGioco(int id, Gioco gioco, PiattaformaDiGioco piattaforma, int prezzo, LocalDate dataRilascio){
-        if(gioco == null) throw new IllegalArgumentException("DB Corrotto: Gioco mancante");
-        if(piattaforma == null) throw new IllegalArgumentException("DB Corrotto: Piattaforma mancante");
+    public EdizioneGioco(int id, Gioco gioco, PiattaformaDiGioco piattaforma, int prezzo, LocalDate dataRilascio) throws CampoNonValidoException{
+        if(gioco == null) throw new CampoNonValidoException("DB Corrotto: Gioco mancante");
+        if(piattaforma == null) throw new CampoNonValidoException("DB Corrotto: Piattaforma mancante");
 
         this.id = id;
         this.gioco = gioco;

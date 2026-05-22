@@ -10,14 +10,14 @@ public class Carrello {
     public Utente getUtente(){ return utente; }
     public ArrayList<EdizioneGioco> getListaGiochi() { return listaGiochi; }
 
-    public void addEdizione(EdizioneGioco edizione){
-        if(edizione == null) throw new IllegalArgumentException("Questa edizione non esiste (vuoi crearla tu? diventa sviluppatore cliccando qui!!)");
+    public void addEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
+        if(edizione == null) throw new CampoNonValidoException("Questa edizione non esiste (vuoi crearla tu? diventa sviluppatore cliccando qui!!)");
         this.listaGiochi.add(edizione);
     }
 
-    public void removeEdizione(EdizioneGioco edizione){
-        if(edizione == null) throw new IllegalArgumentException("Questa edizione non esiste (per lamentarti compila questo form)");
-        if(!this.listaGiochi.contains(edizione)) throw new IllegalArgumentException("Questa edizione non è nel tuo carrello");
+    public void removeEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
+        if(edizione == null) throw new CampoNonValidoException("Questa edizione non esiste (per lamentarti compila questo form)");
+        if(!this.listaGiochi.contains(edizione)) throw new CampoNonValidoException("Questa edizione non è nel tuo carrello");
 
         this.listaGiochi.remove(edizione);
     }
@@ -34,8 +34,8 @@ public class Carrello {
     public void svuotaCarrello(){ this.listaGiochi.clear(); }
 
     //costruttore
-    public Carrello(Utente utente){
-        if(utente == null) throw new IllegalArgumentException("L'utente non esiste, non esiste carrello senza proprietario");
+    public Carrello(Utente utente) throws CampoNonValidoException {
+        if(utente == null) throw new CampoNonValidoException("L'utente non esiste, non esiste carrello senza proprietario");
 
         this.utente = utente;
     }

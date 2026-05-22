@@ -14,7 +14,7 @@ public class Genere {
         this.id = id;
         this.nome = nome;
     }
-    public Genere(String nome) {
+    public Genere(String nome) throws CampoNonValidoException {
         setNome(nome);
     }
 
@@ -24,30 +24,30 @@ public class Genere {
 
     public String getNome() {return nome;}
 
-    public void setNome(String nome) {
+    public void setNome(String nome) throws CampoNonValidoException {
         if (nome == null||nome.length() > 24) {
-            throw new IllegalArgumentException("il nome che hai scelto \"" + nome + "\" è troppo lungo");
+            throw new CampoNonValidoException("il nome che hai scelto \"" + nome + "\" è troppo lungo");
         }
         else if (nome.trim().isEmpty())
-            throw new IllegalArgumentException("il nome che hai scelto è vuoto");
+            throw new CampoNonValidoException("il nome che hai scelto è vuoto");
         this.nome = nome;
     }
 
-    public void addGioco(Gioco gioco)
+    public void addGioco(Gioco gioco) throws CampoNonValidoException
     {
-        if(gioco == null) throw new IllegalArgumentException();
+        if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
 
         if (listaGiochi.contains(gioco))
-            throw new IllegalArgumentException("il gioco già appartiene a questo genere");
+            throw new CampoNonValidoException("il gioco già appartiene a questo genere");
         this.listaGiochi.add(gioco);
     }
 
-    public void removeGioco(Gioco gioco)
+    public void removeGioco(Gioco gioco) throws CampoNonValidoException
     {
-        if(gioco == null) throw new IllegalArgumentException();
+        if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
 
         if (!listaGiochi.contains(gioco))
-            throw new IllegalArgumentException("il gioco già appartiene a questo genere");
+            throw new CampoNonValidoException("il gioco già appartiene a questo genere");
         this.listaGiochi.remove(gioco);
     }
 

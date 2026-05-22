@@ -8,9 +8,9 @@ public class Recensione {
     //relazione
     private Fattura fattura; //sarà chiave primaria
 
-    public Recensione (int voto, String descrizione, Fattura fattura){
+    public Recensione (int voto, String descrizione, Fattura fattura) throws CampoNonValidoException {
         if (fattura == null){
-            throw new IllegalArgumentException("Fattura non esistente");
+            throw new CampoNonValidoException("Fattura non esistente");
         }
 
         setVoto(voto);
@@ -28,16 +28,16 @@ public class Recensione {
     }
 
     //setter
-    public void setVoto (int voto){
+    public void setVoto (int voto) throws CampoNonValidoException {
         if(voto < 0 || voto > 100){
-            throw new IllegalArgumentException("Immettere un voto tra 0 e 100.");
+            throw new CampoNonValidoException("Immettere un voto tra 0 e 100.");
         }
         this.voto = voto;
     }
 
-    public void setDescrizione (String descrizione){
+    public void setDescrizione (String descrizione) throws CampoNonValidoException {
         if(descrizione == null || descrizione.trim().isEmpty() || descrizione.length() > 500 ){
-            throw new IllegalArgumentException("La descrizione deve essere di un massimo di 500 caratteri");
+            throw new CampoNonValidoException("La descrizione deve essere di un massimo di 500 caratteri");
         }
         this.descrizione = descrizione;
     }

@@ -14,7 +14,7 @@ public class Promozione {
     private ArrayList<GiocoInPromozione> giochiInPromozione = new ArrayList<>();
 
     //costruttore normale
-    public Promozione(String nome, LocalDate dataInizio, LocalDate dataFine) {
+    public Promozione(String nome, LocalDate dataInizio, LocalDate dataFine) throws CampoNonValidoException {
         setNome(nome);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
@@ -28,12 +28,12 @@ public class Promozione {
         this.dataFine = dataFine;
     }
 
-    public void addGiocoInPromozione(GiocoInPromozione giocoInPromozione){
+    public void addGiocoInPromozione(GiocoInPromozione giocoInPromozione) throws CampoNonValidoException {
         if (giocoInPromozione == null){
-            throw new IllegalArgumentException("Gioco in Promozione non esistente");
+            throw new CampoNonValidoException("Gioco in Promozione non esistente");
         }
         if (giochiInPromozione.contains(giocoInPromozione)){
-            throw new IllegalArgumentException("Gioco giá presente nella promozione");
+            throw new CampoNonValidoException("Gioco giá presente nella promozione");
         }
         giochiInPromozione.add(giocoInPromozione);
     }
@@ -46,26 +46,26 @@ public class Promozione {
     public ArrayList<GiocoInPromozione> getGiochiInPromozione() {return giochiInPromozione;}
 
     // Lista set
-    public void setNome(String nome) {
+    public void setNome(String nome) throws CampoNonValidoException {
         if (nome == null || nome.trim().isEmpty() || nome.length() > 32) {
-            throw new IllegalArgumentException("Nome immesso della promozione non valido");
+            throw new CampoNonValidoException("Nome immesso della promozione non valido");
         }
         this.nome = nome;
     }
 
-    public void setDataInizio(LocalDate dataInizio) {
+    public void setDataInizio(LocalDate dataInizio) throws CampoNonValidoException {
         if (dataInizio == null) {
-            throw new IllegalArgumentException("Immettere una data di Inizio valida");
+            throw new CampoNonValidoException("Immettere una data di Inizio valida");
         }
         this.dataInizio = dataInizio;
     }
 
-    public void setDataFine(LocalDate dataFine) {
+    public void setDataFine(LocalDate dataFine) throws CampoNonValidoException {
         if (dataFine == null) {
-            throw new IllegalArgumentException("Immettere una data di fine valida");
+            throw new CampoNonValidoException("Immettere una data di fine valida");
         }
         if (this.dataInizio != null && dataFine.isBefore(this.dataInizio)) {
-            throw new IllegalArgumentException("La data di fine DEVE essere DOPO la data di inizio");
+            throw new CampoNonValidoException("La data di fine DEVE essere DOPO la data di inizio");
         }
         this.dataFine = dataFine;
     }

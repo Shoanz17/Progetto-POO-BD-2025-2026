@@ -23,23 +23,23 @@ public class Utente extends Account {
 
     public void setBannato(boolean bannato) {this.bannato = bannato;}
 
-    public void setDataNascita(LocalDate dataNascita) {
-        if(dataNascita == null) throw new IllegalArgumentException("Data non esistente");
-        if(dataNascita.isAfter(LocalDate.now())) throw new IllegalArgumentException("Non puoi essere nato nel futuro (non sono nato ieri!!!)");
+    public void setDataNascita(LocalDate dataNascita) throws CampoNonValidoException {
+        if(dataNascita == null) throw new CampoNonValidoException("Data non esistente");
+        if(dataNascita.isAfter(LocalDate.now())) throw new CampoNonValidoException("Non puoi essere nato nel futuro (non sono nato ieri!!!)");
 
         this.dataNascita = dataNascita;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws CampoNonValidoException {
         //controllo non sia vuota
-        if(email == null || email.trim().isBlank()) throw new IllegalArgumentException("L'email non può essere vuota");
+        if(email == null || email.trim().isBlank()) throw new CampoNonValidoException("L'email non può essere vuota");
 
-        if(email.length() > 50) throw new IllegalArgumentException("Email troppo lunga (per i nostri standard almeno, non ti offendere");
+        if(email.length() > 50) throw new CampoNonValidoException("Email troppo lunga (per i nostri standard almeno, non ti offendere");
 
         //questo regex controlla che ci sia: Testo + @ + Testo + . + Testo(di 2 o più lettere) (l'ho trovato su internet)
         String regexEmail = "^[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$";
 
-        if(!email.matches(regexEmail)) throw new IllegalArgumentException("L'email non è nel formato adatto");
+        if(!email.matches(regexEmail)) throw new CampoNonValidoException("L'email non è nel formato adatto");
 
         //se passa tutti i controlli setta la mail
         this.email = email;
@@ -47,13 +47,13 @@ public class Utente extends Account {
 
     //metodi
     //valutare per entrambi se mettere le eccezioni checked
-    public void aggiungiSaldo(int soldiAggiunti) {
-        if(soldiAggiunti < 0) throw new IllegalArgumentException("Non è possibile aggiungere saldo negativo");
+    public void aggiungiSaldo(int soldiAggiunti) throws CampoNonValidoException {
+        if(soldiAggiunti < 0) throw new CampoNonValidoException("Non è possibile aggiungere saldo negativo");
         this.saldo += soldiAggiunti;
     }
 
-    public void rimuoviSaldo(int soldiTolti) {
-        if(soldiTolti > this.saldo) throw new IllegalArgumentException("Saldo insufficiente (come ci sei finito qui? Controller fai il tuo lavoro");
+    public void rimuoviSaldo(int soldiTolti) throws CampoNonValidoException {
+        if(soldiTolti > this.saldo) throw new CampoNonValidoException("Saldo insufficiente (come ci sei finito qui? Controller fai il tuo lavoro");
         this.saldo -= soldiTolti;
     }
 
@@ -62,8 +62,8 @@ public class Utente extends Account {
     private Carrello carrello;
 
     public Carrello getCarrello() { return carrello; }
-    public void setCarrello(Carrello c) {
-        if(c == null) throw new IllegalArgumentException("Il carrello non esiste");
+    public void setCarrello(Carrello c) throws CampoNonValidoException {
+        if(c == null) throw new CampoNonValidoException("Il carrello non esiste");
 
         this.carrello = c;
     }
@@ -72,18 +72,18 @@ public class Utente extends Account {
 
     public ArrayList<Utente> getListaAmici() { return listaAmici; }
 
-    public void addAmico(Utente nuovoAmico) {
+    public void addAmico(Utente nuovoAmico) throws CampoNonValidoException {
         //check di validità
-        if(nuovoAmico == null) throw new IllegalArgumentException("Mi dispiace ma gli amici immaginari non valgono");
-        if(this.equals(nuovoAmico)) throw new IllegalArgumentException("Non puoi far amicizia con te stesso (che cosa triste...)");
-        if(this.listaAmici.contains(nuovoAmico)) throw new IllegalArgumentException("Sei già amico con questo utente");
+        if(nuovoAmico == null) throw new CampoNonValidoException("Mi dispiace ma gli amici immaginari non valgono");
+        if(this.equals(nuovoAmico)) throw new CampoNonValidoException("Non puoi far amicizia con te stesso (che cosa triste...)");
+        if(this.listaAmici.contains(nuovoAmico)) throw new CampoNonValidoException("Sei già amico con questo utente");
 
         this.listaAmici.add(nuovoAmico);
     }
-    public void removeAmico(Utente amico) {
+    public void removeAmico(Utente amico) throws CampoNonValidoException {
         //check di validità
-        if(amico == null) throw new IllegalArgumentException("Non sei ancora cresciuto abbastanza per abbandonare gli amici immaginari");
-        if(!this.listaAmici.contains(amico)) throw new IllegalArgumentException("Non sei amico di questa persona (lo odi così tanto?)");
+        if(amico == null) throw new CampoNonValidoException("Non sei ancora cresciuto abbastanza per abbandonare gli amici immaginari");
+        if(!this.listaAmici.contains(amico)) throw new CampoNonValidoException("Non sei amico di questa persona (lo odi così tanto?)");
 
         this.listaAmici.remove(amico);
     }
@@ -92,18 +92,18 @@ public class Utente extends Account {
 
     public ArrayList<Fattura> getGiochiAcquistati() { return giochiAcquistati; }
 
-    public void addGioco(Fattura gioco){
+    public void addGioco(Fattura gioco) throws CampoNonValidoException {
         //check di validità
-        if(gioco == null) throw new IllegalArgumentException("Il gioco non esiste");
-        if(this.giochiAcquistati.contains(gioco)) throw new IllegalArgumentException("Hai già comprato questa edizione");
+        if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
+        if(this.giochiAcquistati.contains(gioco)) throw new CampoNonValidoException("Hai già comprato questa edizione");
 
         this.giochiAcquistati.add(gioco);
     }
 
-    public void removeGioco(Fattura gioco){ //o rimborso se preferisci
+    public void removeGioco(Fattura gioco) throws CampoNonValidoException { //o rimborso se preferisci
         //check di validità
-        if(gioco == null) throw new IllegalArgumentException("Il gioco non esiste");
-        if(!this.giochiAcquistati.contains(gioco)) throw new IllegalArgumentException("Questo gioco non fa parte della tua libreria (non provare a scammarci)");
+        if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
+        if(!this.giochiAcquistati.contains(gioco)) throw new CampoNonValidoException("Questo gioco non fa parte della tua libreria (non provare a scammarci)");
 
         this.giochiAcquistati.remove(gioco);
     }
@@ -112,18 +112,18 @@ public class Utente extends Account {
 
     public ArrayList<Sviluppatore> getSviluppatoriSeguiti() { return sviluppatoriSeguiti; }
 
-    public void addSviluppatoreSeguito(Sviluppatore sviluppatore){
+    public void addSviluppatoreSeguito(Sviluppatore sviluppatore) throws CampoNonValidoException {
         //check di validità
-        if(sviluppatore == null) throw new IllegalArgumentException("Lo sviluppatore non esiste");
-        if(this.sviluppatoriSeguiti.contains(sviluppatore)) throw new IllegalArgumentException("Segui già questo sviluppatore");
+        if(sviluppatore == null) throw new CampoNonValidoException("Lo sviluppatore non esiste");
+        if(this.sviluppatoriSeguiti.contains(sviluppatore)) throw new CampoNonValidoException("Segui già questo sviluppatore");
 
         this.sviluppatoriSeguiti.add(sviluppatore);
     }
 
-    public void removeSviluppatoreSeguito(Sviluppatore sviluppatore){
+    public void removeSviluppatoreSeguito(Sviluppatore sviluppatore) throws CampoNonValidoException {
         //check di validità
-        if(sviluppatore == null) throw new IllegalArgumentException("Lo sviluppatore non esiste");
-        if(!this.sviluppatoriSeguiti.contains(sviluppatore)) throw new IllegalArgumentException("Già non segui questo sviluppatore (lo odi così tanto?)");
+        if(sviluppatore == null) throw new CampoNonValidoException("Lo sviluppatore non esiste");
+        if(!this.sviluppatoriSeguiti.contains(sviluppatore)) throw new CampoNonValidoException("Già non segui questo sviluppatore (lo odi così tanto?)");
 
         this.sviluppatoriSeguiti.remove(sviluppatore);
     }
@@ -131,7 +131,7 @@ public class Utente extends Account {
 
 
     //costruttore chiamato alla creazione di un Utente dalla GUI
-    public Utente(String nome, String password, GenereEnum genere, String email, LocalDate dataNascita) {
+    public Utente(String nome, String password, GenereEnum genere, String email, LocalDate dataNascita) throws CampoNonValidoException {
         super(nome, password);
 
         setGenere(genere);
