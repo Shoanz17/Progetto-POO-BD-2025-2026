@@ -1,23 +1,41 @@
 package model;
 
 public class GiocoInPromozione {
+    private int id;
     private int percentuale;
 
     //relazioni
     private Gioco gioco;
     private Promozione promozione;
 
+    //costruttore normale
     public GiocoInPromozione(int percentuale,Gioco gioco, Promozione promozione){
-        setPercentuale(percentuale);
 
         if(gioco == null){
             throw new IllegalArgumentException("Gioco non esistente");
         }
-        this.gioco = gioco;
-
         if(promozione == null){
             throw new IllegalArgumentException("Promozione non esistente");
         }
+
+        this.gioco = gioco;
+        setPercentuale(percentuale);
+        this.promozione = promozione;
+    }
+
+    //costruttore per DAO
+    public GiocoInPromozione(int id, int percentuale,Gioco gioco, Promozione promozione){
+
+        if(gioco == null){
+            throw new IllegalArgumentException("Gioco non esistente");
+        }
+        if(promozione == null){
+            throw new IllegalArgumentException("Promozione non esistente");
+        }
+
+        this.id = id;
+        this.gioco = gioco;
+        this.percentuale = percentuale;
         this.promozione = promozione;
     }
 
@@ -33,4 +51,5 @@ public class GiocoInPromozione {
     public int getPercentuale() {return percentuale;}
     public Promozione getPromozione() {return promozione;}
     public Gioco getGioco() {return gioco;}
+    public int getId() {return id;}
 }
