@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PiattaformaDiGioco {
     private final String nome;
@@ -41,4 +42,16 @@ public class PiattaformaDiGioco {
         this.produttore = produttore;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PiattaformaDiGioco that = (PiattaformaDiGioco) o;
+        return Objects.equals(nome, that.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nome);
+    }
 }

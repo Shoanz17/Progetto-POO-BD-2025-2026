@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class GiocoInPromozione {
     private int id;
     private int percentuale;
@@ -52,4 +54,17 @@ public class GiocoInPromozione {
     public Promozione getPromozione() {return promozione;}
     public Gioco getGioco() {return gioco;}
     public int getId() {return id;}
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o)return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GiocoInPromozione that = (GiocoInPromozione) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

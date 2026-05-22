@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Promozione {
     private int id;
@@ -67,5 +68,18 @@ public class Promozione {
             throw new IllegalArgumentException("La data di fine DEVE essere DOPO la data di inizio");
         }
         this.dataFine = dataFine;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Promozione that = (Promozione) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
