@@ -3,20 +3,19 @@ package model;
 import java.util.ArrayList;
 
 public class Carrello {
-    private Utente utente;
-    private ArrayList<EdizioneGioco> listaGiochi = new ArrayList<>();
+    private final Utente utente; //chiave primaria e secondaria
+    private final ArrayList<EdizioneGioco> listaGiochi = new ArrayList<>();
 
     //getter e setter
     public Utente getUtente(){ return utente; }
     public ArrayList<EdizioneGioco> getListaGiochi() { return listaGiochi; }
 
-    public void aggiungiEdizione(EdizioneGioco edizione){
+    public void addEdizione(EdizioneGioco edizione){
         if(edizione == null) throw new IllegalArgumentException("Questa edizione non esiste (vuoi crearla tu? diventa sviluppatore cliccando qui!!)");
-
         this.listaGiochi.add(edizione);
     }
 
-    public void rimuoviEdizione(EdizioneGioco edizione){
+    public void removeEdizione(EdizioneGioco edizione){
         if(edizione == null) throw new IllegalArgumentException("Questa edizione non esiste (per lamentarti compila questo form)");
         if(!this.listaGiochi.contains(edizione)) throw new IllegalArgumentException("Questa edizione non è nel tuo carrello");
 
