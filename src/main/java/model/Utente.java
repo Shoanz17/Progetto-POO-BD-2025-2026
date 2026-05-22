@@ -144,7 +144,7 @@ public class Utente extends Account {
 
     //costruttore chiamato dal DAO quando pesca un Utente dal DB
     public Utente(int id, String nome, String password, LocalDate dataCreazione, GenereEnum genere, String email, LocalDate dataNascita, int saldo, boolean bannato) {
-        super(id, nome, password, dataCreazione);
+        super(nome, id, password, dataCreazione);
 
         this.genere = genere; //non c'è più bisogno del set perché sono già dati giusti
         this.email = email;
