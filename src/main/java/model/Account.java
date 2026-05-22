@@ -1,9 +1,6 @@
 package model;
 
 
-import org.postgresql.shaded.com.ongres.stringprep.Stringprep;
-
-
 import java.time.LocalDate;
 
 
@@ -53,8 +50,8 @@ public abstract class Account {
         boolean haNumero = false;
         boolean haSpeciale = false;
         // qui controlliamo se la password contiene almeno 8 caratteri
-        if (password == null || password.length()<8) {
-            throw new IllegalArgumentException("La password richiede almeno 8 caratteri.");
+        if (password == null || password.length()<8||password.length()>32) {
+            throw new IllegalArgumentException("La password richiede almeno 8 e massimo 32 caratteri");
         }
         //usiamo il ciclo for per controllare ogni carattere, la password deve avere almeno una maiuscola
         // un numero e un carattere speciale
@@ -74,7 +71,6 @@ public abstract class Account {
     }
 
     public LocalDate getDataCreazione() {return dataCreazione;}
-
 
     @Override
     public boolean equals(Object oggetto)
