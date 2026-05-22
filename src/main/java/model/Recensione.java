@@ -6,16 +6,16 @@ public class Recensione {
     private int differenzaLike;
 
     //relazione
-    private Fattura fattura;
+    private Fattura fattura; //sarà chiave primaria
 
     public Recensione (int voto, String descrizione, Fattura fattura){
-        setVoto(voto);
-        setDescrizione(descrizione);
-        this.differenzaLike = 0;
-
         if (fattura == null){
             throw new IllegalArgumentException("Fattura non esistente");
         }
+
+        setVoto(voto);
+        setDescrizione(descrizione);
+        this.differenzaLike = 0;
         this.fattura = fattura;
     }
 
@@ -49,11 +49,10 @@ public class Recensione {
     public Fattura getFattura() {return fattura;}
 
     //metodi
-    public void mettiLike() {
+    public void addLike() {
         this.differenzaLike++;
     }
-
-    public void mettiDislike() {
+    public void addDislike() {
         this.differenzaLike--;
     }
 }
