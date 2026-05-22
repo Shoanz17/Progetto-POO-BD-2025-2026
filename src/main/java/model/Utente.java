@@ -24,7 +24,9 @@ public class Utente extends Account {
     public void setBannato(boolean bannato) {this.bannato = bannato;}
 
     public void setDataNascita(LocalDate dataNascita) {
+        if(dataNascita == null) throw new IllegalArgumentException("Data non esistente");
         if(dataNascita.isAfter(LocalDate.now())) throw new IllegalArgumentException("Non puoi essere nato nel futuro (non sono nato ieri!!!)");
+
         this.dataNascita = dataNascita;
     }
 
@@ -60,13 +62,17 @@ public class Utente extends Account {
     private Carrello carrello;
 
     public Carrello getCarrello() { return carrello; }
-    public void setCarrello(Carrello c) { this.carrello = c; }
+    public void setCarrello(Carrello c) {
+        if(c == null) throw new IllegalArgumentException("Il carrello non esiste");
+
+        this.carrello = c;
+    }
 
     private ArrayList<Utente> listaAmici = new ArrayList<>();
 
     public ArrayList<Utente> getListaAmici() { return listaAmici; }
 
-    public void aggiungiAmico(Utente nuovoAmico) {
+    public void addAmico(Utente nuovoAmico) {
         //check di validità
         if(nuovoAmico == null) throw new IllegalArgumentException("Mi dispiace ma gli amici immaginari non valgono");
         if(this.equals(nuovoAmico)) throw new IllegalArgumentException("Non puoi far amicizia con te stesso (che cosa triste...)");
@@ -74,7 +80,7 @@ public class Utente extends Account {
 
         this.listaAmici.add(nuovoAmico);
     }
-    public void rimuoviAmico(Utente amico) {
+    public void removeAmico(Utente amico) {
         //check di validità
         if(amico == null) throw new IllegalArgumentException("Non sei ancora cresciuto abbastanza per abbandonare gli amici immaginari");
         if(!this.listaAmici.contains(amico)) throw new IllegalArgumentException("Non sei amico di questa persona (lo odi così tanto?)");
@@ -86,7 +92,7 @@ public class Utente extends Account {
 
     public ArrayList<Fattura> getGiochiAcquistati() { return giochiAcquistati; }
 
-    public void aggiungiGiocoAcquistato(Fattura gioco){
+    public void addGioco(Fattura gioco){
         //check di validità
         if(gioco == null) throw new IllegalArgumentException("Il gioco non esiste");
         if(this.giochiAcquistati.contains(gioco)) throw new IllegalArgumentException("Hai già comprato questa edizione");
@@ -94,7 +100,7 @@ public class Utente extends Account {
         this.giochiAcquistati.add(gioco);
     }
 
-    public void rimuoviGioco(Fattura gioco){ //o rimborso se preferisci
+    public void removeGioco(Fattura gioco){ //o rimborso se preferisci
         //check di validità
         if(gioco == null) throw new IllegalArgumentException("Il gioco non esiste");
         if(!this.giochiAcquistati.contains(gioco)) throw new IllegalArgumentException("Questo gioco non fa parte della tua libreria (non provare a scammarci)");
@@ -106,7 +112,7 @@ public class Utente extends Account {
 
     public ArrayList<Sviluppatore> getSviluppatoriSeguiti() { return sviluppatoriSeguiti; }
 
-    public void aggiungiSviluppatoreAiSeguiti(Sviluppatore sviluppatore){
+    public void addSviluppatoreSeguito(Sviluppatore sviluppatore){
         //check di validità
         if(sviluppatore == null) throw new IllegalArgumentException("Lo sviluppatore non esiste");
         if(this.sviluppatoriSeguiti.contains(sviluppatore)) throw new IllegalArgumentException("Segui già questo sviluppatore");
@@ -114,7 +120,7 @@ public class Utente extends Account {
         this.sviluppatoriSeguiti.add(sviluppatore);
     }
 
-    public void rimuoviSviluppatoreDaiSeguiti(Sviluppatore sviluppatore){
+    public void removeSviluppatoreSeguito(Sviluppatore sviluppatore){
         //check di validità
         if(sviluppatore == null) throw new IllegalArgumentException("Lo sviluppatore non esiste");
         if(!this.sviluppatoriSeguiti.contains(sviluppatore)) throw new IllegalArgumentException("Già non segui questo sviluppatore (lo odi così tanto?)");
