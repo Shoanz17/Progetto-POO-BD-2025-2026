@@ -22,6 +22,9 @@ public class PiattaformaDiGioco {
         if (edizione == null) {
             throw new IllegalArgumentException("Edizione non esistente");
         }
+        if (edizioni.contains(edizione)){
+            throw new IllegalArgumentException("L'edizione é giá stata aggiunta");
+        }
         edizioni.add(edizione);
     }
 
