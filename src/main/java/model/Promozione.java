@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Promozione {
+    private int id;
     private String nome;
     private LocalDate dataInizio;
     private LocalDate dataFine;
@@ -11,20 +12,33 @@ public class Promozione {
     //relazione
     private ArrayList<GiocoInPromozione> giochiInPromozione = new ArrayList<>();
 
+    //costruttore normale
     public Promozione(String nome, LocalDate dataInizio, LocalDate dataFine) {
         setNome(nome);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
     }
 
+    //costruttore per DAO
+    public Promozione(int id, String nome, LocalDate dataInizio, LocalDate dataFine) {
+        this.id = id;
+        this.nome = nome;
+        this.dataInizio = dataInizio;
+        this.dataFine = dataFine;
+    }
+
     public void addGiocoInPromozione(GiocoInPromozione giocoInPromozione){
         if (giocoInPromozione == null){
             throw new IllegalArgumentException("Gioco in Promozione non esistente");
+        }
+        if (giochiInPromozione.contains(giocoInPromozione)){
+            throw new IllegalArgumentException("Gioco giá presente nella promozione");
         }
         giochiInPromozione.add(giocoInPromozione);
     }
 
     // Lista get
+    public int getId() {return id;}
     public String getNome() {return nome;}
     public LocalDate getDataInizio() {return dataInizio;}
     public LocalDate getDataFine() {return dataFine;}
@@ -32,7 +46,7 @@ public class Promozione {
 
     // Lista set
     public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty() || nome.length() > 30) {
+        if (nome == null || nome.trim().isEmpty() || nome.length() > 32) {
             throw new IllegalArgumentException("Nome immesso della promozione non valido");
         }
         this.nome = nome;
