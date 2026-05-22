@@ -20,6 +20,8 @@ public class Genere {
 
     public int getId() {return id;}
 
+    public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
+
     public String getNome() {return nome;}
 
     public void setNome(String nome) {
@@ -38,6 +40,15 @@ public class Genere {
         if (listaGiochi.contains(gioco))
             throw new IllegalArgumentException("il gioco già appartiene a questo genere");
         this.listaGiochi.add(gioco);
+    }
+
+    public void removeGioco(Gioco gioco)
+    {
+        if(gioco == null) throw new IllegalArgumentException();
+
+        if (!listaGiochi.contains(gioco))
+            throw new IllegalArgumentException("il gioco già appartiene a questo genere");
+        this.listaGiochi.remove(gioco);
     }
 
     @Override
