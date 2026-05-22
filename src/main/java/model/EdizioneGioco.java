@@ -1,0 +1,75 @@
+package model;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+public class EdizioneGioco {
+    private int id; //chiave
+    private int prezzo;
+    private LocalDate dataRilascio;
+
+    //relazioni
+    private final Gioco gioco;
+    private final PiattaformaDiGioco piattaforma;
+
+    //getter e setter
+    public int getId() { return id; }
+    public int getPrezzo() { return prezzo; }
+    public LocalDate getDataRilascio() { return dataRilascio; }
+    public Gioco getGioco() { return gioco; }
+    public PiattaformaDiGioco getPiattaforma() { return piattaforma; }
+
+    public void setPrezzo(int prezzo) {
+        if(prezzo < 0) throw new IllegalArgumentException("Stai mettendo un prezzo negativo (Cos'è sei così disperato da addirittura pagare la gente per giocare al tuo gioco?)");
+
+        this.prezzo = prezzo;
+    }
+
+    public void setDataRilascio(LocalDate dataRilascio){
+        if(dataRilascio == null) throw new IllegalArgumentException("Questa data non esiste");
+
+        LocalDate primoVideogioco = LocalDate.of(1952, 1, 1);
+        if(dataRilascio.isBefore(primoVideogioco)) throw new IllegalArgumentException("Non puoi riscrivere la storia (non sei così speciale bro)");
+
+        this.dataRilascio = dataRilascio;
+    }
+
+    //metodi
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EdizioneGioco that = (EdizioneGioco) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    //costruttore
+    //per la GUI
+    public EdizioneGioco(Gioco gioco, PiattaformaDiGioco piattaforma, int prezzo, LocalDate dataRilascio){
+        if(gioco == null) throw new IllegalArgumentException("Il Gioco non esiste");
+        if(piattaforma == null) throw new IllegalArgumentException("La piattaforma non esiste");
+
+        this.gioco = gioco;
+        this.piattaforma = piattaforma;
+        setPrezzo(prezzo);
+        setDataRilascio(dataRilascio);
+    }
+
+    //per il DB
+    public EdizioneGioco(int id, Gioco gioco, PiattaformaDiGioco piattaforma, int prezzo, LocalDate dataRilascio){
+        if(gioco == null) throw new IllegalArgumentException("DB Corrotto: Gioco mancante");
+        if(piattaforma == null) throw new IllegalArgumentException("DB Corrotto: Piattaforma mancante");
+
+        this.id = id;
+        this.gioco = gioco;
+        this.piattaforma = piattaforma;
+        this.prezzo = prezzo;
+        this.dataRilascio = dataRilascio;
+    }
+}
