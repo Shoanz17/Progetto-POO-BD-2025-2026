@@ -7,11 +7,12 @@ import javax.swing.event.ListSelectionListener;
 
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
-    private JTabbedPane Insights;
+    private JTabbedPane libreria;
     private JList listaTitoli;
     private JPanel pannelloDettagli;
     private JLabel Titolo;
     private JLabel Genere;
+    private JLabel Piattaforma;
 
 
     public HomeSviluppatore() {
@@ -26,8 +27,9 @@ public class HomeSviluppatore {
 
                     if (giocoSelezionato != null) {
                         //aggiorniamo le Label in tempo reale
-                        Titolo.setText("Titolo: " + giocoSelezionato);
+                        Titolo.setText(Titolo.getText() + giocoSelezionato);
                         Genere.setText("Genere: Azione");
+                        Piattaforma.setText( Piattaforma.getText());
                     }
                 }
             }
