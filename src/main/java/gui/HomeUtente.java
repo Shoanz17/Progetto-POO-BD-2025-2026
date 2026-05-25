@@ -7,7 +7,7 @@ public class HomeUtente {
     private JPanel HomeUtente;
     private JTabbedPane TabbedPane;
     private JPanel Catalogo;
-    private JPanel Utente;
+    private JPanel Profilo;
     private JPanel Libreria;
     private JTextField RicercaLibreria;
     private JList ListaLibreria;
@@ -29,7 +29,7 @@ public class HomeUtente {
     private JComboBox PegiFiltro;
     private JButton DataAcquistoFiltro;
     private JButton PulsanteRecensione;
-    private JButton copiaKeyButton;
+    private JButton PulsanteCopiaKey;
     private JScrollPane ScrollPaneLibreria;
     private JButton PulsanteAggiungiSaldo;
     private JButton PulsanteModificaInformazioni;
@@ -64,7 +64,37 @@ public class HomeUtente {
     private JToolBar ToolBarAmico;
     private JLabel TestoProfilo;
     private JLabel TestoCommunity;
-    private JPanel Carrello;
+    private JPanel Carrello;C
+    private JList ListaCatalogo;
+    private JButton PulsanteAcquista;
+    private JComboBox PiattaformaFiltroCatalogo;
+    private JSlider SliderPrezzoCatalogo;
+    private JComboBox GenereFiltroCatalogo;
+    private JComboBox PegiFiltroCatalogo;
+    private JButton PulsanteDataDiRilascioFiltroCatalogo;
+    private JComboBox CategoriaFiltroCatalogo;
+    private JCheckBox CheckBoxInPromozione;
+    private JCheckBox CheckBoXSviluppatori;
+    private JList ListaRecensioniCatalogo;
+    private JTextField RicercaCatalogo;
+    private JLabel PegiCatalogo;
+    private JLabel GenereCatalogo;
+    private JLabel PiattaformaCatalogo;
+    private JLabel PrezzoCatalogo;
+    private JLabel CategoriaCatalogo;
+    private JTextArea DescrizioneRecensioneCatalogo;
+    private JButton PulsanteDislike;
+    private JButton PulsanteLike;
+    private JLabel DescrizioneCatalogo;
+    private JLabel VotoCatalogo;
+    private JLabel RecensioniCatalogo;
+    private JToolBar ToolBarCatalogo;
+    private JLabel PrezzoFiltroCatalogo;
+    private JLabel DataDiRilascioCatalogo;
+    private JLabel SviluppatoreCatalogo;
+    private JLabel ValutazioneRecensioneCatalogo;
+    private JLabel GeneriLibreria;
+    private JLabel SviluppatoreLibreria;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("HomeUtente");
