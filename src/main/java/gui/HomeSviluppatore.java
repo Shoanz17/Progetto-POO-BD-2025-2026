@@ -7,12 +7,17 @@ import javax.swing.event.ListSelectionListener;
 
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
-    private JTabbedPane libreria;
+    private JTabbedPane finestre;
     private JList listaTitoli;
     private JPanel pannelloDettagli;
     private JLabel Titolo;
     private JLabel Genere;
     private JLabel Piattaforma;
+    private JLabel guadagnoTotale;
+    private JLabel unitàVendute;
+    private JTextField barraRicerca;
+    private JPanel libreria;
+    private JPanel pannelloDiControllo;
 
 
     public HomeSviluppatore() {
