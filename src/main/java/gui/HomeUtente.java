@@ -53,7 +53,6 @@ public class HomeUtente {
     private JLabel TestoSaldo;
     private JScrollPane ScrollPaneListaAmici;
     private JScrollPane ScrollPaneListaSviluppatori;
-    private JLabel TestoDescrizioneSviluppatore;
     private JLabel TestoGiochiRilasciati;
     private JLabel TestoGiocoPiuVenduto;
     private JLabel TestoGiochiAcquistatiAmico;
@@ -95,6 +94,9 @@ public class HomeUtente {
     private JLabel ValutazioneRecensioneCatalogo;
     private JLabel GeneriLibreria;
     private JLabel SviluppatoreLibreria;
+    private JTextArea DescrizioneSviluppaotreProfilo;
+    private JButton PulsanteRimuoviAmico;
+    private JButton PulsanteLogout;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("HomeUtente");

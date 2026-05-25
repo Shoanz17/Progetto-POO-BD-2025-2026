@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="gui.HomeUtente">
-  <grid id="27dc6" binding="HomeUtente" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="HomeUtente" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="2086" height="897"/>
@@ -10,7 +10,7 @@
     <children>
       <tabbedpane id="d6fe8" binding="TabbedPane">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>
           </grid>
         </constraints>
@@ -135,8 +135,10 @@
                     <constraints/>
                     <properties>
                       <columns value="3"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                       <lineWrap value="true"/>
-                      <rows value="25"/>
+                      <rows value="7"/>
                       <text value=""/>
                     </properties>
                   </component>
@@ -148,7 +150,9 @@
                     <preferred-size width="-1" height="20"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <floatable value="false"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="ebebd" class="javax.swing.JSlider" binding="SliderPrezzoCatalogo">
@@ -289,7 +293,9 @@
                     <preferred-size width="-1" height="20"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <floatable value="false"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="3781c" class="javax.swing.JComboBox" binding="CategorieFiltro">
@@ -527,7 +533,9 @@
                     <preferred-size width="-1" height="20"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <floatable value="false"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="b9c6f" class="javax.swing.JTextField" binding="RicercaSviluppatori">
@@ -601,7 +609,9 @@
                     <preferred-size width="-1" height="20"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <floatable value="false"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="84d2e" class="javax.swing.JTextField" binding="RicercaAmici">
@@ -622,32 +632,14 @@
                       <text value="Aggiungi"/>
                     </properties>
                   </component>
+                  <component id="b0cdc" class="javax.swing.JButton" binding="PulsanteRimuoviAmico">
+                    <constraints/>
+                    <properties>
+                      <text value="Rimuovi"/>
+                    </properties>
+                  </component>
                 </children>
               </toolbar>
-              <component id="fb7ca" class="javax.swing.JLabel" binding="TestoDescrizioneSviluppatore">
-                <constraints>
-                  <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Descrizione: [DescrizioneSviluppatore]"/>
-                </properties>
-              </component>
-              <component id="a351" class="javax.swing.JLabel" binding="TestoGiocoPiuVenduto">
-                <constraints>
-                  <grid row="9" column="3" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Gioco piú venduto [Gioco]"/>
-                </properties>
-              </component>
-              <component id="2ea02" class="javax.swing.JLabel" binding="TestoGiochiRilasciati">
-                <constraints>
-                  <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Giochi rilasciati: [numero]"/>
-                </properties>
-              </component>
               <component id="61982" class="javax.swing.JLabel" binding="TestoGiochiAcquistatiAmico">
                 <constraints>
                   <grid row="7" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -729,6 +721,39 @@
                   <text value="Il mio profilo"/>
                 </properties>
               </component>
+              <component id="2ea02" class="javax.swing.JLabel" binding="TestoGiochiRilasciati">
+                <constraints>
+                  <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Giochi rilasciati: [numero]"/>
+                </properties>
+              </component>
+              <component id="a351" class="javax.swing.JLabel" binding="TestoGiocoPiuVenduto">
+                <constraints>
+                  <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Gioco piú venduto [Gioco]"/>
+                </properties>
+              </component>
+              <scrollpane id="4a359">
+                <constraints>
+                  <grid row="9" column="3" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="74942" class="javax.swing.JTextArea" binding="DescrizioneSviluppaotreProfilo">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <lineWrap value="true"/>
+                      <rows value="3"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="49fc0" binding="Carrello" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -742,6 +767,22 @@
           </grid>
         </children>
       </tabbedpane>
+      <hspacer id="10bf0">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="5d7d6" class="javax.swing.JButton" binding="PulsanteLogout">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="2" height="2"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font size="10"/>
+          <text value="Logout"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>
