@@ -64,7 +64,7 @@ public class HomeUtente {
     private JToolBar ToolBarAmico;
     private JLabel TestoProfilo;
     private JLabel TestoCommunity;
-    private JPanel Carrello;C
+    private JPanel Carrello;
     private JList ListaCatalogo;
     private JButton PulsanteAcquista;
     private JComboBox PiattaformaFiltroCatalogo;
