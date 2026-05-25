@@ -18,6 +18,22 @@ public class HomeSviluppatore {
     private JTextField barraRicerca;
     private JPanel libreria;
     private JPanel pannelloDiControllo;
+    private JTabbedPane aggiungiGioco;
+    private JPanel addTitolo;
+    private JPanel addPromozione;
+    private JPanel addPiattaforma;
+    private JLabel aggTitolo;
+    private JLabel aggCategoria;
+    private JTextField textTitolo;
+    private JLabel aggPegi;
+    private JTextField textCategoria;
+    private JTextField textPegi;
+    private JButton aggiungiGiocoButton;
+    private JButton button1;
+    private JTextField textField1;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
 
 
     public HomeSviluppatore() {
