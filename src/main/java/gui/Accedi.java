@@ -28,6 +28,13 @@ public class Accedi {
 
 
 
+        pulsanteAccedi.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
         pulsanteRegistrati.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

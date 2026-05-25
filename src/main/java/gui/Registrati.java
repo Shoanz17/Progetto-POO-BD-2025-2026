@@ -14,7 +14,7 @@ public class Registrati {
     private JPasswordField passwordTextBox;
     private JButton registratiButton;
     private JTextField emailTextBox;
-    private JTextField dataNascitaTextBox;
+    private JFormattedTextField dataNascitaTextBox;
     private JComboBox genereComboBox;
     private JLabel scegliRegistrazioneLabel;
     private JLabel nomeLabel;
@@ -43,6 +43,21 @@ public class Registrati {
         descrizioneTextArea.setVisible(false);
         descrizioneScrollPane.setVisible(false);
         descrizioneLabel.setVisible(false);
+
+        //codice per formattare la textbox di data di nascita
+        try {
+            // Il carattere '#' accetta solo numeri, le barre vengono messe da sole
+            javax.swing.text.MaskFormatter mascheraData = new javax.swing.text.MaskFormatter("##/##/####");
+
+            // Mostra i trattini bassi dove l'utente deve ancora digitare
+            mascheraData.setPlaceholderCharacter('_');
+
+            // Applica la maschera alla tua textbox formattata
+            mascheraData.install(dataNascitaTextBox);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
 
         utenteRadioButton.addActionListener(new ActionListener() {
             @Override
@@ -93,6 +108,13 @@ public class Registrati {
             }
         });
 
+        registratiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
         //torno al login
         indietroButton.addActionListener(new ActionListener() {
             @Override
@@ -103,8 +125,11 @@ public class Registrati {
             }
         });
 
+
         registratiFrame.pack();
         registratiFrame.setLocationRelativeTo(null);
         registratiFrame.setVisible(true);
+
+
     }
 }
