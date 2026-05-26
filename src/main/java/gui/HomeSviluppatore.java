@@ -4,11 +4,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
     private JTabbedPane finestre;
-    private JList listaTitoli;
+    private JList<String> listaTitoli; // Resa generica <String> per evitare l'errore del cast!
     private JPanel pannelloDettagli;
     private JLabel Titolo;
     private JLabel Genere;
@@ -17,45 +16,35 @@ public class HomeSviluppatore {
     private JLabel unitàVendute;
     private JTextField barraRicerca;
     private JPanel libreria;
-    private JPanel pannelloDiControllo;
-    private JTabbedPane aggiungiGioco;
-    private JPanel addTitolo;
-    private JPanel addPromozione;
-    private JPanel addPiattaforma;
-    private JLabel aggTitolo;
-    private JLabel aggCategoria;
-    private JTextField textTitolo;
-    private JLabel aggPegi;
-    private JTextField textCategoria;
-    private JTextField textPegi;
-    private JButton aggiungiGiocoButton;
-    private JButton button1;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
 
+
+    private JPanel pannelloDiControllo;
+    private JTabbedPane finestrePannello;
+    private JLabel aggCategoria;
+    private JTextField textPegi;
+    private JLabel aggPegi;
+    private JButton aggiungiGiocoButton;
+    private JComboBox comboBox1;
 
     public HomeSviluppatore() {
         listaTitoli.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                //questo if serve a evitare che Java esegua il codice due volte
+                // questo if serve a evitare che Java esegua il codice due volte
                 if (!e.getValueIsAdjusting()) {
 
-                    //prendiamo il gioco cliccato
-                    String giocoSelezionato = (String) listaTitoli.getSelectedValue();
+                    // prendiamo il gioco cliccato
+                    String giocoSelezionato = listaTitoli.getSelectedValue();
 
                     if (giocoSelezionato != null) {
-                        //aggiorniamo le Label in tempo reale
-                        Titolo.setText(Titolo.getText() + giocoSelezionato);
+                        // aggiorniamo le Label in tempo reale con il testo pulito
+                        Titolo.setText("Titolo: " + giocoSelezionato);
                         Genere.setText("Genere: Azione");
-                        Piattaforma.setText( Piattaforma.getText());
+                        Piattaforma.setText("Piattaforma: PC / Console");
                     }
                 }
             }
         });
-
     }
 
     public static void main(String[] args) {

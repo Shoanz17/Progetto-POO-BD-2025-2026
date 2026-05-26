@@ -1,7 +1,7 @@
-package dao;
+//package dao;
 
-public interface EsempioDAO {
-    	public EsempioImplementazionePostgresDAO();
+//public interface EsempioDAO {
+    ///	public EsempioImplementazionePostgresDAO();
 
 
-}
+//}
