@@ -1,6 +1,5 @@
 package gui;
 
-import javax.naming.directory.ModificationItem;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -150,6 +149,14 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ModificaInformazioni modificaInformazioni = new ModificaInformazioni(homeUtenteFrame);
+            }
+        });
+
+        //pulsante aggiungi fondi
+        pulsanteAggiungiSaldo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AggiungiFondi aggiungiFondi = new AggiungiFondi(homeUtenteFrame);
             }
         });
     }
