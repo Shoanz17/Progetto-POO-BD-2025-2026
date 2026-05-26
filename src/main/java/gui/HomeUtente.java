@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HomeUtente {
-
     private JPanel homeUtentePanel;
     private JTabbedPane tabbedPane;
     private JPanel catalogo;
@@ -108,15 +107,30 @@ public class HomeUtente {
     public static JFrame homeUtenteFrame;
 
     public HomeUtente() {
-//        homeUtente = new JFrame("homeUtente");
-//        homeUtente.setContentPane(new homeUtente().homeUtente);
-//        homeUtente.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        homeUtente.pack();
-//        homeUtente.setVisible(true);
+        svuotaDettagliLibreria();
+        configuraTabellaCarrello();
 
-        SvuotaDettagliLibreria();
+        associaListenerCopiaKey();
+        associaListenerLogout();
+        associaListenerRecensione();
+        associaListenerModificaInformazioni();
+        associaListenerAggiungiSaldo();
+        associaListenerRimuoviCarrello();
+        associaListenerAcquista();
+    }
 
-        //copia key
+    private void configuraTabellaCarrello() {
+        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
+        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabellaGiochiCarrello.setModel(tabellaCarrello);
+    }
+
+    private void associaListenerCopiaKey() {
         pulsanteCopiaKey.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,58 +140,50 @@ public class HomeUtente {
                 java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
             }
         });
+    }
 
-        //logout
+    private void associaListenerLogout() {
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                int risposta = JOptionPane.showConfirmDialog(homeUtenteFrame,"Vuoi uscire?","Logout",JOptionPane.YES_NO_OPTION);
-                if(risposta == JOptionPane.YES_OPTION){
+                int risposta = JOptionPane.showConfirmDialog(homeUtenteFrame, "Vuoi uscire?", "Logout", JOptionPane.YES_NO_OPTION);
+                if (risposta == JOptionPane.YES_OPTION) {
                     homeUtenteFrame.dispose();
-                    //new gui.Accedi.Accedi().setVisible(true); Voglio aprire form Accedi.
+                    // new gui.Accedi.Accedi().setVisible(true);
                 }
                 //else non fa nulla
             }
         });
+    }
 
-        //Lascia recensione
+    private void associaListenerRecensione() {
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Recensione recensione = new Recensione(homeUtenteFrame);
             }
         });
+    }
 
-        //pulsante Modifica informazioni
+    private void associaListenerModificaInformazioni() {
         pulsanteModificaInformazioni.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ModificaInformazioni modificaInformazioni = new ModificaInformazioni(homeUtenteFrame);
             }
         });
+    }
 
-        //pulsante aggiungi fondi
+    private void associaListenerAggiungiSaldo() {
         pulsanteAggiungiSaldo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AggiungiFondi aggiungiFondi = new AggiungiFondi(homeUtenteFrame);
             }
         });
+    }
 
-        //Tabella del carrello
-
-        String[] colonne = {"Titolo Gioco","Piattaforma","Prezzo"};
-
-        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        tabellaGiochiCarrello.setModel(tabellaCarrello);
-
+    private void associaListenerRimuoviCarrello() {
         pulsanteRimuoviCarrello.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -185,33 +191,34 @@ public class HomeUtente {
 
                 if (rigaSelezionata != -1) {
                     DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-
                     tabellaCarrello.removeRow(rigaSelezionata);
-
                     ricalcolaTotaleCarrello();
                 } else {
-                    javax.swing.JOptionPane.showMessageDialog(homeUtenteFrame, "Seleziona un gioco per rimuoverlo", "Attenzione", javax.swing.JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Seleziona prima un gioco dalla tabella per rimuoverlo!", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+    }
 
+    private void associaListenerAcquista() {
         pulsanteAcquista.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
                 double saldoUtente = 0.0; //Aggiunto per testing
                 double calcoloTotale = ricalcolaTotaleCarrello();
-                if (tabellaCarrello.getRowCount() == 0){
+
+                if (tabellaCarrello.getRowCount() == 0) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Vuoi acquistare il nulla?", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
-                else if (calcoloTotale > saldoUtente){  //saldoUtente va cambiata con la variabile di saldo giusta
-                    JOptionPane.showMessageDialog(homeUtenteFrame,"Saldo insufficiente","Errore", JOptionPane.ERROR_MESSAGE);
+                else if (calcoloTotale > saldoUtente) {  //saldoUtente va cambiata con la variabile di saldo giusta
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Saldo insufficiente", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
-                else{
+                else {
                     saldoUtente -= calcoloTotale;
                     testoSaldo.setText(String.format("%.2f €", saldoUtente));
 
-                    DefaultTableModel tabella = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-                    tabella.setRowCount(0);
+                    tabellaCarrello.setRowCount(0);
                     testoTotaleCarrello.setText("0.00 €");
 
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato, troverai i tuoi giochi con relative Key nella Libreria", "Successo", JOptionPane.INFORMATION_MESSAGE);
@@ -234,7 +241,7 @@ public class HomeUtente {
     }
 
     //Svuota i dati della Libreria
-    void SvuotaDettagliLibreria() {
+    void svuotaDettagliLibreria() {
         edizioneLibreria.setText("-");
         piattaformaDiGiocoLibreria.setText("-");
         prezzoAcquistoLibreria.setText("-");
