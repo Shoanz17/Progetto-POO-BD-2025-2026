@@ -6,11 +6,17 @@ import java.awt.event.ActionListener;
 
 public class ModificaInformazioni {
     private JPanel modificaInformazioniPanel;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JComboBox comboBox1;
-    private JButton modificaInformazioniButton;
-    private JPasswordField passwordField1;
+    private JTextField textFieldNome;
+    private JTextField textFieldEmail;
+    private JComboBox comboBoxGenere;
+    private JButton pulsanteModificaInformazioni;
+    private JPasswordField passwordFieldPassword;
+    private JTextField textFieldDataDiNascita;
+    private JLabel testoNome;
+    private JLabel testoEmail;
+    private JLabel testoGenere;
+    private JLabel testoPassword;
+    private JLabel testoDataDiNascita;
 
     public JFrame modificaInformazioniFrame;
 
@@ -25,7 +31,7 @@ public class ModificaInformazioni {
         modificaInformazioniFrame.setVisible(true);
 
         //Pulsante Modifica informazioni
-        modificaInformazioniButton.addActionListener(new ActionListener() {
+        pulsanteModificaInformazioni.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
