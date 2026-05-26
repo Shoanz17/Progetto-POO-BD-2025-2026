@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -104,19 +106,25 @@ public class HomeUtente {
     private JLabel testoTotaleCarrello;
     private JButton pulsanteAcquista;
 
-    public static JFrame homeUtenteFrame;
+    public JFrame homeUtenteFrame;
+    private Controller controller;
 
-    public HomeUtente() {
+    public HomeUtente(Controller controller, JFrame accediGUI) {
+        this.controller = controller;
+
         svuotaDettagliLibreria();
+        configuraInterfaccia();
         configuraTabellaCarrello();
 
         associaListenerCopiaKey();
-        associaListenerLogout();
+        associaListenerLogout(accediGUI);
         associaListenerRecensione();
         associaListenerModificaInformazioni();
         associaListenerAggiungiSaldo();
         associaListenerRimuoviCarrello();
         associaListenerAcquista();
+
+        mostraForm();
     }
 
     private void configuraTabellaCarrello() {
@@ -142,14 +150,14 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerLogout() {
+    private void associaListenerLogout(JFrame accediGUI) {
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int risposta = JOptionPane.showConfirmDialog(homeUtenteFrame, "Vuoi uscire?", "Logout", JOptionPane.YES_NO_OPTION);
                 if (risposta == JOptionPane.YES_OPTION) {
                     homeUtenteFrame.dispose();
-                    // new gui.Accedi.Accedi().setVisible(true);
+                    accediGUI.setVisible(true);
                 }
                 //else non fa nulla
             }
@@ -258,11 +266,15 @@ public class HomeUtente {
         pulsanteRecensione.setEnabled(false);
     }
 
-    public static void main(String[] args) {
-        homeUtenteFrame = new JFrame("homeUtente");
-        homeUtenteFrame.setContentPane(new HomeUtente().homeUtentePanel);
+    private void configuraInterfaccia() {
+        homeUtenteFrame = new JFrame("Home Utente");
+        homeUtenteFrame.setContentPane(homeUtentePanel);
         homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void mostraForm() {
         homeUtenteFrame.pack();
+        homeUtenteFrame.setLocationRelativeTo(null);
         homeUtenteFrame.setVisible(true);
     }
 }
