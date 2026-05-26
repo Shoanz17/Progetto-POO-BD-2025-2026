@@ -1,5 +1,6 @@
 package gui;
 
+import javax.naming.directory.ModificationItem;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -143,6 +144,14 @@ public class HomeUtente {
                 Recensione recensione = new Recensione(homeUtenteFrame);
             }
         });
+
+        //pulsante Modifica informazioni
+        pulsanteModificaInformazioni.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ModificaInformazioni modificaInformazioni = new ModificaInformazioni(homeUtenteFrame);
+            }
+        });
     }
 
     //Svuota i dati della Libreria
@@ -160,7 +169,7 @@ public class HomeUtente {
 
         // Disabilita i pulsanti per evitare click nulli
         pulsanteCopiaKey.setEnabled(false);
-        pulsanteRecensione.setEnabled(true);
+        pulsanteRecensione.setEnabled(false);
     }
 
     public static void main(String[] args) {
