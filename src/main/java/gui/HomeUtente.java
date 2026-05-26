@@ -110,6 +110,7 @@ public class HomeUtente {
 //        homeUtente.setVisible(true);
 
         SvuotaDettagliLibreria();
+
         //copia key
         pulsanteCopiaKey.addActionListener(new ActionListener() {
             @Override
@@ -120,16 +121,22 @@ public class HomeUtente {
                 java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
             }
         });
+
         //logout
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                //JOptionPane.showConfirmDialog(null,"vuoi uscire?"); Da aggiungere l'if sulla selezione.
-                //new gui.Accedi.Accedi().setVisible(true); Voglio aprire form Accedi.
-                homeUtenteFrame.dispose();
+                int risposta = JOptionPane.showConfirmDialog(homeUtenteFrame,"Vuoi uscire?","Logout",JOptionPane.YES_NO_OPTION);
+                if(risposta == JOptionPane.YES_OPTION){
+                    homeUtenteFrame.dispose();
+                    //new gui.Accedi.Accedi().setVisible(true); Voglio aprire form Accedi.
+                }
+                //else non fa nulla
             }
         });
+
+        //Lascia recensione
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
