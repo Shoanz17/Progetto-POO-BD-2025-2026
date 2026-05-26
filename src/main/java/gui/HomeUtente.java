@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -67,7 +68,7 @@ public class HomeUtente {
     private JLabel testoCommunity;
     private JPanel carrello;
     private JList listaCatalogo;
-    private JButton pulsanteAcquista;
+    private JButton pulsanteAggiungiAlCarrello;
     private JComboBox piattaformaFiltroCatalogo;
     private JSlider sliderPrezzoCatalogo;
     private JComboBox genereFiltroCatalogo;
@@ -99,6 +100,10 @@ public class HomeUtente {
     private JTextArea descrizioneSviluppaotreProfilo;
     private JButton pulsanteRimuoviAmico;
     private JButton pulsanteLogout;
+    private JTable tabellaGiochiCarrello;
+    private JButton pulsanteRimuoviCarrello;
+    private JLabel testoTotaleCarrello;
+    private JButton pulsanteAcquista;
 
     public static JFrame homeUtenteFrame;
 
@@ -159,6 +164,73 @@ public class HomeUtente {
                 AggiungiFondi aggiungiFondi = new AggiungiFondi(homeUtenteFrame);
             }
         });
+
+        //Tabella del carrello
+
+        String[] colonne = {"Titolo Gioco","Piattaforma","Prezzo"};
+
+        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        tabellaGiochiCarrello.setModel(tabellaCarrello);
+
+        pulsanteRimuoviCarrello.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaGiochiCarrello.getSelectedRow();
+
+                if (rigaSelezionata != -1) {
+                    DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
+
+                    tabellaCarrello.removeRow(rigaSelezionata);
+
+                    ricalcolaTotaleCarrello();
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(homeUtenteFrame, "Seleziona un gioco per rimuoverlo", "Attenzione", javax.swing.JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        pulsanteAcquista.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double saldoUtente = 0.0; //Aggiunto per testing
+                double calcoloTotale = ricalcolaTotaleCarrello();
+                if (tabellaCarrello.getRowCount() == 0){
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Vuoi acquistare il nulla?", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                }
+                else if (calcoloTotale > saldoUtente){  //saldoUtente va cambiata con la variabile di saldo giusta
+                    JOptionPane.showMessageDialog(homeUtenteFrame,"Saldo insufficiente","Errore", JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    saldoUtente -= calcoloTotale;
+                    testoSaldo.setText(String.format("%.2f €", saldoUtente));
+
+                    DefaultTableModel tabella = (DefaultTableModel) tabellaGiochiCarrello.getModel();
+                    tabella.setRowCount(0);
+                    testoTotaleCarrello.setText("0.00 €");
+
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato, troverai i tuoi giochi con relative Key nella Libreria", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private double ricalcolaTotaleCarrello() {
+        double totale = 0.0;
+        DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
+
+        for (int i = 0; i < tabellaCarrello.getRowCount(); i++) {
+            double prezzo = (Double) tabellaCarrello.getValueAt(i, 2);
+            totale += prezzo;
+        }
+        testoTotaleCarrello.setText(String.format("%.2f €", totale));
+
+        return totale;
     }
 
     //Svuota i dati della Libreria
