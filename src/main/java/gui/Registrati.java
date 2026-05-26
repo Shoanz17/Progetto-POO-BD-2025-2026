@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.Account;
 import model.CampoNonValidoException;
 import model.GenereEnum;
 
@@ -142,12 +143,10 @@ public class Registrati {
         registratiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                String nome = nomeTextBox.getText();
-                String password = new String(passwordTextBox.getPassword());
-
-
                 try {
+                    String nome = nomeTextBox.getText();
+                    String password = new String(passwordTextBox.getPassword());
+
                     if(utenteRadioButton.isSelected()) {
                         //caso utente
                         String email = emailTextBox.getText();

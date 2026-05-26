@@ -30,6 +30,8 @@ public class Controller {
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
+        Account.verificaFormatoNome(nome);
+        Account.verificaFormatoPassword(password);
 
         if (genere == null || genere.trim().isEmpty()) throw new CampoNonValidoException("Seleziona un genere valido dalla lista!");
 
