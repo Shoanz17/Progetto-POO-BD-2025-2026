@@ -150,6 +150,7 @@
         </constraints>
         <properties>
           <font size="18"/>
+          <toolTipText value=""/>
         </properties>
       </component>
       <component id="ed19b" class="javax.swing.JPasswordField" binding="passwordTextBox">

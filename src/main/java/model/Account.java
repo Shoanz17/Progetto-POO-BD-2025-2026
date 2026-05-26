@@ -29,23 +29,15 @@ public abstract class Account {
         //localdate mette esattamente la data in cui viene creato l'oggetto
     }
 
-    //get e set
-    public String getNome() {return nome;}
-    public void setNome(String nome) throws CampoNonValidoException
-    {
+    //metodi
+    public static void verificaFormatoNome(String nome) throws CampoNonValidoException{
         if(nome == null || nome.length()>24)
-        { throw new CampoNonValidoException("il nome che hai scelto \""+ nome +"\" è troppo lungo");}
+            throw new CampoNonValidoException("il nome che hai scelto \""+ nome +"\" è troppo lungo");
         if(nome.trim().isEmpty())
-        { throw new CampoNonValidoException("il nome che hai scelto è vuoto ");}
-        this.nome = nome;
-    }//nome deve essere grande quanto il var char in db
-
-    public int getId() {return id;}
-
-    public String getPassword() {
-        return password;
+            throw new CampoNonValidoException("il nome che hai scelto è vuoto ");
     }
-    public void setPassword(String password) throws CampoNonValidoException {
+
+    public static void verificaFormatoPassword(String password) throws CampoNonValidoException{
         boolean haMaiuscola = false;
         boolean haNumero = false;
         boolean haSpeciale = false;
@@ -66,7 +58,23 @@ public abstract class Account {
         if(!haMaiuscola||!haNumero||!haSpeciale)
         {throw new CampoNonValidoException
                 ("La password deve contenere almeno una maiuscola," +  " un numero e un carattere speciale.");}
+    }
 
+    //get e set
+    public String getNome() {return nome;}
+    public void setNome(String nome) throws CampoNonValidoException
+    {
+        verificaFormatoNome(nome);
+        this.nome = nome;
+    }//nome deve essere grande quanto il var char in db
+
+    public int getId() {return id;}
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) throws CampoNonValidoException {
+        verificaFormatoPassword(password);
         this.password = password;
     }
 

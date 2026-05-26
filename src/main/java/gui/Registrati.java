@@ -1,5 +1,10 @@
 package gui;
 
+import controller.Controller;
+import model.Account;
+import model.CampoNonValidoException;
+import model.GenereEnum;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,8 +32,33 @@ public class Registrati {
     private JLabel descrizioneLabel;
 
     public JFrame registratiFrame;
+    private Controller controller;
 
-    public Registrati(JFrame accediGUI) {
+    public Registrati(Controller controller, JFrame accediGUI) {
+        this.controller = controller;
+        configuraInterfaccia();
+
+        associaListenerUtenteRadioButton();
+        associaListenerSviluppatoreRadioButton();
+        associaListenerRegistratiButton(controller, accediGUI);
+        //torno al login
+        associaListenerIndietroButton(accediGUI);
+
+        mostraForm();
+
+    }
+
+    private void configuraInterfaccia(){
+        //riempio il combobox con i dati dall'enumeration (cercato su internet)
+        //creo un modello per la combobox che accetta stringhe
+        DefaultComboBoxModel<String> modelGenere = new DefaultComboBoxModel<>();
+
+        for (GenereEnum genere : GenereEnum.values()) {
+            modelGenere.addElement(genere.name());
+        }
+        //collego il modello alla combobox
+        genereComboBox.setModel(modelGenere);
+
         //costruisco il registratiFrame
         registratiFrame = new JFrame("Registrati");
         registratiFrame.setContentPane(registratiPanel);
@@ -43,8 +73,9 @@ public class Registrati {
         descrizioneTextArea.setVisible(false);
         descrizioneScrollPane.setVisible(false);
         descrizioneLabel.setVisible(false);
+        genereComboBox.setSelectedIndex(-1); //per mettere lo spazio vuoto nel combobox
 
-        //codice per formattare la textbox di data di nascita
+        //codice per formattare la textbox di data di nascita (cercato su internet)
         try {
             // Il carattere '#' accetta solo numeri, le barre vengono messe da sole
             javax.swing.text.MaskFormatter mascheraData = new javax.swing.text.MaskFormatter("##/##/####");
@@ -57,32 +88,34 @@ public class Registrati {
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
+    }
 
-
+    private void associaListenerUtenteRadioButton(){
         utenteRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //nascondi sviluppatore
                 descrizioneTextArea.setVisible(false);
+                descrizioneTextArea.setText("");
                 descrizioneScrollPane.setVisible(false);
                 descrizioneLabel.setVisible(false);
 
                 //fai riapparire l'utente
                 emailLabel.setVisible(true);
                 emailTextBox.setVisible(true);
-                emailTextBox.setText("");
 
                 genereLabel.setVisible(true);
                 genereComboBox.setVisible(true);
                 dataNascitaLabel.setVisible(true);
                 dataNascitaTextBox.setVisible(true);
+                genereComboBox.setSelectedIndex(-1);
 
-                //aggiorna grandezza finestra
-                registratiFrame.revalidate();
-                registratiFrame.repaint();
-                registratiFrame.pack();
+                aggiornaGeometriaForm();
             }
         });
+    }
+
+    private void associaListenerSviluppatoreRadioButton(){
         sviluppatoreRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,21 +134,48 @@ public class Registrati {
                 descrizioneScrollPane.setVisible(true);
                 descrizioneLabel.setVisible(true);
 
-                //aggiorna grandezza finestra
-                registratiFrame.revalidate();
-                registratiFrame.repaint();
-                registratiFrame.pack();
+                aggiornaGeometriaForm();
             }
         });
+    }
 
+    private void associaListenerRegistratiButton(Controller controller, JFrame accediGUI){
         registratiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    String nome = nomeTextBox.getText();
+                    String password = new String(passwordTextBox.getPassword());
 
+                    if(utenteRadioButton.isSelected()) {
+                        //caso utente
+                        String email = emailTextBox.getText();
+                        String genere = (String) genereComboBox.getSelectedItem();
+                        String dataNascita = dataNascitaTextBox.getText();
+
+                        controller.registraUtente(nome, password, genere, email, dataNascita);
+
+                    } else {
+                        String descrizione = descrizioneTextArea.getText();
+
+                        controller.registraSviluppatore(nome, password, descrizione);
+
+                    }
+
+                    JOptionPane.showMessageDialog(registratiFrame, "Registrato con successo");
+                    accediGUI.setVisible(true);
+                    registratiFrame.dispose();
+
+                } catch (CampoNonValidoException ex) {
+
+                    JOptionPane.showMessageDialog(registratiFrame, ex.getMessage());
+
+                }
             }
         });
+    }
 
-        //torno al login
+    private void associaListenerIndietroButton(JFrame accediGUI){
         indietroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,12 +184,17 @@ public class Registrati {
                 registratiFrame.dispose();
             }
         });
+    }
 
-
+    private void mostraForm(){
         registratiFrame.pack();
         registratiFrame.setLocationRelativeTo(null);
         registratiFrame.setVisible(true);
+    }
 
-
+    private void aggiornaGeometriaForm(){
+        registratiFrame.revalidate();
+        registratiFrame.repaint();
+        registratiFrame.pack();
     }
 }
