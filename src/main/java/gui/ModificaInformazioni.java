@@ -22,14 +22,14 @@ public class ModificaInformazioni {
 
     public ModificaInformazioni(JFrame homeUtente) {
 
-        modificaInformazioniFrame = new JFrame("Modifica le tue informazioni");
-        modificaInformazioniFrame.setContentPane(modificaInformazioniPanel);
-        modificaInformazioniFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        configuraInterfaccia();
+        mostraForm(homeUtente);
 
-        modificaInformazioniFrame.pack();
-        modificaInformazioniFrame.setLocationRelativeTo(homeUtente);
-        modificaInformazioniFrame.setVisible(true);
+        associaListenerModificaInformazioni();
 
+    }
+
+    private void associaListenerModificaInformazioni(){
         //Pulsante Modifica informazioni
         pulsanteModificaInformazioni.addActionListener(new ActionListener() {
             @Override
@@ -38,5 +38,17 @@ public class ModificaInformazioni {
                 modificaInformazioniFrame.dispose();
             }
         });
+    }
+
+    private void configuraInterfaccia() {
+        modificaInformazioniFrame = new JFrame("Modifica le tue informazioni");
+        modificaInformazioniFrame.setContentPane(modificaInformazioniPanel);
+        modificaInformazioniFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    private void mostraForm(JFrame homeUtente) {
+        modificaInformazioniFrame.pack();
+        modificaInformazioniFrame.setLocationRelativeTo(homeUtente);
+        modificaInformazioniFrame.setVisible(true);
     }
 }

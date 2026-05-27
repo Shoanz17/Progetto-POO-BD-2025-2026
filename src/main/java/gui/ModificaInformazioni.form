@@ -13,6 +13,7 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font size="18"/>
           <text value="Nome:"/>
         </properties>
       </component>
@@ -21,6 +22,8 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="true"/>
+          <font size="18"/>
           <text value="Email"/>
         </properties>
       </component>
@@ -29,6 +32,7 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font size="18"/>
           <text value="Genere"/>
         </properties>
       </component>
@@ -37,6 +41,7 @@
           <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font size="18"/>
           <text value="Modifica informazioni"/>
         </properties>
       </component>
@@ -45,6 +50,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font size="18"/>
           <text value="Password"/>
         </properties>
       </component>
@@ -53,6 +59,7 @@
           <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font size="18"/>
           <text value="Data di nascita"/>
         </properties>
       </component>
@@ -62,13 +69,17 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font size="18"/>
+        </properties>
       </component>
       <component id="7ccf4" class="javax.swing.JComboBox" binding="comboBoxGenere">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <font size="18"/>
+        </properties>
       </component>
       <component id="c4ef" class="javax.swing.JTextField" binding="textFieldEmail">
         <constraints>
@@ -76,7 +87,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font size="18"/>
+        </properties>
       </component>
       <component id="d4cb9" class="javax.swing.JPasswordField" binding="passwordFieldPassword">
         <constraints>
@@ -84,7 +97,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font size="18"/>
+        </properties>
       </component>
       <component id="25ed5" class="javax.swing.JTextField" binding="textFieldNome">
         <constraints>
@@ -92,7 +107,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font size="18"/>
+        </properties>
       </component>
     </children>
   </grid>

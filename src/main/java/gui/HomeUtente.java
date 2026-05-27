@@ -105,6 +105,7 @@ public class HomeUtente {
     private JButton pulsanteRimuoviCarrello;
     private JLabel testoTotaleCarrello;
     private JButton pulsanteAcquista;
+    private JLabel testoMediaVoti;
 
     public JFrame homeUtenteFrame;
     private Controller controller;
