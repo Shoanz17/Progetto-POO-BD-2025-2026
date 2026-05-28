@@ -323,11 +323,11 @@ public class HomeUtente {
     }
 
     private void configuraInterfacciaProfilo() {
-        testoNome.setText(utenteLoggato.getNome());
-        testoGenere.setText(String.valueOf(utenteLoggato.getGenere()));
-        testoEmail.setText(utenteLoggato.getEmail());
-        testoDataDiNascita.setText(String.valueOf(utenteLoggato.getDataNascita()));
-        testoSaldo.setText(String.format("%d €",utenteLoggato.getSaldo()));
+        testoNome.setText("Nome: "+utenteLoggato.getNome());
+        testoGenere.setText("Genere: "+String.valueOf(utenteLoggato.getGenere()));
+        testoEmail.setText("Email: "+utenteLoggato.getEmail());
+        testoDataDiNascita.setText("Data di nascita: "+String.valueOf(utenteLoggato.getDataNascita()));
+        testoSaldo.setText(String.format("Saldo: %d €",utenteLoggato.getSaldo()));
         testoDataCreazioneAccount.setText("Data di creazione dell'account:"+String.valueOf(utenteLoggato.getDataCreazione()));
         testoBannato.setVisible(utenteLoggato.isBannato());
         testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " +String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
