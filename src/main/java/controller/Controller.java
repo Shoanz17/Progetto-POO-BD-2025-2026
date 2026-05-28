@@ -22,10 +22,13 @@ public class Controller {
 
     private void creaDatiFittizi() throws CampoNonValidoException{
         Utente utente = new Utente("Marco", "Password1!", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
+        Utente utente1 = new Utente("Marcoss", "Password1!weq", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
+
 
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
 
         listaAccountLoggati.add(utente);
+        listaAccountLoggati.add(utente1);
         listaAccountLoggati.add(sviluppatore);
     }
 
@@ -78,6 +81,36 @@ public class Controller {
 
         throw new CampoNonValidoException("Nome o password errate");
 
+    }
+
+    public ArrayList<Utente> getListaUtentiLoggati() {
+        ArrayList<Utente> listaUtentiLoggati = new ArrayList<>();
+        for(Account u : listaAccountLoggati){
+            if (u instanceof Utente){
+                listaUtentiLoggati.add((Utente)u);
+            }
+        }
+        return listaUtentiLoggati;
+    }
+
+    public ArrayList<Sviluppatore> getListaSviluppatoriLoggati(){
+        ArrayList<Sviluppatore> listaSviluppatoriLoggati = new ArrayList<>();
+        for(Account u : listaAccountLoggati){
+            if (u instanceof Sviluppatore){
+                listaSviluppatoriLoggati.add((Sviluppatore)u);
+            }
+        }
+        return listaSviluppatoriLoggati;
+    }
+
+    public int getNumeroRecensioniUtente(Utente utenteLoggato){
+        int count = 0;
+        for (Fattura fattura : utenteLoggato.getGiochiAcquistati()){
+            if (fattura.getRecensione() != null){
+                count++;
+            }
+        }
+        return count;
     }
 
 }

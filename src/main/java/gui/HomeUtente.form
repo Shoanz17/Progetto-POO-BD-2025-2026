@@ -546,7 +546,7 @@
                   <text value="Modifica Informazioni"/>
                 </properties>
               </component>
-              <component id="6494c" class="javax.swing.JLabel" binding="dataCreazioneAccount">
+              <component id="6494c" class="javax.swing.JLabel" binding="testoDataCreazioneAccount">
                 <constraints>
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -564,12 +564,12 @@
                   <enabled value="true"/>
                   <font size="18" style="1"/>
                   <foreground color="-2549216"/>
-                  <text value="[Bannato]"/>
+                  <text value="Bannato"/>
                 </properties>
               </component>
               <component id="9b7c6" class="javax.swing.JLabel" binding="testoNome">
                 <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="18"/>
@@ -578,7 +578,7 @@
               </component>
               <component id="17bf1" class="javax.swing.JLabel" binding="testoGenere">
                 <constraints>
-                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="18"/>
@@ -587,7 +587,7 @@
               </component>
               <component id="7ba0e" class="javax.swing.JLabel" binding="testoEmail">
                 <constraints>
-                  <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="18"/>
@@ -596,7 +596,7 @@
               </component>
               <component id="a386b" class="javax.swing.JLabel" binding="testoDataDiNascita">
                 <constraints>
-                  <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="18"/>
@@ -655,7 +655,7 @@
               </component>
               <component id="48082" class="javax.swing.JLabel" binding="testoNumeroRecensioniRilasciate">
                 <constraints>
-                  <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="18"/>
@@ -664,7 +664,7 @@
               </component>
               <component id="bf348" class="javax.swing.JLabel" binding="testoNumeroGiochiAcquistati">
                 <constraints>
-                  <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font size="18"/>

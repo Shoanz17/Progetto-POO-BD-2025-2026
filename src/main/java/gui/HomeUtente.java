@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.Sviluppatore;
 import model.Utente;
 
 import javax.swing.*;
@@ -47,7 +48,7 @@ public class HomeUtente {
     private JCheckBox checkBoxSeguiti;
     private JButton pulsanteSegui;
     private JButton pulsanteAggiungiAmico;
-    private JLabel dataCreazioneAccount;
+    private JLabel testoDataCreazioneAccount;
     private JLabel testoBannato;
     private JLabel testoNome;
     private JLabel testoGenere;
@@ -274,6 +275,7 @@ public class HomeUtente {
         homeUtenteFrame = new JFrame("Home Utente");
         homeUtenteFrame.setContentPane(homeUtentePanel);
         homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        configuraInterfacciaProfilo();
     }
 
     private void mostraForm() {
@@ -281,4 +283,35 @@ public class HomeUtente {
         homeUtenteFrame.setLocationRelativeTo(null);
         homeUtenteFrame.setVisible(true);
     }
+
+    private void configuraInterfacciaProfilo() {
+        testoNome.setText(utenteLoggato.getNome());
+        testoGenere.setText(String.valueOf(utenteLoggato.getGenere()));
+        testoEmail.setText(utenteLoggato.getEmail());
+        testoDataDiNascita.setText(String.valueOf(utenteLoggato.getDataNascita()));
+        testoSaldo.setText(String.format("%d €",utenteLoggato.getSaldo()));
+        testoDataCreazioneAccount.setText("Data di creazione dell'account:"+String.valueOf(utenteLoggato.getDataCreazione()));
+        testoBannato.setVisible(utenteLoggato.isBannato());
+        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " +String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
+        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" +String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+
+        DefaultListModel<Utente> modelloListaAmici = new DefaultListModel<>();
+        modelloListaAmici.addAll(controller.getListaUtentiLoggati());
+        modelloListaAmici.removeElement(utenteLoggato);
+        listaAmiciUtente.setModel(modelloListaAmici);
+
+        DefaultListModel<Sviluppatore> modelloListaSviluppatori = new DefaultListModel<>();
+        modelloListaSviluppatori.addAll(controller.getListaSviluppatoriLoggati());
+        listaSviluppatori.setModel(modelloListaSviluppatori);
+
+        testoGiochiRilasciati.setText("Giochi Rilasciati: -");
+        testoGiocoPiuVenduto.setText("Gioco piú venduto: -");
+
+        testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: -");
+        testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: -");
+        testoGenereAmico.setText("Genere: -");
+        testoBannatoAmico.setText("Bannato: -");
+
+    }
+
 }
