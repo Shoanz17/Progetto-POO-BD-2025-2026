@@ -132,6 +132,7 @@ public class HomeUtente {
         associaListenerAcquista();
 
         associaListenerListaSviluppatori();
+        associaListenerListaAmici();
 
         mostraForm();
 
@@ -252,8 +253,26 @@ public class HomeUtente {
 
                 if (sviluppatoreSelezionato != null) {
                     descrizioneSviluppatoreProfilo.setText(sviluppatoreSelezionato.getDescrizione());
-                    testoGiochiRilasciati.setText(String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
+                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: "+String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
                     //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
+                }
+            }
+        });
+    }
+
+    private void associaListenerListaAmici(){
+        listaAmiciUtente.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Utente utenteSelezionato = (Utente) listaAmiciUtente.getSelectedValue();
+
+                if (utenteSelezionato != null){
+                    testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: "+String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
+                    testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: "+String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
+                    testoGenereAmico.setText("Genere: "+String.valueOf(utenteSelezionato.getGenere()));
+                    if (utenteSelezionato.isBannato() == true){
+                        testoBannatoAmico.setText("Bannato: Si");
+                    } else testoBannatoAmico.setText("Bannato: No");
                 }
             }
         });
