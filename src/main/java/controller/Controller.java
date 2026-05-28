@@ -26,10 +26,12 @@ public class Controller {
 
 
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
+        Sviluppatore sviluppatore1 = new Sviluppatore("Nintendo", "NintendoTheBest100!!", "Noi facciamo i giochi peggiori");
 
         listaAccountLoggati.add(utente);
         listaAccountLoggati.add(utente1);
         listaAccountLoggati.add(sviluppatore);
+        listaAccountLoggati.add(sviluppatore1);
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
@@ -112,5 +114,9 @@ public class Controller {
         }
         return count;
     }
+
+//    Da fare con DAO
+//    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
+//    }
 
 }

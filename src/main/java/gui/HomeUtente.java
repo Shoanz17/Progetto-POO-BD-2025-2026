@@ -5,6 +5,8 @@ import model.Sviluppatore;
 import model.Utente;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,7 +102,7 @@ public class HomeUtente {
     private JLabel valutazioneRecensioneCatalogo;
     private JLabel generiLibreria;
     private JLabel sviluppatoreLibreria;
-    private JTextArea descrizioneSviluppaotreProfilo;
+    private JTextArea descrizioneSviluppatoreProfilo;
     private JButton pulsanteRimuoviAmico;
     private JButton pulsanteLogout;
     private JTable tabellaGiochiCarrello;
@@ -129,9 +131,11 @@ public class HomeUtente {
         associaListenerRimuoviCarrello();
         associaListenerAcquista();
 
-        mostraForm();
-    }
+        associaListenerListaSviluppatori();
 
+        mostraForm();
+
+    }
     private void configuraTabellaCarrello() {
         String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
         DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
@@ -235,6 +239,21 @@ public class HomeUtente {
                     testoTotaleCarrello.setText("0.00 €");
 
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato, troverai i tuoi giochi con relative Key nella Libreria", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private void associaListenerListaSviluppatori() {
+        listaSviluppatori.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                if (sviluppatoreSelezionato != null) {
+                    descrizioneSviluppatoreProfilo.setText(sviluppatoreSelezionato.getDescrizione());
+                    testoGiochiRilasciati.setText(String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
+                    //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
                 }
             }
         });

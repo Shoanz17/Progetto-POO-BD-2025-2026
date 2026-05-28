@@ -841,7 +841,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="74942" class="javax.swing.JTextArea" binding="descrizioneSviluppaotreProfilo">
+                  <component id="74942" class="javax.swing.JTextArea" binding="descrizioneSviluppatoreProfilo">
                     <constraints/>
                     <properties>
                       <editable value="false"/>
