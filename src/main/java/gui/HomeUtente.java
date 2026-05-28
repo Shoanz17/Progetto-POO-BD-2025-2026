@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.Utente;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -109,9 +110,11 @@ public class HomeUtente {
 
     public JFrame homeUtenteFrame;
     private Controller controller;
+    private Utente utenteLoggato;
 
-    public HomeUtente(Controller controller, JFrame accediGUI) {
+    public HomeUtente(Controller controller, JFrame accediGUI, Utente accountLoggato) {
         this.controller = controller;
+        this.utenteLoggato = accountLoggato;
 
         svuotaDettagliLibreria();
         configuraInterfaccia();
