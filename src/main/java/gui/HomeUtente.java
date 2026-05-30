@@ -119,48 +119,34 @@ public class HomeUtente {
         this.controller = controller;
         this.utenteLoggato = accountLoggato;
 
-        svuotaDettagliLibreria();
+        //metodi base per il funzionamento
         configuraInterfaccia();
-        configuraTabellaCarrello();
-
-        associaListenerCopiaKey();
         associaListenerLogout(accediGUI);
+
+        //Catalogo
+
+        //Libreria
+
+        //Profilo
         associaListenerRecensione();
         associaListenerModificaInformazioni();
         associaListenerAggiungiSaldo();
-        associaListenerRimuoviCarrello();
-        associaListenerAcquista();
+
+        associaListenerCopiaKey();
 
         associaListenerListaSviluppatori();
         associaListenerListaAmici();
 
+        //Carrello
+        associaListenerRimuoviCarrello();
+        associaListenerAcquista();
+
+        //fine
         mostraForm();
 
     }
 
-    private void configuraTabellaCarrello() {
-        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
-        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tabellaGiochiCarrello.setModel(tabellaCarrello);
-    }
-
-    private void associaListenerCopiaKey() {
-        pulsanteCopiaKey.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String keyDaCopiare = keyLibreria.getText();
-                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
-                java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
-                java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
-            }
-        });
-    }
-
+    //metodi base per il funzionamento
     private void associaListenerLogout(JFrame accediGUI) {
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
@@ -175,6 +161,18 @@ public class HomeUtente {
         });
     }
 
+    private void configuraInterfaccia() {
+        homeUtenteFrame = new JFrame("Home Utente");
+        homeUtenteFrame.setContentPane(homeUtentePanel);
+        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //configuraInterfacciaCatalogo();
+        configuraInterfacciaLibreria();
+        configuraInterfacciaProfilo();
+        configuraInterfacciaCarrello();
+    }
+
+    //Profilo
     private void associaListenerRecensione() {
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
@@ -202,6 +200,52 @@ public class HomeUtente {
         });
     }
 
+    private void associaListenerCopiaKey() {
+        pulsanteCopiaKey.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String keyDaCopiare = keyLibreria.getText();
+                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
+                java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
+                java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
+            }
+        });
+    }
+
+    private void associaListenerListaSviluppatori() {
+        listaSviluppatori.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                if (sviluppatoreSelezionato != null) {
+                    descrizioneSviluppatoreProfilo.setText(sviluppatoreSelezionato.getDescrizione());
+                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: " + String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
+                    //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
+                }
+            }
+        });
+    }
+
+    private void associaListenerListaAmici() {
+        listaAmiciUtente.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Utente utenteSelezionato = (Utente) listaAmiciUtente.getSelectedValue();
+
+                if (utenteSelezionato != null) {
+                    testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: " + String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
+                    testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
+                    testoGenereAmico.setText("Genere: " + String.valueOf(utenteSelezionato.getGenere()));
+                    if (utenteSelezionato.isBannato() == true) {
+                        testoBannatoAmico.setText("Bannato: Si");
+                    } else testoBannatoAmico.setText("Bannato: No");
+                }
+            }
+        });
+    }
+
+    //Carrello
     private void associaListenerRimuoviCarrello() {
         pulsanteRimuoviCarrello.addActionListener(new ActionListener() {
             @Override
@@ -244,39 +288,6 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerListaSviluppatori() {
-        listaSviluppatori.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
-
-                if (sviluppatoreSelezionato != null) {
-                    descrizioneSviluppatoreProfilo.setText(sviluppatoreSelezionato.getDescrizione());
-                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: " + String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
-                    //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
-                }
-            }
-        });
-    }
-
-    private void associaListenerListaAmici() {
-        listaAmiciUtente.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                Utente utenteSelezionato = (Utente) listaAmiciUtente.getSelectedValue();
-
-                if (utenteSelezionato != null) {
-                    testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: " + String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
-                    testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
-                    testoGenereAmico.setText("Genere: " + String.valueOf(utenteSelezionato.getGenere()));
-                    if (utenteSelezionato.isBannato() == true) {
-                        testoBannatoAmico.setText("Bannato: Si");
-                    } else testoBannatoAmico.setText("Bannato: No");
-                }
-            }
-        });
-    }
-
     private double ricalcolaTotaleCarrello() {
         double totale = 0.0;
         DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
@@ -290,40 +301,12 @@ public class HomeUtente {
         return totale;
     }
 
-    //Svuota i dati della Libreria
-    void svuotaDettagliLibreria() {
-        edizioneLibreria.setText("-");
-        piattaformaDiGiocoLibreria.setText("-");
-        prezzoAcquistoLibreria.setText("-");
-        keyLibreria.setText("[Key]");
-        dataAcquistoLibreria.setText("-");
-        generiLibreria.setText("-");
-        sviluppatoreLibreria.setText("-");
-        pegiLibreria.setText("-");
-        categoriaLibreria.setText("-");
-        dataRilascioLibreria.setText("-");
 
-        // Disabilita i pulsanti per evitare click nulli
-        pulsanteCopiaKey.setEnabled(false);
-        pulsanteRecensione.setEnabled(false);
-    }
-
-    private void configuraInterfaccia() {
-        homeUtenteFrame = new JFrame("Home Utente");
-        homeUtenteFrame.setContentPane(homeUtentePanel);
-        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        configuraInterfacciaProfilo();
-    }
-
-    private void mostraForm() {
-        homeUtenteFrame.pack();
-        homeUtenteFrame.setLocationRelativeTo(null);
-        homeUtenteFrame.setVisible(true);
-    }
-
+    //Metodi utilizzati dalle interfacce
     private void configuraInterfacciaProfilo() {
         configuraTestoInformazioniPersonali();
         configuraTestoSaldo();
+
         testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(utenteLoggato.getDataCreazione()));
         testoBannato.setVisible(utenteLoggato.isBannato());
         testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
@@ -357,5 +340,39 @@ public class HomeUtente {
         testoGenere.setText("Genere: " + String.valueOf(utenteLoggato.getGenere()));
         testoEmail.setText("Email: " + utenteLoggato.getEmail());
         testoDataDiNascita.setText("Data di nascita: " + String.valueOf(utenteLoggato.getDataNascita()));
+    }
+
+    private void configuraInterfacciaCarrello() {
+        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
+        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabellaGiochiCarrello.setModel(tabellaCarrello);
+    }
+
+    private void configuraInterfacciaLibreria() {
+        edizioneLibreria.setText("-");
+        piattaformaDiGiocoLibreria.setText("-");
+        prezzoAcquistoLibreria.setText("-");
+        keyLibreria.setText("[Key]");
+        dataAcquistoLibreria.setText("-");
+        generiLibreria.setText("-");
+        sviluppatoreLibreria.setText("-");
+        pegiLibreria.setText("-");
+        categoriaLibreria.setText("-");
+        dataRilascioLibreria.setText("-");
+
+        // Disabilita i pulsanti per evitare click nulli
+        pulsanteCopiaKey.setEnabled(false);
+        pulsanteRecensione.setEnabled(false);
+    }
+
+    private void mostraForm() {
+        homeUtenteFrame.pack();
+        homeUtenteFrame.setLocationRelativeTo(null);
+        homeUtenteFrame.setVisible(true);
     }
 }
