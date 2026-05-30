@@ -196,7 +196,7 @@ public class HomeUtente {
         pulsanteAggiungiSaldo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AggiungiFondi aggiungiFondi = new AggiungiFondi(homeUtenteFrame);
+                AggiungiFondi aggiungiFondi = new AggiungiFondi(homeUtenteFrame, utenteLoggato);
             }
         });
     }
