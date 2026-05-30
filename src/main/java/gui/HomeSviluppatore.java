@@ -1,18 +1,20 @@
 package gui;
 
-import model.Categoria;
-
+import model.*;
+//import model.Sviluppatore;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
     private JTabbedPane finestre;
-    private JList<String> listaTitoli; // Resa generica <String> per evitare l'errore del cast!
+    private JList<Gioco> listaTitoli; // Resa generica <String> per evitare l'errore del cast1
     private JPanel pannelloDettagli;
     private JLabel Titolo;
-    private JLabel Genere;
+    private JLabel lblGenere;
     private JLabel Piattaforma;
     private JLabel guadagnoTotale;
     private JLabel unitàVendute;
@@ -25,7 +27,7 @@ public class HomeSviluppatore {
     private JLabel aggPegi;
     private JButton aggiungiGiocoButton;
     private JComboBox aggCategoria;
-    private JList list1;
+    private JList listaGiochiAggiunti;
     private JTextField textTitolo;
     private JLabel titolo;
     private JLabel genere;
@@ -36,10 +38,14 @@ public class HomeSviluppatore {
     private JTextField textPrezzo;
     private JLabel dataDiRilascio;
     private JTextField textDataRilascio;
+    private JLabel pegi;
+    private JLabel lblCategoria;
+    private JComboBox comboGenere;
+    private JComboBox comboPiattaforma;
 
 
-    private DefaultListModel<String> modelPannelloControllo;
-    private DefaultListModel<String> modelLibreria; // Il motore grafico per la lista della Libreria
+    private DefaultListModel<Gioco> modelPannelloControllo;
+    private DefaultListModel<Gioco> modelLibreria;
 
     public HomeSviluppatore() {
 
@@ -64,13 +70,15 @@ public class HomeSviluppatore {
                 if (!e.getValueIsAdjusting()) {
 
                     // prendiamo il gioco cliccato
-                    String giocoSelezionato = listaTitoli.getSelectedValue();
+                    Gioco giocoSelezionato = listaTitoli.getSelectedValue();
 
                     if (giocoSelezionato != null) {
                         // aggiorniamo le Label in tempo reale
-                        Titolo.setText("Titolo: " + giocoSelezionato);
-                        Genere.setText("Genere: Azione");
-                        Piattaforma.setText("Piattaforma: PC / Console");
+                        Titolo.setText("Titolo: " + giocoSelezionato.getTitolo());
+                        lblCategoria.setText("Categoria: " + giocoSelezionato.getCategoria());
+                        lblGenere.setText("Genere: " + giocoSelezionato.getGeneri().get(0).toString());
+                        Piattaforma.setText("Piattaforma: " + giocoSelezionato.getEdizioni().get(0).getPiattaforma().getNome());
+                        pegi.setText("Pegi: " + giocoSelezionato.getPegi());
                     }
                 }
             }
@@ -110,9 +118,9 @@ public class HomeSviluppatore {
 
         // inizializziamo la lista di destra
         modelPannelloControllo = new DefaultListModel<>();
-        list1.setModel(modelPannelloControllo);
+        listaGiochiAggiunti.setModel(modelPannelloControllo);
 
-        // Inizializziamo la Libreria e colleghiamola
+        // inizializziamo la Libreria e colleghiamola
         modelLibreria = new DefaultListModel<>();
         listaTitoli.setModel(modelLibreria);
     }
@@ -139,13 +147,28 @@ public class HomeSviluppatore {
                 // conversioni dei tipi di dati
                 int pegi = Integer.parseInt(pegiStr);
                 double prezzo = Double.parseDouble(prezzoStr.replace(",", "."));
+                Sviluppatore sviluppatoreLoggato = new Sviluppatore("Sviluppatore test", "uaomA11@", "salve a tutti");
 
-                // formattare in modo che si veda nella lista
-                String rigaLista = titolo; // ◄ MODIFICATO: Adesso passa solo il titolo!
-                modelPannelloControllo.addElement(rigaLista);
+                Genere nuovoGenere = new Genere(genere);
+                ArrayList<Genere> listaGeneri = new ArrayList<>();
+                listaGeneri.add(nuovoGenere);
 
-                // aggiunge lo stesso titolo appena creato anche nella JList della Libreria
-                modelLibreria.addElement(titolo);
+                Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
+                PiattaformaDiGioco piattaformaTest = new PiattaformaDiGioco(piattaforma,"sony",false);
+
+                // convertiamo la stringa della data in un oggetto LocalDate
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate dataLocale = LocalDate.parse(dataRilascio, formatter);
+
+                // istanziamo la classe associativa EdizioneGioco
+                // convertiamo il prezzo in int con (int) perché il tuo modello richiede un intero
+                EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, piattaformaTest, (int) prezzo, dataLocale);
+
+                //colleghiamo l'edizione appena creata al gioco
+                nuovoGioco.addEdizione(nuovaEdizione);
+
+                modelPannelloControllo.addElement(nuovoGioco);
+                modelLibreria.addElement(nuovoGioco);
 
                 pulisciCampiInserimento();
 
@@ -153,6 +176,12 @@ public class HomeSviluppatore {
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Errore nei dati numerici!\nIl PEGI deve essere un intero.\nIl Prezzo deve essere un numero decimale.");
+            }
+            catch (CampoNonValidoException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+             catch (java.time.format.DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(null, "Formato data non valido! Usa il formato GG/MM/AAAA.");
             }
         });
     }

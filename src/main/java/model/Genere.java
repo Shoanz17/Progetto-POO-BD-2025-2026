@@ -66,4 +66,10 @@ public class Genere {
         return java.util.Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return this.nome; // ◄ Sostituisci "nome" con la variabile della tua classe Genere
     }
+
+}
+
