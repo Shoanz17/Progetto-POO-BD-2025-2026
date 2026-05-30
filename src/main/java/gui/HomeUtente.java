@@ -10,6 +10,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class HomeUtente {
     private JPanel homeUtentePanel;
@@ -41,15 +44,15 @@ public class HomeUtente {
     private JScrollPane scrollPaneLibreria;
     private JButton pulsanteAggiungiSaldo;
     private JButton pulsanteModificaInformazioni;
-    private JList listaAmiciUtente;
-    private JTextField ricercaAmici;
+    private JList listaUtente;
+    private JTextField ricercaUtenti;
     private JCheckBox checkBoxAmici;
     private JButton pulsanteVisualizzaRecensioni;
     private JList listaSviluppatori;
     private JTextField ricercaSviluppatori;
     private JCheckBox checkBoxSeguiti;
     private JButton pulsanteSegui;
-    private JButton pulsanteAggiungiAmico;
+    private JButton pulsanteAggiungiAmicoSelezionato;
     private JLabel testoDataCreazioneAccount;
     private JLabel testoBannato;
     private JLabel testoNome;
@@ -63,10 +66,10 @@ public class HomeUtente {
     private JScrollPane scrollPaneListaSviluppatori;
     private JLabel testoGiochiRilasciati;
     private JLabel testoGiocoPiuVenduto;
-    private JLabel testoGiochiAcquistatiAmico;
-    private JLabel testoNumeroRecensioniAmico;
-    private JLabel testoGenereAmico;
-    private JLabel testoBannatoAmico;
+    private JLabel testoGiochiAcquistatiUtenteSelezionato;
+    private JLabel testoNumeroRecensioniUtenteSelezionato;
+    private JLabel testoGenereUtenteSelezionato;
+    private JLabel testoBannatoUtente;
     private JToolBar toolBarSviluppatore;
     private JToolBar toolBarAmico;
     private JLabel testoProfilo;
@@ -103,7 +106,7 @@ public class HomeUtente {
     private JLabel generiLibreria;
     private JLabel sviluppatoreLibreria;
     private JTextArea descrizioneSviluppatoreProfilo;
-    private JButton pulsanteRimuoviAmico;
+    private JButton pulsanteRimuoviAmicoSelezionato;
     private JButton pulsanteLogout;
     private JTable tabellaGiochiCarrello;
     private JButton pulsanteRimuoviCarrello;
@@ -135,15 +138,19 @@ public class HomeUtente {
         associaListenerCopiaKey();
 
         associaListenerListaSviluppatori();
-        associaListenerListaAmici();
+        associaListenerRicercaSviluppatori();
+        associaListenerCheckBoxSviluppatori();
+
+        associaListenerListaUtenti();
+        associaListenerRicercaAmici();
 
         //Carrello
         associaListenerRimuoviCarrello();
         associaListenerAcquista();
 
         //fine
-        mostraForm();
 
+        mostraForm();
     }
 
     //metodi base per il funzionamento
@@ -227,22 +234,83 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerListaAmici() {
-        listaAmiciUtente.addListSelectionListener(new ListSelectionListener() {
+    private void associaListenerRicercaSviluppatori() {
+        ricercaSviluppatori.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraSviluppatori();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxSviluppatori() {
+        checkBoxSeguiti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraSviluppatori();
+            }
+        });
+    }
+
+    private void filtraSviluppatori() {
+        String testoRicerca = ricercaSviluppatori.getText().toLowerCase().trim();
+        DefaultListModel<Sviluppatore> modelloFiltrato = new DefaultListModel<>();
+        ArrayList<Sviluppatore> listaFiltrata;
+
+        if (checkBoxSeguiti.isSelected()) {
+            listaFiltrata = utenteLoggato.getSviluppatoriSeguiti();
+        } else {
+            listaFiltrata = controller.getListaSviluppatoriLoggati();
+        }
+
+        for (Sviluppatore s : listaFiltrata) {
+            if (s.getNome().toLowerCase().contains(testoRicerca)) {
+                modelloFiltrato.addElement(s);
+            }
+        }
+        listaSviluppatori.setModel(modelloFiltrato);
+    }
+
+    private void associaListenerListaUtenti() {
+        listaUtente.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                Utente utenteSelezionato = (Utente) listaAmiciUtente.getSelectedValue();
+                Utente utenteSelezionato = (Utente) listaUtente.getSelectedValue();
 
                 if (utenteSelezionato != null) {
-                    testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: " + String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
-                    testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
-                    testoGenereAmico.setText("Genere: " + String.valueOf(utenteSelezionato.getGenere()));
+                    testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: " + String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
+                    testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
+                    testoGenereUtenteSelezionato.setText("Genere: " + String.valueOf(utenteSelezionato.getGenere()));
                     if (utenteSelezionato.isBannato() == true) {
-                        testoBannatoAmico.setText("Bannato: Si");
-                    } else testoBannatoAmico.setText("Bannato: No");
+                        testoBannatoUtente.setText("Bannato: Si");
+                    } else testoBannatoUtente.setText("Bannato: No");
                 }
             }
         });
+    }
+
+    private void associaListenerRicercaAmici() {
+        ricercaUtenti.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraUtenti();
+            }
+        });
+    }
+
+    private void filtraUtenti() {
+        String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
+
+        DefaultListModel<Utente> modelloFiltrato = new DefaultListModel<>();
+
+        ArrayList<Utente> listaUtentiLoggati = controller.getListaUtentiLoggati();
+
+        for (Utente u : listaUtentiLoggati) {
+            if (u != utenteLoggato && u.getNome().toLowerCase().contains(testoRicerca)) {
+                modelloFiltrato.addElement(u);
+            }
+        }
+        listaUtente.setModel(modelloFiltrato);
     }
 
     //Carrello
@@ -312,22 +380,16 @@ public class HomeUtente {
         testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
         testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
 
-        DefaultListModel<Utente> modelloListaAmici = new DefaultListModel<>();
-        modelloListaAmici.addAll(controller.getListaUtentiLoggati());
-        modelloListaAmici.removeElement(utenteLoggato);
-        listaAmiciUtente.setModel(modelloListaAmici);
-
-        DefaultListModel<Sviluppatore> modelloListaSviluppatori = new DefaultListModel<>();
-        modelloListaSviluppatori.addAll(controller.getListaSviluppatoriLoggati());
-        listaSviluppatori.setModel(modelloListaSviluppatori);
+        filtraUtenti(); //Filtro campo vuoto quindi stampa tutti
+        filtraSviluppatori(); //stessa cosa di sopra
 
         testoGiochiRilasciati.setText("Giochi Rilasciati: -");
         testoGiocoPiuVenduto.setText("Gioco piú venduto: -");
 
-        testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: -");
-        testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: -");
-        testoGenereAmico.setText("Genere: -");
-        testoBannatoAmico.setText("Bannato: -");
+        testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: -");
+        testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: -");
+        testoGenereUtenteSelezionato.setText("Genere: -");
+        testoBannatoUtente.setText("Bannato: -");
 
     }
 

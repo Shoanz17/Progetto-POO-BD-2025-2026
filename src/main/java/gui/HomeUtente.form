@@ -678,7 +678,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="fae79" class="javax.swing.JList" binding="listaAmiciUtente">
+                  <component id="fae79" class="javax.swing.JList" binding="listaUtente">
                     <constraints/>
                     <properties>
                       <font size="18"/>
@@ -699,7 +699,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="84d2e" class="javax.swing.JTextField" binding="ricercaAmici">
+                  <component id="84d2e" class="javax.swing.JTextField" binding="ricercaUtenti">
                     <constraints/>
                     <properties>
                       <font size="18"/>
@@ -712,14 +712,14 @@
                       <text value="Amici"/>
                     </properties>
                   </component>
-                  <component id="b3e53" class="javax.swing.JButton" binding="pulsanteAggiungiAmico">
+                  <component id="b3e53" class="javax.swing.JButton" binding="pulsanteAggiungiAmicoSelezionato">
                     <constraints/>
                     <properties>
                       <font size="18"/>
                       <text value="Aggiungi"/>
                     </properties>
                   </component>
-                  <component id="b0cdc" class="javax.swing.JButton" binding="pulsanteRimuoviAmico">
+                  <component id="b0cdc" class="javax.swing.JButton" binding="pulsanteRimuoviAmicoSelezionato">
                     <constraints/>
                     <properties>
                       <font size="18"/>
@@ -728,7 +728,7 @@
                   </component>
                 </children>
               </toolbar>
-              <component id="61982" class="javax.swing.JLabel" binding="testoGiochiAcquistatiAmico">
+              <component id="61982" class="javax.swing.JLabel" binding="testoGiochiAcquistatiUtenteSelezionato">
                 <constraints>
                   <grid row="7" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -737,7 +737,7 @@
                   <text value="Numero giochi acquistati: [NumeroDiGiochiAcquistatiUtenteCercato]"/>
                 </properties>
               </component>
-              <component id="9a2af" class="javax.swing.JLabel" binding="testoNumeroRecensioniAmico">
+              <component id="9a2af" class="javax.swing.JLabel" binding="testoNumeroRecensioniUtenteSelezionato">
                 <constraints>
                   <grid row="8" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -746,7 +746,7 @@
                   <text value="Numero recensioni rilasciate: [NumeroDiRecensioniRilasciateUtenteCercato]"/>
                 </properties>
               </component>
-              <component id="be9ad" class="javax.swing.JLabel" binding="testoGenereAmico">
+              <component id="be9ad" class="javax.swing.JLabel" binding="testoGenereUtenteSelezionato">
                 <constraints>
                   <grid row="9" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -755,7 +755,7 @@
                   <text value="Genere: [GenereUtenteCercato]"/>
                 </properties>
               </component>
-              <component id="43ad5" class="javax.swing.JLabel" binding="testoBannatoAmico">
+              <component id="43ad5" class="javax.swing.JLabel" binding="testoBannatoUtente">
                 <constraints>
                   <grid row="10" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
