@@ -137,6 +137,7 @@ public class HomeUtente {
         mostraForm();
 
     }
+
     private void configuraTabellaCarrello() {
         String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
         DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
@@ -187,7 +188,7 @@ public class HomeUtente {
         pulsanteModificaInformazioni.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ModificaInformazioni modificaInformazioni = new ModificaInformazioni(homeUtenteFrame);
+                ModificaInformazioni modificaInformazioni = new ModificaInformazioni(controller, HomeUtente.this, utenteLoggato);
             }
         });
     }
@@ -228,11 +229,9 @@ public class HomeUtente {
 
                 if (tabellaCarrello.getRowCount() == 0) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Vuoi acquistare il nulla?", "Attenzione", JOptionPane.WARNING_MESSAGE);
-                }
-                else if (calcoloTotale > saldoUtente) {  //saldoUtente va cambiata con la variabile di saldo giusta
+                } else if (calcoloTotale > saldoUtente) {  //saldoUtente va cambiata con la variabile di saldo giusta
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Saldo insufficiente", "Errore", JOptionPane.ERROR_MESSAGE);
-                }
-                else {
+                } else {
                     saldoUtente -= calcoloTotale;
                     testoSaldo.setText(String.format("%.2f €", saldoUtente));
 
@@ -253,24 +252,24 @@ public class HomeUtente {
 
                 if (sviluppatoreSelezionato != null) {
                     descrizioneSviluppatoreProfilo.setText(sviluppatoreSelezionato.getDescrizione());
-                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: "+String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
+                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: " + String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
                     //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
                 }
             }
         });
     }
 
-    private void associaListenerListaAmici(){
+    private void associaListenerListaAmici() {
         listaAmiciUtente.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 Utente utenteSelezionato = (Utente) listaAmiciUtente.getSelectedValue();
 
-                if (utenteSelezionato != null){
-                    testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: "+String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
-                    testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: "+String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
-                    testoGenereAmico.setText("Genere: "+String.valueOf(utenteSelezionato.getGenere()));
-                    if (utenteSelezionato.isBannato() == true){
+                if (utenteSelezionato != null) {
+                    testoGiochiAcquistatiAmico.setText("Numero giochi acquistati: " + String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
+                    testoNumeroRecensioniAmico.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
+                    testoGenereAmico.setText("Genere: " + String.valueOf(utenteSelezionato.getGenere()));
+                    if (utenteSelezionato.isBannato() == true) {
                         testoBannatoAmico.setText("Bannato: Si");
                     } else testoBannatoAmico.setText("Bannato: No");
                 }
@@ -323,15 +322,12 @@ public class HomeUtente {
     }
 
     private void configuraInterfacciaProfilo() {
-        testoNome.setText("Nome: "+utenteLoggato.getNome());
-        testoGenere.setText("Genere: "+String.valueOf(utenteLoggato.getGenere()));
-        testoEmail.setText("Email: "+utenteLoggato.getEmail());
-        testoDataDiNascita.setText("Data di nascita: "+String.valueOf(utenteLoggato.getDataNascita()));
+        configuraTestoInformazioniPersonali();
         configuraTestoSaldo();
-        testoDataCreazioneAccount.setText("Data di creazione dell'account:"+String.valueOf(utenteLoggato.getDataCreazione()));
+        testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(utenteLoggato.getDataCreazione()));
         testoBannato.setVisible(utenteLoggato.isBannato());
-        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " +String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
-        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" +String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
+        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
 
         DefaultListModel<Utente> modelloListaAmici = new DefaultListModel<>();
         modelloListaAmici.addAll(controller.getListaUtentiLoggati());
@@ -352,7 +348,14 @@ public class HomeUtente {
 
     }
 
-    void configuraTestoSaldo(){
-        testoSaldo.setText(String.format("Saldo: %d €",utenteLoggato.getSaldo()));
+    void configuraTestoSaldo() {
+        testoSaldo.setText(String.format("Saldo: %d €", utenteLoggato.getSaldo()));
+    }
+
+    void configuraTestoInformazioniPersonali() {
+        testoNome.setText("Nome: " + utenteLoggato.getNome());
+        testoGenere.setText("Genere: " + String.valueOf(utenteLoggato.getGenere()));
+        testoEmail.setText("Email: " + utenteLoggato.getEmail());
+        testoDataDiNascita.setText("Data di nascita: " + String.valueOf(utenteLoggato.getDataNascita()));
     }
 }

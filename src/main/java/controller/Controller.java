@@ -132,6 +132,34 @@ public class Controller {
             throw new CampoNonValidoException("Inserire un numero");
         }
     }
+
+    public void setNomeUtente (String nome, Utente utenteLoggato) throws CampoNonValidoException {
+        utenteLoggato.setNome(nome);
+    }
+
+    public void setPasswordUtente (String password, Utente utenteLoggato) throws CampoNonValidoException {
+        utenteLoggato.setPassword(password);
+    }
+
+    public void setEmailUtente (String email, Utente utenteLoggato) throws CampoNonValidoException {
+        utenteLoggato.setEmail(email);
+    }
+
+    public void setGenereUtente (GenereEnum genere, Utente utenteLoggato){
+        utenteLoggato.setGenere(genere);
+    }
+
+    public void setDataDiNascitaUtente(String dataDiNascita, Utente utenteLoggato) throws CampoNonValidoException {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
+            LocalDate dataNascita = LocalDate.parse(dataDiNascita.trim(), formatter);
+
+            utenteLoggato.setDataNascita(dataNascita);
+        } catch (DateTimeParseException e) {
+            throw new CampoNonValidoException("La data inserita non esiste o non è nel formato dd/MM/yyyy");
+        }
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
