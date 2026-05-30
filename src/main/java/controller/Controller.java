@@ -115,6 +115,23 @@ public class Controller {
         return count;
     }
 
+    public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
+        utenteLoggato.aggiungiSaldo(saldo);
+    }
+
+    public void aggiungiSaldo(Utente utenteLoggato, String saldoTesto) throws CampoNonValidoException {
+        try {
+            if (saldoTesto == null || saldoTesto.trim().isEmpty()) {
+                throw new CampoNonValidoException("Scrivere quanto si vuole aggiungere");
+            }
+
+            int saldo = Integer.parseInt(saldoTesto.trim());
+            utenteLoggato.aggiungiSaldo(saldo);
+
+        } catch (NumberFormatException e) {
+            throw new CampoNonValidoException("Inserire un numero");
+        }
+    }
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }

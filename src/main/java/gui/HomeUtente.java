@@ -196,7 +196,7 @@ public class HomeUtente {
         pulsanteAggiungiSaldo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AggiungiFondi aggiungiFondi = new AggiungiFondi(homeUtenteFrame, utenteLoggato);
+                AggiungiFondi aggiungiFondi = new AggiungiFondi(controller, HomeUtente.this, utenteLoggato);
             }
         });
     }
@@ -327,7 +327,7 @@ public class HomeUtente {
         testoGenere.setText("Genere: "+String.valueOf(utenteLoggato.getGenere()));
         testoEmail.setText("Email: "+utenteLoggato.getEmail());
         testoDataDiNascita.setText("Data di nascita: "+String.valueOf(utenteLoggato.getDataNascita()));
-        testoSaldo.setText(String.format("Saldo: %d €",utenteLoggato.getSaldo()));
+        configuraTestoSaldo();
         testoDataCreazioneAccount.setText("Data di creazione dell'account:"+String.valueOf(utenteLoggato.getDataCreazione()));
         testoBannato.setVisible(utenteLoggato.isBannato());
         testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " +String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
@@ -352,4 +352,7 @@ public class HomeUtente {
 
     }
 
+    void configuraTestoSaldo(){
+        testoSaldo.setText(String.format("Saldo: %d €",utenteLoggato.getSaldo()));
+    }
 }
