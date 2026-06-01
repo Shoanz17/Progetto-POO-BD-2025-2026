@@ -135,6 +135,8 @@ public class HomeUtente {
         //Profilo
         associaListenerRecensione();
         associaListenerModificaInformazioni();
+        associaListenerVisualizzaRecensioni();
+
         associaListenerAggiungiSaldo();
 
         associaListenerCopiaKey();
@@ -205,6 +207,15 @@ public class HomeUtente {
         });
     }
 
+    private void associaListenerVisualizzaRecensioni() {
+        pulsanteVisualizzaRecensioni.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                VisualizzaRecensioni visualizzaRecensioni = new VisualizzaRecensioni(controller, HomeUtente.this, utenteLoggato);
+            }
+        });
+    }
+
     private void associaListenerAggiungiSaldo() {
         pulsanteAggiungiSaldo.addActionListener(new ActionListener() {
             @Override
@@ -259,33 +270,33 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerPulsanteSegui(){
+    private void associaListenerPulsanteSegui() {
         pulsanteSegui.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     controller.aggiungiSviluppatoreSeguito(utenteLoggato, (Sviluppatore) listaSviluppatori.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame,"Hai seguito "+((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai seguito " + ((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
                     filtraSviluppatori();
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
     }
 
-    private void associaListenerPulsanteSmettiDiSeguire(){
+    private void associaListenerPulsanteSmettiDiSeguire() {
         pulsanteSmettiDiSeguire.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     controller.rimuoviSviluppatoreSeguito(utenteLoggato, (Sviluppatore) listaSviluppatori.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame,"Hai rimosso "+((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai rimosso " + ((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
                     filtraSviluppatori();
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -342,10 +353,9 @@ public class HomeUtente {
         DefaultListModel<Utente> modelloFiltrato = new DefaultListModel<>();
         ArrayList<Utente> listaFiltrata;
 
-        if (checkBoxAmici.isSelected()){
+        if (checkBoxAmici.isSelected()) {
             listaFiltrata = utenteLoggato.getListaAmici();
-        }
-        else {
+        } else {
             listaFiltrata = controller.getListaUtentiLoggati();
         }
 
@@ -366,33 +376,33 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerPulsanteAggiungiAmicoSelezionato(){
+    private void associaListenerPulsanteAggiungiAmicoSelezionato() {
         pulsanteAggiungiAmicoSelezionato.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.aggiungiAmico(utenteLoggato, (Utente)listaUtente.getSelectedValue());
+                    controller.aggiungiAmico(utenteLoggato, (Utente) listaUtente.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame,"Hai aggiunto "+((Utente) listaUtente.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai aggiunto " + ((Utente) listaUtente.getSelectedValue()).getNome());
                     filtraUtenti();
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
     }
 
-    private void associaListenerPulsanteRimuoviAmicoSelezionato(){
+    private void associaListenerPulsanteRimuoviAmicoSelezionato() {
         pulsanteRimuoviAmicoSelezionato.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.rimuoviAmico(utenteLoggato, (Utente)listaUtente.getSelectedValue());
+                    controller.rimuoviAmico(utenteLoggato, (Utente) listaUtente.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame,"Hai rimosso "+((Utente) listaUtente.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai rimosso " + ((Utente) listaUtente.getSelectedValue()).getNome());
                     filtraUtenti();
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
 
                 }
             }

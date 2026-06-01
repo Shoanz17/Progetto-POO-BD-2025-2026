@@ -657,7 +657,7 @@
                 </constraints>
                 <properties>
                   <font size="18"/>
-                  <text value="VisualizzaRecensioni"/>
+                  <text value="Visualizza Recensioni Rilasciate"/>
                 </properties>
               </component>
               <component id="48082" class="javax.swing.JLabel" binding="testoNumeroRecensioniRilasciate">
@@ -787,7 +787,7 @@
                 </constraints>
                 <properties>
                   <font size="18"/>
-                  <text value="AggiungiSaldo"/>
+                  <text value="Aggiungi Saldo"/>
                 </properties>
               </component>
               <scrollpane id="e1969" binding="scrollPaneListaSviluppatori">

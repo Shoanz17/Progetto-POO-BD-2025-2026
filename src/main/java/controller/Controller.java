@@ -12,7 +12,7 @@ public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
 
 
-    public Controller(){
+    public Controller() {
         try {
             creaDatiFittizi();
         } catch (CampoNonValidoException e) {
@@ -20,7 +20,7 @@ public class Controller {
         }
     }
 
-    private void creaDatiFittizi() throws CampoNonValidoException{
+    private void creaDatiFittizi() throws CampoNonValidoException {
         Utente utente = new Utente("Marco", "Password1!", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
         Utente utente1 = new Utente("Marcoss", "Password1!weq", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
 
@@ -34,18 +34,20 @@ public class Controller {
         listaAccountLoggati.add(sviluppatore1);
     }
 
-    public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
+    public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException {
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
 
-        if (genere == null || genere.trim().isEmpty()) throw new CampoNonValidoException("Seleziona un genere valido dalla lista!");
+        if (genere == null || genere.trim().isEmpty())
+            throw new CampoNonValidoException("Seleziona un genere valido dalla lista!");
 
         //converte la stringa nell'enum corrispondente
         GenereEnum genereVero = GenereEnum.valueOf(genere);
 
         //cercato su internet
         //rimuovo gli spazi e controllo se la lunghezza è giusta e se non sono rimasti trattini
-        if (dataNascita.contains("_") || dataNascita.trim().length() < 10) throw new CampoNonValidoException("Inserisci una data di nascita completa!");
+        if (dataNascita.contains("_") || dataNascita.trim().length() < 10)
+            throw new CampoNonValidoException("Inserisci una data di nascita completa!");
 
         LocalDate dataNascitaVera;
         try {
@@ -66,19 +68,19 @@ public class Controller {
         listaAccountLoggati.add(utente);
     }
 
-    public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException{
+    public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException {
         Sviluppatore sviluppatore = new Sviluppatore(nome, password, descrizione);
 
         listaAccountLoggati.add(sviluppatore);
     }
 
     //controllare anche se quando ci si registra l'account già esiste
-    public Account accedi(String nome, String password) throws CampoNonValidoException{
+    public Account accedi(String nome, String password) throws CampoNonValidoException {
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
 
-        for(Account account : listaAccountLoggati){
-            if(account.getNome().equals(nome) && account.getPassword().equals(password)) return account;
+        for (Account account : listaAccountLoggati) {
+            if (account.getNome().equals(nome) && account.getPassword().equals(password)) return account;
         }
 
         throw new CampoNonValidoException("Nome o password errate");
@@ -87,28 +89,28 @@ public class Controller {
 
     public ArrayList<Utente> getListaUtentiLoggati() {
         ArrayList<Utente> listaUtentiLoggati = new ArrayList<>();
-        for(Account u : listaAccountLoggati){
-            if (u instanceof Utente){
-                listaUtentiLoggati.add((Utente)u);
+        for (Account u : listaAccountLoggati) {
+            if (u instanceof Utente) {
+                listaUtentiLoggati.add((Utente) u);
             }
         }
         return listaUtentiLoggati;
     }
 
-    public ArrayList<Sviluppatore> getListaSviluppatoriLoggati(){
+    public ArrayList<Sviluppatore> getListaSviluppatoriLoggati() {
         ArrayList<Sviluppatore> listaSviluppatoriLoggati = new ArrayList<>();
-        for(Account u : listaAccountLoggati){
-            if (u instanceof Sviluppatore){
-                listaSviluppatoriLoggati.add((Sviluppatore)u);
+        for (Account u : listaAccountLoggati) {
+            if (u instanceof Sviluppatore) {
+                listaSviluppatoriLoggati.add((Sviluppatore) u);
             }
         }
         return listaSviluppatoriLoggati;
     }
 
-    public int getNumeroRecensioniUtente(Utente utenteLoggato){
+    public int getNumeroRecensioniUtente(Utente utenteLoggato) {
         int count = 0;
-        for (Fattura fattura : utenteLoggato.getGiochiAcquistati()){
-            if (fattura.getRecensione() != null){
+        for (Fattura fattura : utenteLoggato.getGiochiAcquistati()) {
+            if (fattura.getRecensione() != null) {
                 count++;
             }
         }
@@ -133,19 +135,19 @@ public class Controller {
         }
     }
 
-    public void setNomeUtente (String nome, Utente utenteLoggato) throws CampoNonValidoException {
+    public void setNomeUtente(String nome, Utente utenteLoggato) throws CampoNonValidoException {
         utenteLoggato.setNome(nome);
     }
 
-    public void setPasswordUtente (String password, Utente utenteLoggato) throws CampoNonValidoException {
+    public void setPasswordUtente(String password, Utente utenteLoggato) throws CampoNonValidoException {
         utenteLoggato.setPassword(password);
     }
 
-    public void setEmailUtente (String email, Utente utenteLoggato) throws CampoNonValidoException {
+    public void setEmailUtente(String email, Utente utenteLoggato) throws CampoNonValidoException {
         utenteLoggato.setEmail(email);
     }
 
-    public void setGenereUtente (GenereEnum genere, Utente utenteLoggato){
+    public void setGenereUtente(GenereEnum genere, Utente utenteLoggato) {
         utenteLoggato.setGenere(genere);
     }
 
@@ -174,6 +176,22 @@ public class Controller {
 
     public void rimuoviAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         utenteLoggato.removeAmico(utenteSelezionato);
+    }
+
+    public ArrayList<Fattura> getListaRecensioniUtente(Utente utenteLoggato) {
+        ArrayList<Fattura> listaFiltrata = new ArrayList<>();
+
+        for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
+            if (f.getRecensione() != null) {
+                listaFiltrata.add(f);
+            }
+        }
+        return listaFiltrata;
+    }
+
+    public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
+        fattura.setRecensione(null);
+        //Da eliminare dal database
     }
 
 //    Da fare con DAO

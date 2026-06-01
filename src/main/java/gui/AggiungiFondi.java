@@ -56,7 +56,7 @@ public class AggiungiFondi {
                     aggiungiFondiFrame.dispose();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(aggiungiFondiFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(aggiungiFondiFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -73,7 +73,7 @@ public class AggiungiFondi {
                     aggiungiFondiFrame.dispose();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(aggiungiFondiFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(aggiungiFondiFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -90,7 +90,7 @@ public class AggiungiFondi {
                     aggiungiFondiFrame.dispose();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(aggiungiFondiFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(aggiungiFondiFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -107,7 +107,7 @@ public class AggiungiFondi {
                     aggiungiFondiFrame.dispose();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(aggiungiFondiFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(aggiungiFondiFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -125,7 +125,7 @@ public class AggiungiFondi {
                     aggiungiFondiFrame.dispose();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(aggiungiFondiFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(aggiungiFondiFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -142,7 +142,7 @@ public class AggiungiFondi {
                     aggiungiFondiFrame.dispose();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(aggiungiFondiFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(aggiungiFondiFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
