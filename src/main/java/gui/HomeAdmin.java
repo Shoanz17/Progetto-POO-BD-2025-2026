@@ -2,9 +2,12 @@ package gui;
 
 import controller.Controller;
 import model.Admin;
+import model.Utente;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class HomeAdmin {
     private JPanel adminPanel;
@@ -76,14 +79,84 @@ public class HomeAdmin {
     private JLabel dataFinePromozione;
 
     private JFrame adminFrame;
+    private Controller controller;
+    private Admin admin;
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
+        if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
+        if(admin == null) throw new IllegalArgumentException("Admin passato inesistente");
+        this.controller = controller;
+        this.admin = admin;
+
+        configuraInterfaccia();
+
+        mostraForm();
+    }
+
+    private void configuraInterfaccia(){
         adminFrame = new JFrame("HomeAdmin");
         adminFrame.setContentPane(adminPanel);
         adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         adminFrame.setMinimumSize(new Dimension(900, 600));
+
+        configuraTabellaUtenti();
+        filtraUtenti(); //riempio la tabella senza filtri
+    }
+
+    private void configuraTabellaUtenti() {
+        String[] colonne = {"ID", "Nickname", "Email", "Data di Nascita", "Saldo"};
+
+        DefaultTableModel modelloIniziale = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; //rende la tabella non editabile all'utente
+            }
+        };
+
+        //assegniamo il modello vuoto alla tabella
+        tabellaUtenti.setModel(modelloIniziale);
+    }
+
+    private void filtraUtenti() {
+        String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
+
+        //prendiamo il modello già esistente della tabella facendo il cast
+        DefaultTableModel model = (DefaultTableModel) tabellaUtenti.getModel();
+
+        //cancella tutte le righe vecchie mantenendo intatte le colonne!
+        model.setRowCount(0);
+
+        ArrayList<Utente> listaDaFiltrare = new ArrayList<>();
+
+        //filtro in base alla checkBox
+        boolean flag = checkBoxBannatiUtenti.isSelected();
+        for(Utente utente : controller.getListaUtentiLoggati()){
+            if(utente.isBannato() == flag){
+                listaDaFiltrare.add(utente);
+            }
+        }
+
+        //filtro per la barra di ricerca
+        for (Utente utente : listaDaFiltrare) {
+            if (utente.getNome().toLowerCase().contains(testoRicerca)) {
+                Object[] riga = {
+                        utente.getId(),
+                        utente.getNome(),
+                        utente.getEmail(),
+                        utente.getDataNascita(),
+                        utente.getSaldo()
+                };
+
+                model.addRow(riga);
+            }
+        }
+    }
+
+
+    private void mostraForm(){
         adminFrame.pack();
         adminFrame.setLocationRelativeTo(null);
         adminFrame.setVisible(true);
     }
+
 }

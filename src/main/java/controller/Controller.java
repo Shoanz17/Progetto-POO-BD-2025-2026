@@ -82,5 +82,14 @@ public class Controller {
         throw new CampoNonValidoException("Nome o password errate");
 
     }
-
+    //da togliere prima del merge
+    public ArrayList<Utente> getListaUtentiLoggati() {
+        ArrayList<Utente> listaUtentiLoggati = new ArrayList<>();
+        for(Account u : listaAccountLoggati){
+            if (u instanceof Utente){
+                listaUtentiLoggati.add((Utente)u);
+            }
+        }
+        return listaUtentiLoggati;
+    }
 }
