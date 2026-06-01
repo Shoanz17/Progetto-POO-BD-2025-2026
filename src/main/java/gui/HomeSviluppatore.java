@@ -12,7 +12,7 @@ import java.util.List;
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
     private JTabbedPane finestre;
-    private JList<Gioco> listaTitoli; // Resa generica <String> per evitare l'errore del cast1
+    private JList<Gioco> listaTitoli; // resa generica <String> per evitare l'errore del cast1
     private JPanel pannelloDettagli;
     private JLabel Titolo;
     private JLabel lblGenere;
@@ -41,11 +41,13 @@ public class HomeSviluppatore {
     private JTextField textDataRilascio;
     private JLabel pegi;
     private JLabel lblCategoria;
-    private JComboBox comboPiattaforma;
     private JPanel generiPanel;
+    private JScrollPane checkGenScroll;
+    private JScrollPane checkPiattScroll;
+    private JPanel piattaformaPanel;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
-
+    private List<JCheckBox> listaCheckboxPiattaforma = new ArrayList<>();
 
     private DefaultListModel<Gioco> modelPannelloControllo;
     private DefaultListModel<Gioco> modelLibreria;
@@ -147,8 +149,45 @@ public class HomeSviluppatore {
             }
         }
 
+        int altezzaTotale = listaCheckboxGeneri.size() * 25;
+        generiPanel.setPreferredSize(new java.awt.Dimension(150, altezzaTotale));
+
         generiPanel.revalidate();
         generiPanel.repaint();
+
+
+        String[] piattaformaTest = {
+                "PS4", "PS5", "Nintendo Switch", "PC",
+                "WII", "XBOX", "XBOX360"
+        };
+
+        piattaformaPanel.setLayout(new BoxLayout(piattaformaPanel, BoxLayout.Y_AXIS));
+
+        for (String nomePiattaforma : piattaformaTest) {
+            JCheckBox cb = new JCheckBox(nomePiattaforma);
+            listaCheckboxPiattaforma.add(cb);
+            piattaformaPanel.add(cb);
+        }
+
+        if (piattaformaPanel.getParent() instanceof JViewport) {
+            JViewport viewport = (JViewport) piattaformaPanel.getParent();
+            if (viewport.getParent() instanceof JScrollPane) {
+                JScrollPane scrollPane = (JScrollPane) viewport.getParent();
+
+
+                int larghezzaAttuale = scrollPane.getPreferredSize().width;
+                scrollPane.setPreferredSize(new java.awt.Dimension(larghezzaAttuale, 150));
+                scrollPane.setMaximumSize(new java.awt.Dimension(larghezzaAttuale, 150));
+
+                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            }
+        }
+
+        int altezzaTotalePan = listaCheckboxPiattaforma.size() * 25;
+        piattaformaPanel.setPreferredSize(new java.awt.Dimension(150, altezzaTotalePan));
+
+        piattaformaPanel.revalidate();
+        piattaformaPanel.repaint();
 
         // inizializziamo la lista di destra
         modelPannelloControllo = new DefaultListModel<>();
@@ -162,15 +201,13 @@ public class HomeSviluppatore {
     private void configuraAzioneAggiungi() {
         aggiungiGiocoButton.addActionListener(e -> {
             String titolo = textTitolo.getText().trim();
-            String genere = textGenere.getText().trim();
             Categoria categoriaEnum = (Categoria) aggCategoria.getSelectedItem();
-            String piattaforma = textPiattaforma.getText().trim();
             String pegiStr = textPegi.getText().trim();
             String prezzoStr = textPrezzo.getText().trim();
-            String dataRilascio = textDataRilascio.getText().trim(); // ◄ NUOVO CAMPO
+            String dataRilascio = textDataRilascio.getText().trim();
 
             // Controlliamo che anche la data sia compilata
-            if (titolo.isEmpty() || piattaforma.isEmpty() ||
+            if (titolo.isEmpty() ||
                     pegiStr.isEmpty() || prezzoStr.isEmpty() || dataRilascio.isEmpty() || dataRilascio.equals("GG/MM/AAAA")) {
 
                 JOptionPane.showMessageDialog(null, "Per favore, compila tutti i campi, inclusa la data!");
@@ -186,9 +223,9 @@ public class HomeSviluppatore {
                 double prezzo = Double.parseDouble(prezzoStr.replace(",", "."));
                 Sviluppatore sviluppatoreLoggato = new Sviluppatore("Sviluppatore test", "uaomA11@", "salve a tutti");
 
-                Genere nuovoGenere = new Genere(genere);
+
                 ArrayList<Genere> listaGeneri = new ArrayList<>();
-                listaGeneri.add(nuovoGenere);
+
 
                 for (JCheckBox cb : listaCheckboxGeneri) {
                     if (cb.isSelected()) {
@@ -196,21 +233,27 @@ public class HomeSviluppatore {
                     }
                 }
 
+                ArrayList<PiattaformaDiGioco> listaPiattaforma = new ArrayList<>();
+
+                for (JCheckBox cbo : listaCheckboxPiattaforma) {
+                    if (cbo.isSelected()) {
+
+                        listaPiattaforma.add(new PiattaformaDiGioco(cbo.getText(), "Generico", false));
+                    }
+                }
 
 
                 Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
-                PiattaformaDiGioco piattaformaTest = new PiattaformaDiGioco(piattaforma,"sony",false);
 
                 // convertiamo la stringa della data in un oggetto LocalDate
                 java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 LocalDate dataLocale = LocalDate.parse(dataRilascio, formatter);
 
-                // istanziamo la classe associativa EdizioneGioco
-                // convertiamo il prezzo in int con (int) perché il tuo modello richiede un intero
-                EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, piattaformaTest, (int) prezzo, dataLocale);
+                for (PiattaformaDiGioco newPiattaforma : listaPiattaforma) {
+                    EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, newPiattaforma, (int) prezzo, dataLocale);
+                    nuovoGioco.addEdizione(nuovaEdizione);
+                }
 
-                //colleghiamo l'edizione appena creata al gioco
-                nuovoGioco.addEdizione(nuovaEdizione);
 
                 modelPannelloControllo.addElement(nuovoGioco);
                 modelLibreria.addElement(nuovoGioco);
