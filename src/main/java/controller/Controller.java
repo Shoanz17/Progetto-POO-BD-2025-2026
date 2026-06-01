@@ -25,8 +25,11 @@ public class Controller {
 
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
 
+        Admin admin = new Admin("aa", "Password2@");
+
         listaAccountLoggati.add(utente);
         listaAccountLoggati.add(sviluppatore);
+        listaAccountLoggati.add(admin);
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{

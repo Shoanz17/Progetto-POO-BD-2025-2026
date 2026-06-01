@@ -1,10 +1,7 @@
 package gui;
 
 import controller.Controller;
-import model.Account;
-import model.CampoNonValidoException;
-import model.Sviluppatore;
-import model.Utente;
+import model.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -72,6 +69,16 @@ public class Accedi {
                     else if(accountLoggato instanceof Sviluppatore){
                         JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + accountLoggato.getNome(), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
                         //apri form sviluppatore
+                    }
+                    else if(accountLoggato instanceof Admin){
+                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + accountLoggato.getNome(), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
+
+                        //apri form admin
+                        HomeAdmin homeAdmin = new HomeAdmin(controller, accediFrame, (Admin) accountLoggato);
+                        accediFrame.setVisible(false);
+
+                        nomeTextBox.setText("");
+                        passwordTextBox.setText("");
                     }
 
                 } catch (CampoNonValidoException ex) {
