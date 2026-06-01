@@ -168,6 +168,14 @@ public class Controller {
         utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
     }
 
+    public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
+        utenteLoggato.addAmico(utenteSelezionato);
+    }
+
+    public void rimuoviAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
+        utenteLoggato.removeAmico(utenteSelezionato);
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
