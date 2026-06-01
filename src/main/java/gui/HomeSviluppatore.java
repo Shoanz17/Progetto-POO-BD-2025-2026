@@ -7,6 +7,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
@@ -40,8 +41,10 @@ public class HomeSviluppatore {
     private JTextField textDataRilascio;
     private JLabel pegi;
     private JLabel lblCategoria;
-    private JComboBox comboGenere;
     private JComboBox comboPiattaforma;
+    private JPanel generiPanel;
+
+    private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
 
 
     private DefaultListModel<Gioco> modelPannelloControllo;
@@ -116,6 +119,37 @@ public class HomeSviluppatore {
             }
         });
 
+        String[] generiTest = {
+                "Azione", "Avventura", "RPG", "Strategia",
+                "Sport", "Corse", "Simulazione", "Picchiaduro",
+                "Horror", "Puzzle", "Arcade", "Sparatutto"
+        };
+
+        generiPanel.setLayout(new BoxLayout(generiPanel, BoxLayout.Y_AXIS));
+
+        for (String nomeGenere : generiTest) {
+            JCheckBox cb = new JCheckBox(nomeGenere);
+            listaCheckboxGeneri.add(cb);
+            generiPanel.add(cb);
+        }
+
+        if (generiPanel.getParent() instanceof JViewport) {
+            JViewport viewport = (JViewport) generiPanel.getParent();
+            if (viewport.getParent() instanceof JScrollPane) {
+                JScrollPane scrollPane = (JScrollPane) viewport.getParent();
+
+
+                int larghezzaAttuale = scrollPane.getPreferredSize().width;
+                scrollPane.setPreferredSize(new java.awt.Dimension(larghezzaAttuale, 150));
+                scrollPane.setMaximumSize(new java.awt.Dimension(larghezzaAttuale, 150));
+
+                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            }
+        }
+
+        generiPanel.revalidate();
+        generiPanel.repaint();
+
         // inizializziamo la lista di destra
         modelPannelloControllo = new DefaultListModel<>();
         listaGiochiAggiunti.setModel(modelPannelloControllo);
@@ -136,12 +170,15 @@ public class HomeSviluppatore {
             String dataRilascio = textDataRilascio.getText().trim(); // ◄ NUOVO CAMPO
 
             // Controlliamo che anche la data sia compilata
-            if (titolo.isEmpty() || genere.isEmpty() || piattaforma.isEmpty() ||
-                    pegiStr.isEmpty() || prezzoStr.isEmpty() || dataRilascio.isEmpty() || dataRilascio.equals("GG/MM/AAAA")) { // ◄ AGGIUNTA QUI
+            if (titolo.isEmpty() || piattaforma.isEmpty() ||
+                    pegiStr.isEmpty() || prezzoStr.isEmpty() || dataRilascio.isEmpty() || dataRilascio.equals("GG/MM/AAAA")) {
 
                 JOptionPane.showMessageDialog(null, "Per favore, compila tutti i campi, inclusa la data!");
                 return;
             }
+
+
+
 
             try {
                 // conversioni dei tipi di dati
@@ -152,6 +189,14 @@ public class HomeSviluppatore {
                 Genere nuovoGenere = new Genere(genere);
                 ArrayList<Genere> listaGeneri = new ArrayList<>();
                 listaGeneri.add(nuovoGenere);
+
+                for (JCheckBox cb : listaCheckboxGeneri) {
+                    if (cb.isSelected()) {
+                        listaGeneri.add(new Genere(cb.getText()));
+                    }
+                }
+
+
 
                 Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
                 PiattaformaDiGioco piattaformaTest = new PiattaformaDiGioco(piattaforma,"sony",false);
