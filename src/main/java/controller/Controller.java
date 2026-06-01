@@ -12,7 +12,7 @@ public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
 
 
-    public Controller() {
+    public Controller(){
         try {
             creaDatiFittizi();
         } catch (CampoNonValidoException e) {
@@ -20,7 +20,7 @@ public class Controller {
         }
     }
 
-    private void creaDatiFittizi() throws CampoNonValidoException {
+    private void creaDatiFittizi() throws CampoNonValidoException{
         Utente utente = new Utente("Marco", "Password1!", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
         Utente utente1 = new Utente("Marcoss", "Password1!weq", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
 
@@ -28,26 +28,27 @@ public class Controller {
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
         Sviluppatore sviluppatore1 = new Sviluppatore("Nintendo", "NintendoTheBest100!!", "Noi facciamo i giochi peggiori");
 
+        Admin admin = new Admin("aa", "Password2@");
+
         listaAccountLoggati.add(utente);
         listaAccountLoggati.add(utente1);
         listaAccountLoggati.add(sviluppatore);
         listaAccountLoggati.add(sviluppatore1);
+        listaAccountLoggati.add(admin);
     }
 
-    public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException {
+    public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
 
-        if (genere == null || genere.trim().isEmpty())
-            throw new CampoNonValidoException("Seleziona un genere valido dalla lista!");
+        if (genere == null || genere.trim().isEmpty()) throw new CampoNonValidoException("Seleziona un genere valido dalla lista!");
 
         //converte la stringa nell'enum corrispondente
         GenereEnum genereVero = GenereEnum.valueOf(genere);
 
         //cercato su internet
         //rimuovo gli spazi e controllo se la lunghezza è giusta e se non sono rimasti trattini
-        if (dataNascita.contains("_") || dataNascita.trim().length() < 10)
-            throw new CampoNonValidoException("Inserisci una data di nascita completa!");
+        if (dataNascita.contains("_") || dataNascita.trim().length() < 10) throw new CampoNonValidoException("Inserisci una data di nascita completa!");
 
         LocalDate dataNascitaVera;
         try {
@@ -68,19 +69,19 @@ public class Controller {
         listaAccountLoggati.add(utente);
     }
 
-    public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException {
+    public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException{
         Sviluppatore sviluppatore = new Sviluppatore(nome, password, descrizione);
 
         listaAccountLoggati.add(sviluppatore);
     }
 
     //controllare anche se quando ci si registra l'account già esiste
-    public Account accedi(String nome, String password) throws CampoNonValidoException {
+    public Account accedi(String nome, String password) throws CampoNonValidoException{
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
 
-        for (Account account : listaAccountLoggati) {
-            if (account.getNome().equals(nome) && account.getPassword().equals(password)) return account;
+        for(Account account : listaAccountLoggati){
+            if(account.getNome().equals(nome) && account.getPassword().equals(password)) return account;
         }
 
         throw new CampoNonValidoException("Nome o password errate");
