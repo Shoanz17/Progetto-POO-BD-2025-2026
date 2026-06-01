@@ -160,6 +160,14 @@ public class Controller {
         }
     }
 
+    public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
+        utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
+    }
+
+    public void rimuoviSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
+        utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }

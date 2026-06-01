@@ -637,6 +637,13 @@
                       <text value="Segui"/>
                     </properties>
                   </component>
+                  <component id="bd7c0" class="javax.swing.JButton" binding="pulsanteSmettiDiSeguire">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Smetti di seguire"/>
+                    </properties>
+                  </component>
                 </children>
               </toolbar>
               <vspacer id="ae9f5">

@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.CampoNonValidoException;
 import model.Sviluppatore;
 import model.Utente;
 
@@ -113,6 +114,7 @@ public class HomeUtente {
     private JLabel testoTotaleCarrello;
     private JButton pulsanteAcquista;
     private JLabel testoMediaVoti;
+    private JButton pulsanteSmettiDiSeguire;
 
     public JFrame homeUtenteFrame;
     private Controller controller;
@@ -140,6 +142,8 @@ public class HomeUtente {
         associaListenerListaSviluppatori();
         associaListenerRicercaSviluppatori();
         associaListenerCheckBoxSviluppatori();
+        associaListenerPulsanteSegui();
+        associaListenerPulsanteSmettiDiSeguire();
 
         associaListenerListaUtenti();
         associaListenerRicercaAmici();
@@ -248,6 +252,36 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filtraSviluppatori();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteSegui(){
+        pulsanteSegui.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.aggiungiSviluppatoreSeguito(utenteLoggato, (Sviluppatore) listaSviluppatori.getSelectedValue());
+
+                    JOptionPane.showMessageDialog(homeUtenteFrame,"Hai seguito "+((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private void associaListenerPulsanteSmettiDiSeguire(){
+        pulsanteSmettiDiSeguire.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.rimuoviSviluppatoreSeguito(utenteLoggato, (Sviluppatore) listaSviluppatori.getSelectedValue());
+
+                    JOptionPane.showMessageDialog(homeUtenteFrame,"Hai rimosso "+((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore!",JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
