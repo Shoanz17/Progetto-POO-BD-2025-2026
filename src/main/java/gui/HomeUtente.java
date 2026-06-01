@@ -146,7 +146,10 @@ public class HomeUtente {
         associaListenerPulsanteSmettiDiSeguire();
 
         associaListenerListaUtenti();
-        associaListenerRicercaAmici();
+        associaListenerRicercaUtenti();
+        associaListenerCheckBoxUtenti();
+//        associaListenerPulsanteAggiungi();
+//        associaListenerPulsanteRimuovi();
 
         //Carrello
         associaListenerRimuoviCarrello();
@@ -323,7 +326,7 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerRicercaAmici() {
+    private void associaListenerRicercaUtenti() {
         ricercaUtenti.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -334,17 +337,31 @@ public class HomeUtente {
 
     private void filtraUtenti() {
         String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
-
         DefaultListModel<Utente> modelloFiltrato = new DefaultListModel<>();
+        ArrayList<Utente> listaFiltrata;
 
-        ArrayList<Utente> listaUtentiLoggati = controller.getListaUtentiLoggati();
+        if (checkBoxAmici.isSelected()){
+            listaFiltrata = utenteLoggato.getListaAmici();
+        }
+        else {
+            listaFiltrata = controller.getListaUtentiLoggati();
+        }
 
-        for (Utente u : listaUtentiLoggati) {
+        for (Utente u : listaFiltrata) {
             if (u != utenteLoggato && u.getNome().toLowerCase().contains(testoRicerca)) {
                 modelloFiltrato.addElement(u);
             }
         }
         listaUtente.setModel(modelloFiltrato);
+    }
+
+    private void associaListenerCheckBoxUtenti() {
+        checkBoxAmici.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraUtenti();
+            }
+        });
     }
 
     //Carrello
