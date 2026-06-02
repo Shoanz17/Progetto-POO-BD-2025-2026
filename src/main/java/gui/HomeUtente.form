@@ -375,6 +375,24 @@
                     <constraints/>
                     <properties>
                       <font size="18"/>
+                      <model>
+                        <item value="3"/>
+                        <item value="4"/>
+                        <item value="5"/>
+                        <item value="6"/>
+                        <item value="7"/>
+                        <item value="8"/>
+                        <item value="9"/>
+                        <item value="10"/>
+                        <item value="11"/>
+                        <item value="12"/>
+                        <item value="13"/>
+                        <item value="14"/>
+                        <item value="15"/>
+                        <item value="16"/>
+                        <item value="17"/>
+                        <item value="18"/>
+                      </model>
                     </properties>
                   </component>
                   <component id="ee247" class="javax.swing.JButton" binding="dataAcquistoFiltro">

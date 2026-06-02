@@ -132,6 +132,10 @@ public class HomeUtente {
 
         associaListenerRilasciaRecensione();
         associaListenerCopiaKey();
+        associaListenerRicercaLibreria();
+        associaListenerDataFiltro();
+        associaListenerPrezzoAcquistoFiltro();
+        associaListenerDataAcquistoFiltro();
 
         //Profilo
 
@@ -210,6 +214,43 @@ public class HomeUtente {
         });
     }
 
+    private void filtraLibreria() {
+        String testoRicerca = ricercaLibreria.getText().toLowerCase().trim();
+        DefaultListModel<Fattura> modelloFiltrato = new DefaultListModel<>();
+        ArrayList<Fattura> listaPartenza = utenteLoggato.getGiochiAcquistati();
+
+        for (Fattura f : listaPartenza) {
+            Gioco giocoBase = f.getGioco().getGioco(); //fatto solo per non scrivere sempre get gioco get gioco
+
+            if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
+                    (genereFiltro.getSelectedIndex() == -1 || (giocoBase.getGeneri() != null && giocoBase.getGeneri().contains(genereFiltro.getSelectedItem()))) && //Controllo se il genere della combobox é contenuto nei generi del gioco
+                    (categoriaFiltro.getSelectedIndex() == -1 || giocoBase.getCategoria().equals(categoriaFiltro.getSelectedItem())) && //controllo che la categoria selezionata sia uguale al gioco
+                    (pegiFiltro.getSelectedIndex() == -1 || String.valueOf(giocoBase.getPegi()).equals(pegiFiltro.getSelectedItem().toString()))) { //controllo ce il pegi sia uguale
+
+                modelloFiltrato.addElement(f); // Se é tutto apposto filtro
+            }
+        }
+        listaLibreria.setModel(modelloFiltrato);
+    }
+
+    private void associaListenerRicercaLibreria(){
+        ricercaLibreria.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerDataFiltro(){
+
+    }
+    private void associaListenerPrezzoAcquistoFiltro(){
+
+    }
+    private void associaListenerDataAcquistoFiltro(){
+
+    }
     //Profilo
 
     private void associaListenerModificaInformazioni() {
@@ -514,14 +555,6 @@ public class HomeUtente {
     }
 
     private void configuraInterfacciaLibreria() {
-        configuraSvuotaDati();
-        configuraComboBoxGenere();
-        configuraComboBoxCategoria();
-//        configuraComboBoxPegi();
-
-    }
-
-    private void configuraSvuotaDati() {
         edizioneLibreria.setText("-");
         piattaformaDiGiocoLibreria.setText("-");
         prezzoAcquistoLibreria.setText("-");
@@ -536,6 +569,13 @@ public class HomeUtente {
         // Disabilita i pulsanti per evitare click nulli
         pulsanteCopiaKey.setEnabled(false);
         pulsanteRecensione.setEnabled(false);
+
+        configuraComboBoxGenere();
+        configuraComboBoxCategoria();
+        configuraComboBoxPegi();
+
+        filtraLibreria();
+
     }
 
     private void configuraComboBoxGenere() {
@@ -555,6 +595,10 @@ public class HomeUtente {
 
         categoriaFiltro.setModel(modelCategoria);
         categoriaFiltro.setSelectedIndex(-1);
+    }
+
+    private void configuraComboBoxPegi() {
+        pegiFiltro.setSelectedIndex(-1);
     }
 
     private void mostraForm() {
