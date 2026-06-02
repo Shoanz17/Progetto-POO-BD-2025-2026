@@ -110,11 +110,17 @@ public class HomeAdmin {
         adminFrame.setMinimumSize(new Dimension(900, 600));
 
         String[] colonneUtenti = {"ID", "Nickname", "Email", "Data di Nascita", "Saldo"};
-        configuraTabella(colonneUtenti);
+        configuraTabella(colonneUtenti, tabellaUtenti);
         filtraUtenti(); //riempio la tabella senza filtri
+
+        String[] colonneRecensioni = {"Voto", "Differenza Like"};
+        configuraTabella(colonneRecensioni, tabellaRecensioniUtenti);
+
+        String[] colonneGiochi = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforma", "Prezzo"};
+        configuraTabella(colonneGiochi, tabellaGiochiUtenti);
     }
 
-    private void configuraTabella(String[] colonne) {
+    private void configuraTabella(String[] colonne, JTable tabella) {
 
         DefaultTableModel modelloIniziale = new DefaultTableModel(colonne, 0) {
             @Override
@@ -124,31 +130,18 @@ public class HomeAdmin {
         };
 
         //assegniamo il modello vuoto alla tabella
-        tabellaUtenti.setModel(modelloIniziale);
+        tabella.setModel(modelloIniziale);
     }
 
     private void filtraUtenti() {
         String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
 
-        //prendiamo il modello già esistente della tabella facendo il cast
-        DefaultTableModel model = (DefaultTableModel) tabellaUtenti.getModel();
+        ArrayList<Object[]> righe = new ArrayList<>();
 
-        //cancella tutte le righe vecchie mantenendo intatte le colonne
-        model.setRowCount(0);
-
-        ArrayList<Utente> listaDaFiltrare = new ArrayList<>();
-
-        //filtro in base alla checkBox
+        //filtro in base alla checkBox e alla barra di ricerca
         boolean flag = checkBoxBannatiUtenti.isSelected();
         for(Utente utente : controller.getListaUtentiLoggati()){
-            if(utente.isBannato() == flag){
-                listaDaFiltrare.add(utente);
-            }
-        }
-
-        //filtro per la barra di ricerca
-        for (Utente utente : listaDaFiltrare) {
-            if (utente.getNome().toLowerCase().contains(testoRicerca)) {
+            if(utente.isBannato() == flag && utente.getNome().toLowerCase().contains(testoRicerca)){
                 Object[] riga = {
                         utente.getId(),
                         utente.getNome(),
@@ -156,10 +149,11 @@ public class HomeAdmin {
                         utente.getDataNascita(),
                         utente.getSaldo()
                 };
-
-                model.addRow(riga);
+                righe.add(riga);
             }
         }
+
+        aggiornaContenutoTabella(tabellaUtenti, righe);
     }
 
     private void associaListenerCheckBoxBannatiUtenti(){
@@ -192,7 +186,6 @@ public class HomeAdmin {
                 if (rigaSelezionata != -1) {
                     Object selezione = tabellaUtenti.getValueAt(rigaSelezionata, 1);
                     System.out.println("Utente cliccato con il mouse: " + selezione);
-
                     //riempio le altre liste pescando i dati dal db
                 }
             }
@@ -235,6 +228,16 @@ public class HomeAdmin {
                 adminFrame.dispose();
             }
         });
+    }
+
+    private void aggiornaContenutoTabella(JTable tabella, ArrayList<Object[]> righe){
+        //prendiamo il modello già esistente della tabella facendo il cast
+        DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+
+        //cancella tutte le righe vecchie mantenendo intatte le colonne
+        model.setRowCount(0);
+
+        for(Object[] riga : righe) model.addRow(riga);
     }
 
     private void mostraForm(){
