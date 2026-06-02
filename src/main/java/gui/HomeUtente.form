@@ -345,7 +345,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="3781c" class="javax.swing.JComboBox" binding="categorieFiltro">
+                  <component id="3781c" class="javax.swing.JComboBox" binding="genereFiltro">
                     <constraints/>
                     <properties>
                       <font size="18"/>

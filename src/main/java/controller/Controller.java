@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
-
+    private ArrayList<Genere> listaGeneri = new ArrayList<>();
 
     public Controller(){
         try {
@@ -24,9 +24,13 @@ public class Controller {
         Utente utente = new Utente("Marco", "Password1!", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
         Utente utente1 = new Utente("Marcoss", "Password1!weq", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
 
-
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
         Sviluppatore sviluppatore1 = new Sviluppatore("Nintendo", "NintendoTheBest100!!", "Noi facciamo i giochi peggiori");
+
+        Genere genere1 = new Genere(0,"Azione");
+        Genere genere2 = new Genere(1,"Sopravvivenza");
+        Genere genere3 = new Genere(2,"Sopravvivenza");
+
 
         Admin admin = new Admin("aa", "Password2@");
 
@@ -35,6 +39,10 @@ public class Controller {
         listaAccountLoggati.add(sviluppatore);
         listaAccountLoggati.add(sviluppatore1);
         listaAccountLoggati.add(admin);
+        listaGeneri.add(genere1);
+        listaGeneri.add(genere2);
+        listaGeneri.add(genere3);
+
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
@@ -193,6 +201,19 @@ public class Controller {
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);
         //Da eliminare dal database
+    }
+
+    public ArrayList<Genere> getGeneri(){
+        return listaGeneri;
+    }
+
+    public ArrayList<Categoria> getCategorie(){
+        ArrayList<Categoria> categorie = new ArrayList<>();
+
+        for (Categoria c : Categoria.values()){
+            categorie.add(c);
+        }
+        return categorie;
     }
 
 //    Da fare con DAO

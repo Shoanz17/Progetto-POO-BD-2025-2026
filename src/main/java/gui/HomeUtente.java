@@ -1,9 +1,7 @@
 package gui;
 
 import controller.Controller;
-import model.CampoNonValidoException;
-import model.Sviluppatore;
-import model.Utente;
+import model.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -34,7 +32,7 @@ public class HomeUtente {
     private JLabel dataAcquistoLibreria;
     private JButton pulsanteFiltra;
     private JButton pulsanteResetFiltri;
-    private JComboBox categorieFiltro;
+    private JComboBox genereFiltro;
     private JButton dataFiltro;
     private JButton prezzoAcquistoFiltro;
     private JComboBox categoriaFiltro;
@@ -132,14 +130,15 @@ public class HomeUtente {
 
         //Libreria
 
+        associaListenerRilasciaRecensione();
+        associaListenerCopiaKey();
+
         //Profilo
-        associaListenerRecensione();
+
         associaListenerModificaInformazioni();
         associaListenerVisualizzaRecensioni();
-
         associaListenerAggiungiSaldo();
 
-        associaListenerCopiaKey();
 
         associaListenerListaSviluppatori();
         associaListenerRicercaSviluppatori();
@@ -188,8 +187,9 @@ public class HomeUtente {
         configuraInterfacciaCarrello();
     }
 
-    //Profilo
-    private void associaListenerRecensione() {
+    //Libreria
+
+    private void associaListenerRilasciaRecensione() {
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -197,6 +197,20 @@ public class HomeUtente {
             }
         });
     }
+
+    private void associaListenerCopiaKey() {
+        pulsanteCopiaKey.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String keyDaCopiare = keyLibreria.getText();
+                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
+                java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
+                java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
+            }
+        });
+    }
+
+    //Profilo
 
     private void associaListenerModificaInformazioni() {
         pulsanteModificaInformazioni.addActionListener(new ActionListener() {
@@ -221,18 +235,6 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AggiungiFondi aggiungiFondi = new AggiungiFondi(controller, HomeUtente.this, utenteLoggato);
-            }
-        });
-    }
-
-    private void associaListenerCopiaKey() {
-        pulsanteCopiaKey.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String keyDaCopiare = keyLibreria.getText();
-                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
-                java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
-                java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
             }
         });
     }
@@ -512,6 +514,14 @@ public class HomeUtente {
     }
 
     private void configuraInterfacciaLibreria() {
+        configuraSvuotaDati();
+        configuraComboBoxGenere();
+        configuraComboBoxCategoria();
+//        configuraComboBoxPegi();
+
+    }
+
+    private void configuraSvuotaDati() {
         edizioneLibreria.setText("-");
         piattaformaDiGiocoLibreria.setText("-");
         prezzoAcquistoLibreria.setText("-");
@@ -526,6 +536,25 @@ public class HomeUtente {
         // Disabilita i pulsanti per evitare click nulli
         pulsanteCopiaKey.setEnabled(false);
         pulsanteRecensione.setEnabled(false);
+    }
+
+    private void configuraComboBoxGenere() {
+        DefaultComboBoxModel<Genere> modelGenere = new DefaultComboBoxModel<>();
+
+        modelGenere.addAll(controller.getGeneri());
+
+        genereFiltro.setModel(modelGenere);
+        genereFiltro.setSelectedIndex(-1);
+
+    }
+
+    private void configuraComboBoxCategoria() {
+        DefaultComboBoxModel<Categoria> modelCategoria = new DefaultComboBoxModel<>();
+
+        modelCategoria.addAll(controller.getCategorie());
+
+        categoriaFiltro.setModel(modelCategoria);
+        categoriaFiltro.setSelectedIndex(-1);
     }
 
     private void mostraForm() {
