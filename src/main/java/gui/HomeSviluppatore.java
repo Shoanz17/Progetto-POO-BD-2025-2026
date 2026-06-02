@@ -1,5 +1,6 @@
 package gui;
 
+import controller.Controller;
 import model.*;
 //import model.Sviluppatore;
 import javax.swing.*;
@@ -70,9 +71,11 @@ public class HomeSviluppatore {
 
     private DefaultListModel<Gioco> modelPannelloControllo;
     private DefaultListModel<Gioco> modelLibreria;
+    private Controller controller;
 
     public HomeSviluppatore() {
-
+        Controller controller = new Controller();
+        this.controller = controller;
         selezioneListaLibreria();
         inserimentoGioco();
     }
@@ -138,7 +141,7 @@ public class HomeSviluppatore {
 
     private void inizializzaGraficaControllo() {
         // carica i valori dell'enum Categoria dentro la ComboBox dal controller
-        aggCategoria.setModel(new DefaultComboBoxModel<>(controller.getCategorie()));
+        aggCategoria.setModel(new DefaultComboBoxModel<>(controller.getCategorie().toArray()));
 
         textDataRilascio.setText("GG/MM/AAAA");
         textDataRilascio.setForeground(java.awt.Color.GRAY);
@@ -168,8 +171,8 @@ public class HomeSviluppatore {
 
         generiPanel.setLayout(new BoxLayout(generiPanel, BoxLayout.Y_AXIS));
 
-        for (String nomeGenere : controller.getGeneri()) {
-            JCheckBox cb = new JCheckBox(nomeGenere);
+        for (Genere nomeGenere : controller.getGeneri()) {
+            JCheckBox cb = new JCheckBox(nomeGenere.toString());
             listaCheckboxGeneri.add(cb);
             generiPanel.add(cb);
         }
@@ -195,15 +198,15 @@ public class HomeSviluppatore {
         generiPanel.repaint();
 
 
-        String[] piattaformaTest = {
-                "PS4", "PS5", "Nintendo Switch", "PC",
-                "WII", "XBOX", "XBOX360"
-        };
+//        String[] piattaformaTest = {
+//                "PS4", "PS5", "Nintendo Switch", "PC",
+//                "WII", "XBOX", "XBOX360"
+//        };
 
         piattaformaPanel.setLayout(new BoxLayout(piattaformaPanel, BoxLayout.Y_AXIS));
 
-        for (String nomePiattaforma : piattaformaTest) {
-            JCheckBox cb = new JCheckBox(nomePiattaforma);
+        for (PiattaformaDiGioco nomePiattaforma : controller.getListaPiattaforma()) {
+            JCheckBox cb = new JCheckBox(nomePiattaforma.toString());
             listaCheckboxPiattaforma.add(cb);
             piattaformaPanel.add(cb);
         }

@@ -103,7 +103,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font style="1"/>
+                  <font size="18" style="1"/>
                   <text value="Titolo:"/>
                 </properties>
               </component>
@@ -135,7 +135,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font style="1"/>
+                  <font size="18" style="1"/>
                   <text value="Categoria:"/>
                 </properties>
               </component>
@@ -146,7 +146,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font style="1"/>
+                  <font size="18" style="1"/>
                   <text value="Genere:"/>
                 </properties>
               </component>
@@ -157,7 +157,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font style="1"/>
+                  <font size="18" style="1"/>
                   <text value="Pegi:"/>
                 </properties>
               </component>
@@ -168,7 +168,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font style="1"/>
+                  <font size="18" style="1"/>
                   <text value="Guadagno totale:"/>
                 </properties>
               </component>
@@ -179,7 +179,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font style="1"/>
+                  <font size="18" style="1"/>
                   <text value="Piattaforma:"/>
                 </properties>
               </component>

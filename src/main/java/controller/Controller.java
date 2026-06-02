@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
-
+    private ArrayList<PiattaformaDiGioco> listaPiattaforma = new ArrayList<>();
     public Controller(){
         try {
             creaDatiFittizi();
@@ -29,7 +29,19 @@ public class Controller {
 
         Genere genere1 = new Genere(0,"Azione");
         Genere genere2 = new Genere(1,"Sopravvivenza");
-        Genere genere3 = new Genere(2,"Sopravvivenza");
+        Genere genere3 = new Genere(2,"Horror");
+        Genere genere4 = new Genere(3,"Rpg");
+        Genere genere5 = new Genere(4,"Fortnite");
+        Genere genere6 = new Genere(5,"SparaTutto");
+        Genere genere7 = new Genere(6,"Arcade");
+
+        PiattaformaDiGioco piattaforma1 = new PiattaformaDiGioco("PS3","Sony",false);
+        PiattaformaDiGioco piattaforma2 = new PiattaformaDiGioco("PS4","Sony",false);
+        PiattaformaDiGioco piattaforma3 = new PiattaformaDiGioco("PS5","Sony",false);
+        PiattaformaDiGioco piattaforma4 = new PiattaformaDiGioco("Switch","Nintendo",true);
+        PiattaformaDiGioco piattaforma5 = new PiattaformaDiGioco("Switch Oled","Nintendo",true);
+        PiattaformaDiGioco piattaforma6 = new PiattaformaDiGioco("XBOX","Microsoft",false);
+
 
 
         Admin admin = new Admin("aa", "Password2@");
@@ -39,9 +51,22 @@ public class Controller {
         listaAccountLoggati.add(sviluppatore);
         listaAccountLoggati.add(sviluppatore1);
         listaAccountLoggati.add(admin);
+
         listaGeneri.add(genere1);
         listaGeneri.add(genere2);
         listaGeneri.add(genere3);
+        listaGeneri.add(genere4);
+        listaGeneri.add(genere5);
+        listaGeneri.add(genere6);
+        listaGeneri.add(genere7);
+
+        listaPiattaforma.add(piattaforma1);
+        listaPiattaforma.add(piattaforma2);
+        listaPiattaforma.add(piattaforma3);
+        listaPiattaforma.add(piattaforma4);
+        listaPiattaforma.add(piattaforma5);
+        listaPiattaforma.add(piattaforma6);
+
 
     }
 
@@ -206,6 +231,8 @@ public class Controller {
     public ArrayList<Genere> getGeneri(){
         return listaGeneri;
     }
+
+    public ArrayList<PiattaformaDiGioco> getListaPiattaforma() {return listaPiattaforma;}
 
     public ArrayList<Categoria> getCategorie(){
         ArrayList<Categoria> categorie = new ArrayList<>();
