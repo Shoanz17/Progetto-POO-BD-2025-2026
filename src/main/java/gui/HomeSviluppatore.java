@@ -45,6 +45,25 @@ public class HomeSviluppatore {
     private JScrollPane checkGenScroll;
     private JScrollPane checkPiattScroll;
     private JPanel piattaformaPanel;
+    private JPanel aggiungiGioco;
+    private JPanel modificaGioco;
+    private JList listaModificaGioco;
+    private JLabel modificaTitolo;
+    private JTextField modificaTitoloText;
+    private JLabel modificaCategoria;
+    private JLabel modificaPegi;
+    private JLabel modificaPrezzo;
+    private JComboBox modificaCategoriaCombo;
+    private JTextField modificaPegiText;
+    private JTextField modificaPrezzoText;
+    private JLabel modificaDataRilascio;
+    private JTextField modificaDataRilascioText;
+    private JButton aggiungiGenere;
+    private JButton rimuoviGenere;
+    private JLabel modificaPiattaforma;
+    private JLabel modificaGenere;
+    private JButton aggiungiPiatttaforma;
+    private JButton rimuoviPiattaforma;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
     private List<JCheckBox> listaCheckboxPiattaforma = new ArrayList<>();
@@ -71,20 +90,40 @@ public class HomeSviluppatore {
         listaTitoli.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                // questo if serve a evitare di eseguire il codice 2 vpltr
+                // questo if serve a evitare di eseguire il codice 2 volte
                 if (!e.getValueIsAdjusting()) {
 
                     // prendiamo il gioco cliccato
                     Gioco giocoSelezionato = listaTitoli.getSelectedValue();
 
                     if (giocoSelezionato != null) {
-                        // aggiorniamo le Label in tempo reale
+                        // 1. accumuliamo tutti i generi
+                        String generiUniti = "";
+                        for (Genere g : giocoSelezionato.getGeneri()) {
+                            if (!generiUniti.isEmpty()) {
+                                generiUniti += ", "; // aggiunge la virgola tra un genere e l'altro
+                            }
+                            generiUniti += g.toString();
+                        }
+
+                        // 2. accumuliamo tutte le piattaforme dalle edizioni
+                        String piattaformeUnite = "";
+                        for (EdizioneGioco ed : giocoSelezionato.getEdizioni()) {
+                            if (!piattaformeUnite.isEmpty()) {
+                                piattaformeUnite += ", "; // Aggiunge la virgola tra le piattaforme
+                            }
+                            piattaformeUnite += ed.getPiattaforma().getNome();
+                        }
+
+                        // 3. aggiorniamo le Label con le stringhe complete
                         Titolo.setText("Titolo: " + giocoSelezionato.getTitolo());
                         lblCategoria.setText("Categoria: " + giocoSelezionato.getCategoria());
-                        lblGenere.setText("Genere: " + giocoSelezionato.getGeneri().get(0).toString());
-                        Piattaforma.setText("Piattaforma: " + giocoSelezionato.getEdizioni().get(0).getPiattaforma().getNome());
+                        lblGenere.setText("Genere: " + generiUniti);
+                        Piattaforma.setText("Piattaforma: " + piattaformeUnite);
                         pegi.setText("Pegi: " + giocoSelezionato.getPegi());
                     }
+
+
                 }
             }
         });
@@ -98,8 +137,8 @@ public class HomeSviluppatore {
 
 
     private void inizializzaGraficaControllo() {
-        // carica i valori dell'enum Categoria dentro la ComboBox
-        aggCategoria.setModel(new DefaultComboBoxModel<>(Categoria.values()));
+        // carica i valori dell'enum Categoria dentro la ComboBox dal controller
+        aggCategoria.setModel(new DefaultComboBoxModel<>(controller.getCategorie()));
 
         textDataRilascio.setText("GG/MM/AAAA");
         textDataRilascio.setForeground(java.awt.Color.GRAY);
@@ -121,15 +160,15 @@ public class HomeSviluppatore {
             }
         });
 
-        String[] generiTest = {
+        /*String[] generiTest = {
                 "Azione", "Avventura", "RPG", "Strategia",
                 "Sport", "Corse", "Simulazione", "Picchiaduro",
                 "Horror", "Puzzle", "Arcade", "Sparatutto"
-        };
+        };*/
 
         generiPanel.setLayout(new BoxLayout(generiPanel, BoxLayout.Y_AXIS));
 
-        for (String nomeGenere : generiTest) {
+        for (String nomeGenere : controller.getGeneri()) {
             JCheckBox cb = new JCheckBox(nomeGenere);
             listaCheckboxGeneri.add(cb);
             generiPanel.add(cb);
@@ -277,13 +316,19 @@ public class HomeSviluppatore {
     private void pulisciCampiInserimento() {
         // ripulisce i campi scritti in precedenza
         textTitolo.setText("");
-        textGenere.setText("");
-        textPiattaforma.setText("");
         textPegi.setText("");
         textPrezzo.setText("");
         textDataRilascio.setText("GG/MM/AAAA");
         textDataRilascio.setForeground(java.awt.Color.GRAY);
         aggCategoria.setSelectedIndex(0);
+
+        for (JCheckBox campoVuoto : listaCheckboxGeneri) {
+            campoVuoto.setSelected(false);
+        }// deseleziona la checkbox dopo che l' utente fa "aggiungi gioco"
+
+        for (JCheckBox campoVuotoP : listaCheckboxPiattaforma) {
+            campoVuotoP.setSelected(false);
+        }
     }
 }
 
