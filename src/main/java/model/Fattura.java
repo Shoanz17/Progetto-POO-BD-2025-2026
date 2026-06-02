@@ -13,6 +13,7 @@ public class Fattura {
     //relazioni
     private final Utente utente;
     private final EdizioneGioco gioco;
+    private Recensione recensione;
 
     //getter e setter
     public int getId() {
@@ -33,6 +34,8 @@ public class Fattura {
     public EdizioneGioco getGioco() {
         return gioco;
     }
+    public Recensione getRecensione() {return recensione;}
+
 
     public void setPrezzo(int prezzo) throws CampoNonValidoException {
         if(prezzo < 0) throw new CampoNonValidoException("Prezzo negativo");
@@ -40,6 +43,12 @@ public class Fattura {
         this.prezzoAcquisto = prezzo;
     }
 
+    public void setRecensione(Recensione recensione) throws CampoNonValidoException {
+        if (recensione == null){
+            throw new CampoNonValidoException("La recensione non esiste");
+        }
+        this.recensione = recensione;
+    }
     //metodi
     @Override
     public boolean equals(Object o) {

@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="gui.HomeUtente">
+  <grid id="27dc6" binding="homeUtentePanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="2086" height="897"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <tabbedpane id="d6fe8" binding="tabbedPane">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+          <font size="26" style="1"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="9b0d9" binding="catalogo" layout-manager="GridLayoutManager" row-count="17" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Catalogo"/>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="c2be3" class="javax.swing.JTextField" binding="ricercaCatalogo">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                </properties>
+              </component>
+              <component id="ca0e5" class="javax.swing.JLabel" binding="pegiCatalogo">
+                <constraints>
+                  <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Pegi]"/>
+                </properties>
+              </component>
+              <component id="5528e" class="javax.swing.JLabel" binding="genereCatalogo">
+                <constraints>
+                  <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Genere]"/>
+                </properties>
+              </component>
+              <component id="5d8b1" class="javax.swing.JLabel" binding="piattaformaCatalogo">
+                <constraints>
+                  <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Piattaforma]"/>
+                </properties>
+              </component>
+              <scrollpane id="3ae7c">
+                <constraints>
+                  <grid row="4" column="0" row-span="8" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="356c6" class="javax.swing.JList" binding="listaCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <model/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="153e5">
+                <constraints>
+                  <grid row="13" column="0" row-span="4" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="d3e2f" class="javax.swing.JList" binding="listaRecensioniCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <model/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="81058" class="javax.swing.JLabel" binding="descrizioneCatalogo">
+                <constraints>
+                  <grid row="13" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Descrizione:"/>
+                </properties>
+              </component>
+              <component id="c1219" class="javax.swing.JButton" binding="pulsanteDislike">
+                <constraints>
+                  <grid row="16" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="24"/>
+                  <text value="Dislike"/>
+                </properties>
+              </component>
+              <component id="dbf5f" class="javax.swing.JButton" binding="pulsanteLike">
+                <constraints>
+                  <grid row="15" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="24"/>
+                  <text value="Like"/>
+                </properties>
+              </component>
+              <component id="95268" class="javax.swing.JLabel" binding="votoCatalogo">
+                <constraints>
+                  <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="21"/>
+                  <text value="Voto: [voto]"/>
+                </properties>
+              </component>
+              <scrollpane id="5872">
+                <constraints>
+                  <grid row="14" column="1" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="948be" class="javax.swing.JTextArea" binding="descrizioneRecensioneCatalogo">
+                    <constraints/>
+                    <properties>
+                      <columns value="3"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
+                      <font size="18"/>
+                      <lineWrap value="true"/>
+                      <rows value="7"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <toolbar id="6e184" binding="toolBarCatalogo">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="-1" height="20"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <floatable value="false"/>
+                  <font size="18"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="ebebd" class="javax.swing.JSlider" binding="sliderPrezzoCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <majorTickSpacing value="20"/>
+                      <minorTickSpacing value="20"/>
+                      <paintLabels value="false"/>
+                      <paintTicks value="true"/>
+                      <snapToTicks value="true"/>
+                      <valueIsAdjusting value="false"/>
+                    </properties>
+                  </component>
+                  <component id="95f6e" class="javax.swing.JComboBox" binding="piattaformaFiltroCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <model/>
+                    </properties>
+                  </component>
+                  <component id="fb3f4" class="javax.swing.JComboBox" binding="genereFiltroCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="d803" class="javax.swing.JComboBox" binding="pegiFiltroCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="61962" class="javax.swing.JButton" binding="pulsanteDataDiRilascioFiltroCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Data di rilascio "/>
+                    </properties>
+                  </component>
+                  <component id="ed5e4" class="javax.swing.JComboBox" binding="categoriaFiltroCatalogo">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="3fe07" class="javax.swing.JCheckBox" binding="checkBoxInPromozione">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="In promozione"/>
+                    </properties>
+                  </component>
+                  <component id="eb2fd" class="javax.swing.JCheckBox" binding="checkBoXSviluppatori">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Dagli sviluppatori seguiti"/>
+                    </properties>
+                  </component>
+                </children>
+              </toolbar>
+              <component id="32176" class="javax.swing.JLabel" binding="prezzoFiltroCatalogo">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="14" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Prezzo:[numero]"/>
+                </properties>
+              </component>
+              <component id="3b4f2" class="javax.swing.JLabel" binding="recensioniCatalogo">
+                <constraints>
+                  <grid row="12" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="36"/>
+                  <text value="RECENSIONI DEL GIOCO"/>
+                </properties>
+              </component>
+              <component id="816ca" class="javax.swing.JLabel" binding="categoriaCatalogo">
+                <constraints>
+                  <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Categoria]"/>
+                </properties>
+              </component>
+              <component id="dfa20" class="javax.swing.JLabel" binding="prezzoCatalogo">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Prezzo]"/>
+                </properties>
+              </component>
+              <component id="1db4c" class="javax.swing.JLabel" binding="dataDiRilascioCatalogo">
+                <constraints>
+                  <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Data di Rilascio]"/>
+                </properties>
+              </component>
+              <hspacer id="ebe88">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <component id="c16dd" class="javax.swing.JLabel" binding="sviluppatoreCatalogo">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Sviluppatore]"/>
+                </properties>
+              </component>
+              <component id="6a32e" class="javax.swing.JLabel" binding="valutazioneRecensioneCatalogo">
+                <constraints>
+                  <grid row="14" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Valutazione recensione: [votoRecensione]"/>
+                </properties>
+              </component>
+              <component id="635e3" class="javax.swing.JButton" binding="pulsanteAggiungiAlCarrello">
+                <constraints>
+                  <grid row="4" column="2" row-span="8" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="24" style="1"/>
+                  <text value="Aggiungi al carrello"/>
+                </properties>
+              </component>
+              <component id="437b0" class="javax.swing.JLabel" binding="testoMediaVoti">
+                <constraints>
+                  <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Media voti]"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="c3504" binding="libreria" layout-manager="GridLayoutManager" row-count="12" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Libreria"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="64ae6" class="javax.swing.JTextField" binding="ricercaLibreria">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                </properties>
+              </component>
+              <toolbar id="5ecf6" binding="toolBarLibreria">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="-1" height="20"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <floatable value="false"/>
+                  <font size="18"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="3781c" class="javax.swing.JComboBox" binding="genereFiltro">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="a2802" class="javax.swing.JButton" binding="dataFiltro">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="DataRilascio"/>
+                    </properties>
+                  </component>
+                  <component id="f469b" class="javax.swing.JButton" binding="prezzoAcquistoFiltro">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Prezzo"/>
+                    </properties>
+                  </component>
+                  <component id="db059" class="javax.swing.JComboBox" binding="categoriaFiltro">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="c01b8" class="javax.swing.JComboBox" binding="pegiFiltro">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="ee247" class="javax.swing.JButton" binding="dataAcquistoFiltro">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="DataAcquisto"/>
+                    </properties>
+                  </component>
+                </children>
+              </toolbar>
+              <component id="6acd4" class="javax.swing.JLabel" binding="edizioneLibreria">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Edizione]"/>
+                </properties>
+              </component>
+              <component id="5cc82" class="javax.swing.JLabel" binding="piattaformaDiGiocoLibreria">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[PiattaformaDiGioco]"/>
+                </properties>
+              </component>
+              <component id="44d88" class="javax.swing.JLabel" binding="dataRilascioLibreria">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[DataDiRilascio]"/>
+                </properties>
+              </component>
+              <component id="3eab4" class="javax.swing.JLabel" binding="prezzoAcquistoLibreria">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Prezzo d'acquisto]"/>
+                </properties>
+              </component>
+              <component id="32fc4" class="javax.swing.JLabel" binding="categoriaLibreria">
+                <constraints>
+                  <grid row="6" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Categoria]"/>
+                </properties>
+              </component>
+              <component id="e0568" class="javax.swing.JLabel" binding="keyLibreria">
+                <constraints>
+                  <grid row="10" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Key]"/>
+                </properties>
+              </component>
+              <component id="bef29" class="javax.swing.JLabel" binding="pegiLibreria">
+                <constraints>
+                  <grid row="7" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Pegi]"/>
+                </properties>
+              </component>
+              <component id="c2b79" class="javax.swing.JLabel" binding="dataAcquistoLibreria">
+                <constraints>
+                  <grid row="11" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Data d'acquisto]"/>
+                </properties>
+              </component>
+              <component id="ab9fd" class="javax.swing.JButton" binding="pulsanteFiltra">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Filtra"/>
+                </properties>
+              </component>
+              <component id="7da1b" class="javax.swing.JButton" binding="pulsanteResetFiltri">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Reset Filtri"/>
+                </properties>
+              </component>
+              <component id="573bb" class="javax.swing.JButton" binding="pulsanteRecensione">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Lascia una recensione!"/>
+                </properties>
+              </component>
+              <component id="eda06" class="javax.swing.JButton" binding="pulsanteCopiaKey">
+                <constraints>
+                  <grid row="10" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Copia Key"/>
+                </properties>
+              </component>
+              <scrollpane id="577da" binding="scrollPaneLibreria">
+                <constraints>
+                  <grid row="2" column="0" row-span="10" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="d6e1e" class="javax.swing.JList" binding="listaLibreria">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="4f81c" class="javax.swing.JLabel" binding="generiLibreria">
+                <constraints>
+                  <grid row="8" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Generi]"/>
+                </properties>
+              </component>
+              <component id="9d61a" class="javax.swing.JLabel" binding="sviluppatoreLibreria">
+                <constraints>
+                  <grid row="9" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Sviluppatore]"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="c566d" binding="profilo" layout-manager="GridLayoutManager" row-count="11" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Profilo"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="2be1a" class="javax.swing.JButton" binding="pulsanteModificaInformazioni">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Modifica Informazioni"/>
+                </properties>
+              </component>
+              <component id="6494c" class="javax.swing.JLabel" binding="testoDataCreazioneAccount">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Data creazione account: [DataCreazione]"/>
+                </properties>
+              </component>
+              <component id="6d56" class="javax.swing.JLabel" binding="testoBannato">
+                <constraints>
+                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-10026224"/>
+                  <enabled value="true"/>
+                  <font size="18" style="1"/>
+                  <foreground color="-2549216"/>
+                  <text value="Bannato"/>
+                </properties>
+              </component>
+              <component id="9b7c6" class="javax.swing.JLabel" binding="testoNome">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Nome]"/>
+                </properties>
+              </component>
+              <component id="17bf1" class="javax.swing.JLabel" binding="testoGenere">
+                <constraints>
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Genere]"/>
+                </properties>
+              </component>
+              <component id="7ba0e" class="javax.swing.JLabel" binding="testoEmail">
+                <constraints>
+                  <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[Email]"/>
+                </properties>
+              </component>
+              <component id="a386b" class="javax.swing.JLabel" binding="testoDataDiNascita">
+                <constraints>
+                  <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="[DataDiNascita]"/>
+                </properties>
+              </component>
+              <toolbar id="5aede" binding="toolBarSviluppatore">
+                <constraints>
+                  <grid row="6" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="-1" height="20"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <floatable value="false"/>
+                  <font size="18"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="b9c6f" class="javax.swing.JTextField" binding="ricercaSviluppatori">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="63f35" class="javax.swing.JCheckBox" binding="checkBoxSeguiti">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Seguiti"/>
+                    </properties>
+                  </component>
+                  <component id="4b0c3" class="javax.swing.JButton" binding="pulsanteSegui">
+                    <constraints/>
+                    <properties>
+                      <enabled value="true"/>
+                      <font size="18"/>
+                      <text value="Segui"/>
+                    </properties>
+                  </component>
+                  <component id="bd7c0" class="javax.swing.JButton" binding="pulsanteSmettiDiSeguire">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Smetti di seguire"/>
+                    </properties>
+                  </component>
+                </children>
+              </toolbar>
+              <vspacer id="ae9f5">
+                <constraints>
+                  <grid row="3" column="1" row-span="2" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <component id="423da" class="javax.swing.JButton" binding="pulsanteVisualizzaRecensioni">
+                <constraints>
+                  <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Visualizza Recensioni Rilasciate"/>
+                </properties>
+              </component>
+              <component id="48082" class="javax.swing.JLabel" binding="testoNumeroRecensioniRilasciate">
+                <constraints>
+                  <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Numero recensioni rilasciate: [numero]"/>
+                </properties>
+              </component>
+              <component id="bf348" class="javax.swing.JLabel" binding="testoNumeroGiochiAcquistati">
+                <constraints>
+                  <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Numero giochi acquistati: [numero]"/>
+                </properties>
+              </component>
+              <scrollpane id="9adfb" binding="scrollPaneListaAmici">
+                <constraints>
+                  <grid row="7" column="4" row-span="4" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="fae79" class="javax.swing.JList" binding="listaUtente">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <model/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <toolbar id="19a19" binding="toolBarAmico">
+                <constraints>
+                  <grid row="6" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="-1" height="20"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <floatable value="false"/>
+                  <font size="18"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="84d2e" class="javax.swing.JTextField" binding="ricercaUtenti">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                  <component id="86d8b" class="javax.swing.JCheckBox" binding="checkBoxAmici">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Amici"/>
+                    </properties>
+                  </component>
+                  <component id="b3e53" class="javax.swing.JButton" binding="pulsanteAggiungiAmicoSelezionato">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Aggiungi"/>
+                    </properties>
+                  </component>
+                  <component id="b0cdc" class="javax.swing.JButton" binding="pulsanteRimuoviAmicoSelezionato">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                      <text value="Rimuovi"/>
+                    </properties>
+                  </component>
+                </children>
+              </toolbar>
+              <component id="61982" class="javax.swing.JLabel" binding="testoGiochiAcquistatiUtenteSelezionato">
+                <constraints>
+                  <grid row="7" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Numero giochi acquistati: [NumeroDiGiochiAcquistatiUtenteCercato]"/>
+                </properties>
+              </component>
+              <component id="9a2af" class="javax.swing.JLabel" binding="testoNumeroRecensioniUtenteSelezionato">
+                <constraints>
+                  <grid row="8" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Numero recensioni rilasciate: [NumeroDiRecensioniRilasciateUtenteCercato]"/>
+                </properties>
+              </component>
+              <component id="be9ad" class="javax.swing.JLabel" binding="testoGenereUtenteSelezionato">
+                <constraints>
+                  <grid row="9" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Genere: [GenereUtenteCercato]"/>
+                </properties>
+              </component>
+              <component id="43ad5" class="javax.swing.JLabel" binding="testoBannatoUtente">
+                <constraints>
+                  <grid row="10" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Bannato: [BannatoUtenteCercato]"/>
+                </properties>
+              </component>
+              <component id="858be" class="javax.swing.JLabel" binding="testoSaldo">
+                <constraints>
+                  <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18" style="1"/>
+                  <foreground color="-12789459"/>
+                  <text value="[Saldo]"/>
+                </properties>
+              </component>
+              <component id="c223f" class="javax.swing.JButton" binding="pulsanteAggiungiSaldo">
+                <constraints>
+                  <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Aggiungi Saldo"/>
+                </properties>
+              </component>
+              <scrollpane id="e1969" binding="scrollPaneListaSviluppatori">
+                <constraints>
+                  <grid row="7" column="0" row-span="4" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="be425" class="javax.swing.JList" binding="listaSviluppatori">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="ad898" class="javax.swing.JLabel" binding="testoCommunity">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="36" style="1"/>
+                  <text value="Community, Amici e Sviluppatori"/>
+                </properties>
+              </component>
+              <component id="afe27" class="javax.swing.JLabel" binding="testoProfilo">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="36" style="1"/>
+                  <text value="Il mio profilo"/>
+                </properties>
+              </component>
+              <component id="2ea02" class="javax.swing.JLabel" binding="testoGiochiRilasciati">
+                <constraints>
+                  <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Giochi rilasciati: [numero]"/>
+                </properties>
+              </component>
+              <component id="a351" class="javax.swing.JLabel" binding="testoGiocoPiuVenduto">
+                <constraints>
+                  <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Gioco piú venduto [Gioco]"/>
+                </properties>
+              </component>
+              <scrollpane id="4a359">
+                <constraints>
+                  <grid row="9" column="3" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="74942" class="javax.swing.JTextArea" binding="descrizioneSviluppatoreProfilo">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <font size="18"/>
+                      <lineWrap value="true"/>
+                      <rows value="3"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="49fc0" binding="carrello" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Carrello"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="3c8aa" class="javax.swing.JTable" binding="tabellaGiochiCarrello">
+                <constraints>
+                  <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <font size="24"/>
+                </properties>
+              </component>
+              <component id="d676c" class="javax.swing.JButton" binding="pulsanteRimuoviCarrello">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Rimuovi dal Carrello"/>
+                </properties>
+              </component>
+              <component id="8161f" class="javax.swing.JLabel" binding="testoTotaleCarrello">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="0.00€"/>
+                </properties>
+              </component>
+              <component id="5a855" class="javax.swing.JButton" binding="pulsanteAcquista">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="18"/>
+                  <text value="Acquista"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </tabbedpane>
+      <hspacer id="10bf0">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="5d7d6" class="javax.swing.JButton" binding="pulsanteLogout">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="5" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="2" height="2"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font size="16" style="1"/>
+          <foreground color="-2549466"/>
+          <text value="Logout"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>
