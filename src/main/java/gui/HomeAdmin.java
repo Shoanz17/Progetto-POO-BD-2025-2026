@@ -2,11 +2,13 @@ package gui;
 
 import controller.Controller;
 import model.Admin;
+import model.CampoNonValidoException;
 import model.Utente;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class HomeAdmin {
@@ -21,7 +23,7 @@ public class HomeAdmin {
     private JButton pulsanteAggiungiGenere;
     private JTextField campoNomeGenere;
     private JTextField ricercaGeneri;
-    private JButton pulsanteBanna;
+    private JButton pulsanteBannaUtenteUtenti;
     private JButton pulsanteRimborsa;
     private JTextField ricercaPiattaforme;
     private JCheckBox checkBoxPortabilita;
@@ -64,7 +66,7 @@ public class HomeAdmin {
     private JPanel recensioni;
     private JPanel promozioni;
     private JTable tabellaRecensioniUtenti;
-    private JButton pulsanteBannaUtente;
+    private JButton pulsanteBannaUtenteRecensioni;
     private JTextField ricercaGiochi;
     private JLabel titoloGioco;
     private JLabel categoriaGIoco;
@@ -90,7 +92,15 @@ public class HomeAdmin {
 
         configuraInterfaccia();
 
+        associaListenerCheckBoxBannatiUtenti();
+        associaListenerRicercaUtenti();
+        associaListenerTabellaUtenti();
+
+        associaListenerPulsanteBannaUtenteUtenti();
+        associaListenerPulsanteLogout(accediGUI);
+
         mostraForm();
+
     }
 
     private void configuraInterfaccia(){
@@ -99,12 +109,12 @@ public class HomeAdmin {
         adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         adminFrame.setMinimumSize(new Dimension(900, 600));
 
-        configuraTabellaUtenti();
+        String[] colonneUtenti = {"ID", "Nickname", "Email", "Data di Nascita", "Saldo"};
+        configuraTabella(colonneUtenti);
         filtraUtenti(); //riempio la tabella senza filtri
     }
 
-    private void configuraTabellaUtenti() {
-        String[] colonne = {"ID", "Nickname", "Email", "Data di Nascita", "Saldo"};
+    private void configuraTabella(String[] colonne) {
 
         DefaultTableModel modelloIniziale = new DefaultTableModel(colonne, 0) {
             @Override
@@ -123,7 +133,7 @@ public class HomeAdmin {
         //prendiamo il modello già esistente della tabella facendo il cast
         DefaultTableModel model = (DefaultTableModel) tabellaUtenti.getModel();
 
-        //cancella tutte le righe vecchie mantenendo intatte le colonne!
+        //cancella tutte le righe vecchie mantenendo intatte le colonne
         model.setRowCount(0);
 
         ArrayList<Utente> listaDaFiltrare = new ArrayList<>();
@@ -152,6 +162,80 @@ public class HomeAdmin {
         }
     }
 
+    private void associaListenerCheckBoxBannatiUtenti(){
+        checkBoxBannatiUtenti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //implementato così perché volevo provare e vedere come funziona l'operatore ternario
+                String testo = (checkBoxBannatiUtenti.isSelected()) ? "Sbanna" : "Banna";
+                pulsanteBannaUtenteUtenti.setText(testo);
+                filtraUtenti();
+            }
+        });
+    }
+
+    private void associaListenerRicercaUtenti(){
+        ricercaUtenti.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraUtenti();
+            }
+        });
+    }
+
+    private void associaListenerTabellaUtenti(){
+        tabellaUtenti.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int rigaSelezionata = tabellaUtenti.getSelectedRow();
+
+                if (rigaSelezionata != -1) {
+                    Object selezione = tabellaUtenti.getValueAt(rigaSelezionata, 1);
+                    System.out.println("Utente cliccato con il mouse: " + selezione);
+
+                    //riempio le altre liste pescando i dati dal db
+                }
+            }
+        });
+    }
+
+    private void associaListenerPulsanteBannaUtenteUtenti(){
+        pulsanteBannaUtenteUtenti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaUtenti.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame,"Sicuro di voler " + pulsanteBannaUtenteUtenti.getText().toLowerCase() + "re l'utente " + tabellaUtenti.getValueAt(rigaSelezionata, 1) + "?",
+                            "Ban", JOptionPane.YES_NO_OPTION);
+
+                    if(risposta == JOptionPane.YES_OPTION) {
+                        try {
+
+                            controller.invertiStatoBan((int) tabellaUtenti.getValueAt(rigaSelezionata, 0));
+                            filtraUtenti();
+
+                        } catch (CampoNonValidoException ex) {
+
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                        }
+                    }
+
+                } else JOptionPane.showMessageDialog(adminFrame, "Nessun utente selezionato", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private void associaListenerPulsanteLogout(JFrame accediGUI){
+        pulsanteLogout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                accediGUI.setVisible(true);
+                adminFrame.dispose();
+            }
+        });
+    }
 
     private void mostraForm(){
         adminFrame.pack();
