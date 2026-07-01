@@ -217,6 +217,28 @@ public class Controller {
         return categorie;
     }
 
+    public String getTitoloDaFattura(Fattura f){
+        return f.getGioco().getGioco().getTitolo();
+    }
+    public String getPiattaformaDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getPiattaforma());
+    }
+    public String getDataRilascioDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getDataRilascio());
+    }
+    public String getCategoriaDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getCategoria());
+    }
+    public String getPegiDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getPegi());
+    }
+    public String getGeneriDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getGeneri());
+    }
+    public String getSviluppatoreDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getSviluppatore());
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }

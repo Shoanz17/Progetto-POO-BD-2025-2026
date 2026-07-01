@@ -699,9 +699,7 @@
                     <constraints/>
                     <properties>
                       <font size="18"/>
-                      <model>
-                        <item value="Generi"/>
-                      </model>
+                      <model/>
                     </properties>
                   </component>
                 </children>

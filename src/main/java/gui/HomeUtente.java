@@ -7,10 +7,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class HomeUtente {
@@ -135,6 +132,7 @@ public class HomeUtente {
 
         associaListenerRilasciaRecensione();
 
+        associaListenerListaLibreria();
         associaListenerCopiaKey();
         associaListenerRicercaLibreria();
         associaListenerDataFiltro();
@@ -203,6 +201,33 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Recensione recensione = new Recensione(homeUtenteFrame);
+            }
+        });
+    }
+
+    private void associaListenerListaLibreria(){
+        listaLibreria.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Fattura fatturaSelezionata = (Fattura) listaLibreria.getSelectedValue();
+
+                if (fatturaSelezionata != null){
+                    edizioneLibreria.setText(controller.getTitoloDaFattura(fatturaSelezionata));
+                    piattaformaDiGiocoLibreria.setText(controller.getPiattaformaDaFattura(fatturaSelezionata));
+                    dataRilascioLibreria.setText(controller.getDataRilascioDaFattura(fatturaSelezionata));
+                    categoriaLibreria.setText(controller.getCategoriaDaFattura(fatturaSelezionata));
+                    pegiLibreria.setText(controller.getPegiDaFattura(fatturaSelezionata));
+                    generiLibreria.setText(controller.getGeneriDaFattura(fatturaSelezionata));
+                    sviluppatoreLibreria.setText(controller.getSviluppatoreDaFattura(fatturaSelezionata));
+
+                    dataAcquistoLibreria.setText(String.valueOf(fatturaSelezionata.getDataAcquisto()));
+                    keyLibreria.setText(fatturaSelezionata.getKey());
+                    prezzoAcquistoLibreria.setText(String.valueOf(fatturaSelezionata.getPrezzoAcquisto()));
+
+                    pulsanteCopiaKey.setEnabled(true);
+                    pulsanteRecensione.setEnabled(true);
+                }
+
             }
         });
     }
