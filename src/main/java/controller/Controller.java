@@ -30,7 +30,7 @@ public class Controller {
 
         Genere genere1 = new Genere(0,"Azione");
         Genere genere2 = new Genere(1,"Sopravvivenza");
-        Genere genere3 = new Genere(2,"Sopravvivenza");
+        Genere genere3 = new Genere(2,"JRPG");
 
 
         Admin admin = new Admin("aa", "Password2@");

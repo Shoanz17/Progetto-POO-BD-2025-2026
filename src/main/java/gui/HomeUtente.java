@@ -30,7 +30,6 @@ public class HomeUtente {
     private JLabel pegiLibreria;
     private JLabel keyLibreria;
     private JLabel dataAcquistoLibreria;
-    private JButton pulsanteFiltra;
     private JButton pulsanteResetFiltri;
     private JComboBox genereFiltro;
     private JButton dataFiltro;
@@ -118,6 +117,10 @@ public class HomeUtente {
     private Controller controller;
     private Utente utenteLoggato;
 
+    private int statoDataRilascio = 0;
+    private int statoPrezzoFiltro = 0;
+    private int statoDataAcquisto = 0;
+
     public HomeUtente(Controller controller, JFrame accediGUI, Utente accountLoggato) {
         this.controller = controller;
         this.utenteLoggato = accountLoggato;
@@ -131,11 +134,13 @@ public class HomeUtente {
         //Libreria
 
         associaListenerRilasciaRecensione();
+
         associaListenerCopiaKey();
         associaListenerRicercaLibreria();
         associaListenerDataFiltro();
         associaListenerPrezzoAcquistoFiltro();
         associaListenerDataAcquistoFiltro();
+        associaListenerPulsanteResetFiltro();
 
         //Profilo
 
@@ -219,6 +224,8 @@ public class HomeUtente {
         DefaultListModel<Fattura> modelloFiltrato = new DefaultListModel<>();
         ArrayList<Fattura> listaPartenza = utenteLoggato.getGiochiAcquistati();
 
+        ArrayList<Fattura> listaFiltrata = new ArrayList<>();
+
         for (Fattura f : listaPartenza) {
             Gioco giocoBase = f.getGioco().getGioco(); //fatto solo per non scrivere sempre get gioco get gioco
 
@@ -227,9 +234,32 @@ public class HomeUtente {
                     (categoriaFiltro.getSelectedIndex() == -1 || giocoBase.getCategoria().equals(categoriaFiltro.getSelectedItem())) && //controllo che la categoria selezionata sia uguale al gioco
                     (pegiFiltro.getSelectedIndex() == -1 || String.valueOf(giocoBase.getPegi()).equals(pegiFiltro.getSelectedItem().toString()))) { //controllo ce il pegi sia uguale
 
-                modelloFiltrato.addElement(f); // Se é tutto apposto filtro
+                listaFiltrata.add(f); // Se é tutto apposto filtro
             }
         }
+
+        if (statoDataRilascio == 1){
+            listaFiltrata.sort((f1, f2) -> f1.getGioco().getDataRilascio().compareTo(f2.getGioco().getDataRilascio()));
+        }else if (statoDataRilascio == 2){
+            listaFiltrata.sort((f1,f2) -> f2.getGioco().getDataRilascio().compareTo(f1.getGioco().getDataRilascio()));
+        }
+
+        if (statoPrezzoFiltro == 1){
+            listaFiltrata.sort((f1,f2) -> Integer.compare(f1.getPrezzoAcquisto(), f2.getPrezzoAcquisto()));
+        }else if (statoPrezzoFiltro == 2){
+            listaFiltrata.sort((f1,f2) -> Integer.compare(f2.getPrezzoAcquisto(), f1.getPrezzoAcquisto()));
+        }
+
+        if (statoDataAcquisto == 1){
+            listaFiltrata.sort((f1,f2) -> f1.getDataAcquisto().compareTo(f2.getDataAcquisto()));
+        }else if(statoDataAcquisto == 2){
+            listaFiltrata.sort((f1,f2) -> f2.getDataAcquisto().compareTo(f1.getDataAcquisto()));
+        }
+
+        for (Fattura f : listaFiltrata) {
+            modelloFiltrato.addElement(f);
+        }
+
         listaLibreria.setModel(modelloFiltrato);
     }
 
@@ -243,14 +273,103 @@ public class HomeUtente {
     }
 
     private void associaListenerDataFiltro(){
+        dataFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoPrezzoFiltro = 0;
+                prezzoAcquistoFiltro.setText("Prezzo");
+                statoDataAcquisto = 0;
+                dataAcquistoFiltro.setText("DataAcquisto");
 
+                statoDataRilascio = statoDataRilascio + 1;
+                if (statoDataRilascio == 3){
+                    statoDataRilascio = 0;
+                }
+
+                if (statoDataRilascio == 0){
+                    dataFiltro.setText("DataRilascio");
+                } else if (statoDataRilascio == 1){
+                    dataFiltro.setText("DataRilascio ↑");
+                } else if (statoDataRilascio == 2){
+                    dataFiltro.setText("DataRilascio ↓");
+                }
+
+                filtraLibreria();
+            }
+        });
     }
     private void associaListenerPrezzoAcquistoFiltro(){
+        prezzoAcquistoFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoDataRilascio = 0;
+                dataFiltro.setText("DataRilascio");
+                statoDataAcquisto = 0;
+                dataAcquistoFiltro.setText("DataAcquisto");
 
+                statoPrezzoFiltro = statoPrezzoFiltro + 1;
+                if (statoPrezzoFiltro == 3){
+                    statoPrezzoFiltro = 0;
+                }
+
+                if (statoPrezzoFiltro == 0){
+                    prezzoAcquistoFiltro.setText("Prezzo");
+                } else if (statoPrezzoFiltro == 1){
+                    prezzoAcquistoFiltro.setText("Prezzo↑");
+                } else if (statoPrezzoFiltro == 2){
+                    prezzoAcquistoFiltro.setText("Prezzo↓");
+                }
+
+                filtraLibreria();
+            }
+        });
     }
     private void associaListenerDataAcquistoFiltro(){
+        dataAcquistoFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoPrezzoFiltro = 0;
+                prezzoAcquistoFiltro.setText("Prezzo");
+                statoDataRilascio = 0;
+                dataFiltro.setText("DataRilascio");
 
+                statoDataAcquisto = statoDataAcquisto + 1;
+
+                if (statoDataAcquisto == 3){
+                    statoDataAcquisto = 0;
+                }
+
+                if (statoDataAcquisto == 0){
+                    dataAcquistoFiltro.setText("DataAcquisto");
+                }else if(statoDataAcquisto == 1){
+                    dataAcquistoFiltro.setText("DataAcquisto↑");
+                }else if(statoDataAcquisto == 2){
+                    dataAcquistoFiltro.setText("DataAcquisto↓");
+                }
+
+                filtraLibreria();
+            }
+        });
     }
+
+    private void associaListenerPulsanteResetFiltro(){
+        pulsanteResetFiltri.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ricercaLibreria.setText("");
+
+                genereFiltro.setSelectedIndex(-1);
+                categoriaFiltro.setSelectedIndex(-1);
+                pegiFiltro.setSelectedIndex(-1);
+
+                dataFiltro.setText("DataRilascio");
+                prezzoAcquistoFiltro.setText("Prezzo");
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                filtraLibreria();
+            }
+        });
+    };
     //Profilo
 
     private void associaListenerModificaInformazioni() {
