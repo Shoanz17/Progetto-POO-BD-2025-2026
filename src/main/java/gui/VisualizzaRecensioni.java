@@ -63,7 +63,7 @@ public class VisualizzaRecensioni {
         for (Fattura f : acquistiUtenteConRecensione) {
             Recensione r = f.getRecensione();
 
-            Object[] riga = {f.getGioco().getGioco().getTitolo(), f.getGioco().getPiattaforma().getNome(), r.getVoto(), r.getDifferenzaLike()};
+            Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), r.getVoto(), r.getDifferenzaLike()};
             modelloRecensioni.addRow(riga);
         }
         tabellaRecensioni.setModel(modelloRecensioni);

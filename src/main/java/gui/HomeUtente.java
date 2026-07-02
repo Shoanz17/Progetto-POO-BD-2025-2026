@@ -198,10 +198,10 @@ public class HomeUtente {
         });
     }
 
-    private void associaListenerTabbedPane(){
-        tabbedPane.addMouseListener(new MouseAdapter() {
+    private void associaListenerTabbedPane() {
+        tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
                 //configuraInterfacciaCatalogo();
                 configuraInterfacciaLibreria();
                 configuraInterfacciaProfilo();

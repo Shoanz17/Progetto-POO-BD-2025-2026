@@ -42,14 +42,20 @@ public class Recensione {
         pulsanteRilasciaRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    controller.rilasciaRecensione((Integer) spinnerVoto.getValue(),textAreaDescrizione.getText(),fatturaSelezionata);
+                int risposta = 0;
+                if (fatturaSelezionata.getRecensione() != null) {
+                    risposta = JOptionPane.showConfirmDialog(recensioneFrame, "Sovrascriverai la recensione giá lasciata", "Sicuro?", JOptionPane.YES_NO_OPTION);
+                }
+                if (risposta == JOptionPane.YES_OPTION) {
+                    try {
+                        controller.rilasciaRecensione((Integer) spinnerVoto.getValue(), textAreaDescrizione.getText(), fatturaSelezionata);
 
-                    JOptionPane.showMessageDialog(recensioneFrame, "Recensione rilasciata correttamente!", "Successo", JOptionPane.INFORMATION_MESSAGE);
-                    recensioneFrame.dispose();
+                        JOptionPane.showMessageDialog(recensioneFrame, "Recensione rilasciata correttamente!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                        recensioneFrame.dispose();
 
-                } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(recensioneFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(recensioneFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
@@ -60,6 +66,7 @@ public class Recensione {
         recensioneFrame.setContentPane(recensionePanel);
         recensioneFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        testoNomeGioco.setText(controller.getTitoloDaFattura(fatturaSelezionata));
         configuraSpinnerVoto();
     }
 
