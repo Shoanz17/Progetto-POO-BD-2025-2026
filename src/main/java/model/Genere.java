@@ -66,4 +66,8 @@ public class Genere {
         return java.util.Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return nome;
     }
+}

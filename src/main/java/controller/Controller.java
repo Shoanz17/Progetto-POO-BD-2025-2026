@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 
 public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
-
+    private ArrayList<Genere> listaGeneri = new ArrayList<>();
 
     public Controller(){
         try {
@@ -24,7 +25,6 @@ public class Controller {
         Utente utente = new Utente("Marco", "Password1!", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
         Utente utente1 = new Utente("Marcoss", "Password1!weq", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
 
-
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
         Sviluppatore sviluppatore1 = new Sviluppatore("Nintendo", "NintendoTheBest100!!", "Noi facciamo i giochi peggiori");
 
@@ -35,6 +35,23 @@ public class Controller {
         listaAccountLoggati.add(sviluppatore);
         listaAccountLoggati.add(sviluppatore1);
         listaAccountLoggati.add(admin);
+
+        Genere genere1 = new Genere(0,"Azione");
+        Genere genere2 = new Genere(1,"Sopravvivenza");
+        Genere genere3 = new Genere(2,"JRPG");
+
+        listaGeneri.add(genere1);
+        listaGeneri.add(genere2);
+        listaGeneri.add(genere3);
+
+        Gioco gioco = new Gioco("The Witcher 3",Categoria.AAA,18,sviluppatore1,listaGeneri);
+        PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco("Switch","Nintendo",true);
+        EdizioneGioco edizioneGioco = new EdizioneGioco(gioco,piattaformaDiGioco,60,LocalDate.of(2015, 10, 12));
+
+        Fattura fattura1 = new Fattura(utente,edizioneGioco,50);
+
+        utente.addGioco(fattura1);
+        sviluppatore1.addGioco(gioco);
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
@@ -193,6 +210,56 @@ public class Controller {
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);
         //Da eliminare dal database
+    }
+
+    public ArrayList<Genere> getGeneri(){
+        return listaGeneri;
+    }
+
+    public ArrayList<Categoria> getCategorie(){
+        ArrayList<Categoria> categorie = new ArrayList<>();
+
+        for (Categoria c : Categoria.values()){
+            categorie.add(c);
+        }
+        return categorie;
+    }
+
+    public String getTitoloDaFattura(Fattura f){
+        return f.getGioco().getGioco().getTitolo();
+    }
+    public String getPiattaformaDaFattura(Fattura f){
+        return f.getGioco().getPiattaforma().getNome();
+    }
+    public String getDataRilascioDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getDataRilascio());
+    }
+    public String getCategoriaDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getCategoria());
+    }
+    public String getPegiDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getPegi());
+    }
+    public String getGeneriDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getGeneri());
+    }
+    public String getSviluppatoreDaFattura(Fattura f){
+        return String.valueOf(f.getGioco().getGioco().getSviluppatore());
+    }
+    public Gioco getGiocoDaFattura(Fattura f){
+        return f.getGioco().getGioco();
+    }
+    public int getVotoDaFattura(Fattura f){return f.getRecensione().getVoto();}
+    public int getDifferenzaLikeDaFattura(Fattura f){return f.getRecensione().getDifferenzaLike();}
+    public Recensione getRecensioneDaFattura(Fattura f){return f.getRecensione();}
+    public String getDescrizioneRecensioneDaFattura(Fattura f){return f.getRecensione().getDescrizione();}
+
+    public void rilasciaRecensione(int voto, String testo,Fattura fatturaSelezionata) throws CampoNonValidoException{
+        Recensione nuovaRecensione = new Recensione(voto,testo,fatturaSelezionata);
+
+        fatturaSelezionata.setRecensione(nuovaRecensione);
+
+        //da salvare nel dao
     }
 
 //    Da fare con DAO

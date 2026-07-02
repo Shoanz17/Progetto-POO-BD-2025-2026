@@ -1,18 +1,13 @@
 package gui;
 
 import controller.Controller;
-import model.CampoNonValidoException;
-import model.Sviluppatore;
-import model.Utente;
+import model.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class HomeUtente {
@@ -32,9 +27,8 @@ public class HomeUtente {
     private JLabel pegiLibreria;
     private JLabel keyLibreria;
     private JLabel dataAcquistoLibreria;
-    private JButton pulsanteFiltra;
     private JButton pulsanteResetFiltri;
-    private JComboBox categorieFiltro;
+    private JComboBox genereFiltro;
     private JButton dataFiltro;
     private JButton prezzoAcquistoFiltro;
     private JComboBox categoriaFiltro;
@@ -120,6 +114,10 @@ public class HomeUtente {
     private Controller controller;
     private Utente utenteLoggato;
 
+    private int statoDataRilascio = 0;
+    private int statoPrezzoFiltro = 0;
+    private int statoDataAcquisto = 0;
+
     public HomeUtente(Controller controller, JFrame accediGUI, Utente accountLoggato) {
         this.controller = controller;
         this.utenteLoggato = accountLoggato;
@@ -127,19 +125,31 @@ public class HomeUtente {
         //metodi base per il funzionamento
         configuraInterfaccia();
         associaListenerLogout(accediGUI);
+        associaListenerTabbedPane();
 
         //Catalogo
 
         //Libreria
 
+        associaListenerRilasciaRecensione();
+
+        associaListenerListaLibreria();
+        associaListenerCopiaKey();
+        associaListenerRicercaLibreria();
+        associaListenerDataFiltro();
+        associaListenerPrezzoAcquistoFiltro();
+        associaListenerDataAcquistoFiltro();
+        associaListenerComboBoxGenere();
+        associaListenerComboBoxCategoria();
+        associaListenerComboBoxPegi();
+        associaListenerPulsanteResetFiltro();
+
         //Profilo
-        associaListenerRecensione();
+
         associaListenerModificaInformazioni();
         associaListenerVisualizzaRecensioni();
-
         associaListenerAggiungiSaldo();
 
-        associaListenerCopiaKey();
 
         associaListenerListaSviluppatori();
         associaListenerRicercaSviluppatori();
@@ -163,6 +173,17 @@ public class HomeUtente {
     }
 
     //metodi base per il funzionamento
+    private void configuraInterfaccia() {
+        homeUtenteFrame = new JFrame("Home Utente");
+        homeUtenteFrame.setContentPane(homeUtentePanel);
+        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //configuraInterfacciaCatalogo();
+        configuraInterfacciaLibreria();
+        configuraInterfacciaProfilo();
+        configuraInterfacciaCarrello();
+    }
+
     private void associaListenerLogout(JFrame accediGUI) {
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
@@ -177,26 +198,246 @@ public class HomeUtente {
         });
     }
 
-    private void configuraInterfaccia() {
-        homeUtenteFrame = new JFrame("Home Utente");
-        homeUtenteFrame.setContentPane(homeUtentePanel);
-        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //configuraInterfacciaCatalogo();
-        configuraInterfacciaLibreria();
-        configuraInterfacciaProfilo();
-        configuraInterfacciaCarrello();
-    }
-
-    //Profilo
-    private void associaListenerRecensione() {
-        pulsanteRecensione.addActionListener(new ActionListener() {
+    private void associaListenerTabbedPane() {
+        tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                Recensione recensione = new Recensione(homeUtenteFrame);
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                //configuraInterfacciaCatalogo();
+                configuraInterfacciaLibreria();
+                configuraInterfacciaProfilo();
+                configuraInterfacciaCarrello();
             }
         });
     }
+
+    //Libreria
+
+    private void associaListenerRilasciaRecensione() {
+        pulsanteRecensione.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Recensione recensione = new Recensione(controller, HomeUtente.this, utenteLoggato, (Fattura) listaLibreria.getSelectedValue());
+            }
+        });
+    }
+
+    private void associaListenerListaLibreria(){
+        listaLibreria.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Fattura fatturaSelezionata = (Fattura) listaLibreria.getSelectedValue();
+
+                if (fatturaSelezionata != null){
+                    edizioneLibreria.setText("Titolo: " + controller.getTitoloDaFattura(fatturaSelezionata));
+                    piattaformaDiGiocoLibreria.setText("Piattaforma: "+ controller.getPiattaformaDaFattura(fatturaSelezionata));
+                    dataRilascioLibreria.setText("Data di rilascio: " + controller.getDataRilascioDaFattura(fatturaSelezionata));
+                    categoriaLibreria.setText("Categoria: " + controller.getCategoriaDaFattura(fatturaSelezionata));
+                    pegiLibreria.setText("Pegi: " + controller.getPegiDaFattura(fatturaSelezionata));
+                    generiLibreria.setText("Generi: " + controller.getGeneriDaFattura(fatturaSelezionata));
+                    sviluppatoreLibreria.setText("Sviluppatore: " + controller.getSviluppatoreDaFattura(fatturaSelezionata));
+
+                    dataAcquistoLibreria.setText("Data d'acquisto: " + String.valueOf(fatturaSelezionata.getDataAcquisto()));
+                    keyLibreria.setText(fatturaSelezionata.getKey());
+                    prezzoAcquistoLibreria.setText("Prezzo: " + String.valueOf(fatturaSelezionata.getPrezzoAcquisto())+"€");
+
+                    pulsanteCopiaKey.setEnabled(true);
+                    pulsanteRecensione.setEnabled(true);
+                }
+
+            }
+        });
+    }
+
+    private void associaListenerCopiaKey() {
+        pulsanteCopiaKey.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String keyDaCopiare = keyLibreria.getText();
+                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
+                java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
+                java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
+            }
+        });
+    }
+
+    private void filtraLibreria() {
+        String testoRicerca = ricercaLibreria.getText().toLowerCase().trim();
+        DefaultListModel<Fattura> modelloFiltrato = new DefaultListModel<>();
+        ArrayList<Fattura> listaPartenza = utenteLoggato.getGiochiAcquistati();
+
+        ArrayList<Fattura> listaFiltrata = new ArrayList<>();
+
+        for (Fattura f : listaPartenza) {
+            Gioco giocoBase = controller.getGiocoDaFattura(f); //fatto solo per non scrivere sempre get gioco get gioco
+
+            if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
+                    (genereFiltro.getSelectedIndex() == -1 || (giocoBase.getGeneri() != null && giocoBase.getGeneri().contains(genereFiltro.getSelectedItem()))) && //Controllo se il genere della combobox é contenuto nei generi del gioco
+                    (categoriaFiltro.getSelectedIndex() == -1 || giocoBase.getCategoria().equals(categoriaFiltro.getSelectedItem())) && //controllo che la categoria selezionata sia uguale al gioco
+                    (pegiFiltro.getSelectedIndex() == -1 || String.valueOf(giocoBase.getPegi()).equals(pegiFiltro.getSelectedItem().toString()))) { //controllo ce il pegi sia uguale
+
+                listaFiltrata.add(f); // Se é tutto apposto filtro
+            }
+        }
+
+        if (statoDataRilascio == 1){
+            listaFiltrata.sort((f1, f2) -> f1.getGioco().getDataRilascio().compareTo(f2.getGioco().getDataRilascio()));
+        }else if (statoDataRilascio == 2){
+            listaFiltrata.sort((f1,f2) -> f2.getGioco().getDataRilascio().compareTo(f1.getGioco().getDataRilascio()));
+        }
+
+        if (statoPrezzoFiltro == 1){
+            listaFiltrata.sort((f1,f2) -> Integer.compare(f1.getPrezzoAcquisto(), f2.getPrezzoAcquisto()));
+        }else if (statoPrezzoFiltro == 2){
+            listaFiltrata.sort((f1,f2) -> Integer.compare(f2.getPrezzoAcquisto(), f1.getPrezzoAcquisto()));
+        }
+
+        if (statoDataAcquisto == 1){
+            listaFiltrata.sort((f1,f2) -> f1.getDataAcquisto().compareTo(f2.getDataAcquisto()));
+        }else if(statoDataAcquisto == 2){
+            listaFiltrata.sort((f1,f2) -> f2.getDataAcquisto().compareTo(f1.getDataAcquisto()));
+        }
+
+        for (Fattura f : listaFiltrata) {
+            modelloFiltrato.addElement(f);
+        }
+
+        listaLibreria.setModel(modelloFiltrato);
+    }
+
+    private void associaListenerRicercaLibreria(){
+        ricercaLibreria.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerDataFiltro(){
+        dataFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoPrezzoFiltro = 0;
+                prezzoAcquistoFiltro.setText("Prezzo");
+                statoDataAcquisto = 0;
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                statoDataRilascio = statoDataRilascio + 1;
+                if (statoDataRilascio == 3){
+                    statoDataRilascio = 0;
+                }
+
+                if (statoDataRilascio == 0){
+                    dataFiltro.setText("DataRilascio");
+                } else if (statoDataRilascio == 1){
+                    dataFiltro.setText("DataRilascio ↑");
+                } else if (statoDataRilascio == 2){
+                    dataFiltro.setText("DataRilascio ↓");
+                }
+
+                filtraLibreria();
+            }
+        });
+    }
+    private void associaListenerPrezzoAcquistoFiltro(){
+        prezzoAcquistoFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoDataRilascio = 0;
+                dataFiltro.setText("DataRilascio");
+                statoDataAcquisto = 0;
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                statoPrezzoFiltro = statoPrezzoFiltro + 1;
+                if (statoPrezzoFiltro == 3){
+                    statoPrezzoFiltro = 0;
+                }
+
+                if (statoPrezzoFiltro == 0){
+                    prezzoAcquistoFiltro.setText("Prezzo");
+                } else if (statoPrezzoFiltro == 1){
+                    prezzoAcquistoFiltro.setText("Prezzo↑");
+                } else if (statoPrezzoFiltro == 2){
+                    prezzoAcquistoFiltro.setText("Prezzo↓");
+                }
+
+                filtraLibreria();
+            }
+        });
+    }
+    private void associaListenerDataAcquistoFiltro(){
+        dataAcquistoFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoPrezzoFiltro = 0;
+                prezzoAcquistoFiltro.setText("Prezzo");
+                statoDataRilascio = 0;
+                dataFiltro.setText("DataRilascio");
+
+                statoDataAcquisto = statoDataAcquisto + 1;
+
+                if (statoDataAcquisto == 3){
+                    statoDataAcquisto = 0;
+                }
+
+                if (statoDataAcquisto == 0){
+                    dataAcquistoFiltro.setText("DataAcquisto");
+                }else if(statoDataAcquisto == 1){
+                    dataAcquistoFiltro.setText("DataAcquisto↑");
+                }else if(statoDataAcquisto == 2){
+                    dataAcquistoFiltro.setText("DataAcquisto↓");
+                }
+
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxGenere(){
+        genereFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxCategoria(){
+        categoriaFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+    private void associaListenerComboBoxPegi(){
+        pegiFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteResetFiltro(){
+        pulsanteResetFiltri.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ricercaLibreria.setText("");
+
+                genereFiltro.setSelectedIndex(-1);
+                categoriaFiltro.setSelectedIndex(-1);
+                pegiFiltro.setSelectedIndex(-1);
+
+                dataFiltro.setText("DataRilascio");
+                prezzoAcquistoFiltro.setText("Prezzo");
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                filtraLibreria();
+            }
+        });
+    };
+    //Profilo
 
     private void associaListenerModificaInformazioni() {
         pulsanteModificaInformazioni.addActionListener(new ActionListener() {
@@ -221,18 +462,6 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AggiungiFondi aggiungiFondi = new AggiungiFondi(controller, HomeUtente.this, utenteLoggato);
-            }
-        });
-    }
-
-    private void associaListenerCopiaKey() {
-        pulsanteCopiaKey.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String keyDaCopiare = keyLibreria.getText();
-                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
-                java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
-                java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
             }
         });
     }
@@ -526,6 +755,36 @@ public class HomeUtente {
         // Disabilita i pulsanti per evitare click nulli
         pulsanteCopiaKey.setEnabled(false);
         pulsanteRecensione.setEnabled(false);
+
+        configuraComboBoxGenere();
+        configuraComboBoxCategoria();
+        configuraComboBoxPegi();
+
+        filtraLibreria();
+
+    }
+
+    private void configuraComboBoxGenere() {
+        DefaultComboBoxModel<Genere> modelGenere = new DefaultComboBoxModel<>();
+
+        modelGenere.addAll(controller.getGeneri());
+
+        genereFiltro.setModel(modelGenere);
+        genereFiltro.setSelectedIndex(-1);
+
+    }
+
+    private void configuraComboBoxCategoria() {
+        DefaultComboBoxModel<Categoria> modelCategoria = new DefaultComboBoxModel<>();
+
+        modelCategoria.addAll(controller.getCategorie());
+
+        categoriaFiltro.setModel(modelCategoria);
+        categoriaFiltro.setSelectedIndex(-1);
+    }
+
+    private void configuraComboBoxPegi() {
+        pegiFiltro.setSelectedIndex(-1);
     }
 
     private void mostraForm() {
