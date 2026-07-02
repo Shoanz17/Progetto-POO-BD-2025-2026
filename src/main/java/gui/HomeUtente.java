@@ -125,6 +125,7 @@ public class HomeUtente {
         //metodi base per il funzionamento
         configuraInterfaccia();
         associaListenerLogout(accediGUI);
+        associaListenerTabbedPane();
 
         //Catalogo
 
@@ -138,6 +139,9 @@ public class HomeUtente {
         associaListenerDataFiltro();
         associaListenerPrezzoAcquistoFiltro();
         associaListenerDataAcquistoFiltro();
+        associaListenerComboBoxGenere();
+        associaListenerComboBoxCategoria();
+        associaListenerComboBoxPegi();
         associaListenerPulsanteResetFiltro();
 
         //Profilo
@@ -169,6 +173,17 @@ public class HomeUtente {
     }
 
     //metodi base per il funzionamento
+    private void configuraInterfaccia() {
+        homeUtenteFrame = new JFrame("Home Utente");
+        homeUtenteFrame.setContentPane(homeUtentePanel);
+        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //configuraInterfacciaCatalogo();
+        configuraInterfacciaLibreria();
+        configuraInterfacciaProfilo();
+        configuraInterfacciaCarrello();
+    }
+
     private void associaListenerLogout(JFrame accediGUI) {
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
@@ -183,15 +198,16 @@ public class HomeUtente {
         });
     }
 
-    private void configuraInterfaccia() {
-        homeUtenteFrame = new JFrame("Home Utente");
-        homeUtenteFrame.setContentPane(homeUtentePanel);
-        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //configuraInterfacciaCatalogo();
-        configuraInterfacciaLibreria();
-        configuraInterfacciaProfilo();
-        configuraInterfacciaCarrello();
+    private void associaListenerTabbedPane(){
+        tabbedPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //configuraInterfacciaCatalogo();
+                configuraInterfacciaLibreria();
+                configuraInterfacciaProfilo();
+                configuraInterfacciaCarrello();
+            }
+        });
     }
 
     //Libreria
@@ -200,7 +216,7 @@ public class HomeUtente {
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Recensione recensione = new Recensione(homeUtenteFrame);
+                Recensione recensione = new Recensione(controller, HomeUtente.this, utenteLoggato, (Fattura) listaLibreria.getSelectedValue());
             }
         });
     }
@@ -212,17 +228,17 @@ public class HomeUtente {
                 Fattura fatturaSelezionata = (Fattura) listaLibreria.getSelectedValue();
 
                 if (fatturaSelezionata != null){
-                    edizioneLibreria.setText(controller.getTitoloDaFattura(fatturaSelezionata));
-                    piattaformaDiGiocoLibreria.setText(controller.getPiattaformaDaFattura(fatturaSelezionata));
-                    dataRilascioLibreria.setText(controller.getDataRilascioDaFattura(fatturaSelezionata));
-                    categoriaLibreria.setText(controller.getCategoriaDaFattura(fatturaSelezionata));
-                    pegiLibreria.setText(controller.getPegiDaFattura(fatturaSelezionata));
-                    generiLibreria.setText(controller.getGeneriDaFattura(fatturaSelezionata));
-                    sviluppatoreLibreria.setText(controller.getSviluppatoreDaFattura(fatturaSelezionata));
+                    edizioneLibreria.setText("Titolo: " + controller.getTitoloDaFattura(fatturaSelezionata));
+                    piattaformaDiGiocoLibreria.setText("Piattaforma: "+ controller.getPiattaformaDaFattura(fatturaSelezionata));
+                    dataRilascioLibreria.setText("Data di rilascio: " + controller.getDataRilascioDaFattura(fatturaSelezionata));
+                    categoriaLibreria.setText("Categoria: " + controller.getCategoriaDaFattura(fatturaSelezionata));
+                    pegiLibreria.setText("Pegi: " + controller.getPegiDaFattura(fatturaSelezionata));
+                    generiLibreria.setText("Generi: " + controller.getGeneriDaFattura(fatturaSelezionata));
+                    sviluppatoreLibreria.setText("Sviluppatore: " + controller.getSviluppatoreDaFattura(fatturaSelezionata));
 
-                    dataAcquistoLibreria.setText(String.valueOf(fatturaSelezionata.getDataAcquisto()));
+                    dataAcquistoLibreria.setText("Data d'acquisto: " + String.valueOf(fatturaSelezionata.getDataAcquisto()));
                     keyLibreria.setText(fatturaSelezionata.getKey());
-                    prezzoAcquistoLibreria.setText(String.valueOf(fatturaSelezionata.getPrezzoAcquisto()));
+                    prezzoAcquistoLibreria.setText("Prezzo: " + String.valueOf(fatturaSelezionata.getPrezzoAcquisto())+"€");
 
                     pulsanteCopiaKey.setEnabled(true);
                     pulsanteRecensione.setEnabled(true);
@@ -372,6 +388,32 @@ public class HomeUtente {
                     dataAcquistoFiltro.setText("DataAcquisto↓");
                 }
 
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxGenere(){
+        genereFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxCategoria(){
+        categoriaFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+    private void associaListenerComboBoxPegi(){
+        pegiFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 filtraLibreria();
             }
         });

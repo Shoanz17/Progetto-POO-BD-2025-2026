@@ -1,5 +1,10 @@
 package gui;
 
+import controller.Controller;
+import model.CampoNonValidoException;
+import model.Fattura;
+import model.Utente;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,27 +19,38 @@ public class Recensione {
     private JLabel testoDescrizione;
 
     public JFrame recensioneFrame;
+    private Controller controller;
+    private HomeUtente homeUtente;
+    private Utente utenteLoggato;
+    private Fattura fatturaSelezionata;
 
-    public Recensione(JFrame homeUtente) {
+    public Recensione(Controller controller, HomeUtente homeUtente, Utente utenteLoggato, Fattura fatturaSelezionata) {
+
+        this.controller = controller;
+        this.homeUtente = homeUtente;
+        this.utenteLoggato = utenteLoggato;
+        this.fatturaSelezionata = fatturaSelezionata;
 
         configuraInterfaccia();
-        mostraForm(homeUtente);
-
-        configuraSpinnerVoto();
 
         associaListenerRilasciaRecensione();
-    }
 
-    private void configuraSpinnerVoto(){
-        spinnerVoto.setModel(new SpinnerNumberModel(0, 0, 100, 1));
+        mostraForm(homeUtente.homeUtenteFrame);
     }
 
     private void associaListenerRilasciaRecensione(){
         pulsanteRilasciaRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.rilasciaRecensione((Integer) spinnerVoto.getValue(),textAreaDescrizione.getText(),fatturaSelezionata);
 
-                recensioneFrame.dispose();
+                    JOptionPane.showMessageDialog(recensioneFrame, "Recensione rilasciata correttamente!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                    recensioneFrame.dispose();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(recensioneFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -43,6 +59,12 @@ public class Recensione {
         recensioneFrame = new JFrame("Recensione");
         recensioneFrame.setContentPane(recensionePanel);
         recensioneFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        configuraSpinnerVoto();
+    }
+
+    private void configuraSpinnerVoto(){
+        spinnerVoto.setModel(new SpinnerNumberModel(0, 0, 100, 1));
     }
 
     private void mostraForm(JFrame homeUtente) {
