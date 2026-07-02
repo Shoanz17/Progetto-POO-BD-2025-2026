@@ -43,7 +43,7 @@ public class Recensione {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int risposta = 0;
-                if (fatturaSelezionata.getRecensione() != null) {
+                if (controller.getRecensioneDaFattura(fatturaSelezionata) != null) {
                     risposta = JOptionPane.showConfirmDialog(recensioneFrame, "Sovrascriverai la recensione giá lasciata", "Sicuro?", JOptionPane.YES_NO_OPTION);
                 }
                 if (risposta == JOptionPane.YES_OPTION) {

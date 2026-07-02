@@ -51,7 +51,7 @@ public class Controller {
         Fattura fattura1 = new Fattura(utente,edizioneGioco,50);
 
         utente.addGioco(fattura1);
-
+        sviluppatore1.addGioco(gioco);
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException{
@@ -246,6 +246,13 @@ public class Controller {
     public String getSviluppatoreDaFattura(Fattura f){
         return String.valueOf(f.getGioco().getGioco().getSviluppatore());
     }
+    public Gioco getGiocoDaFattura(Fattura f){
+        return f.getGioco().getGioco();
+    }
+    public int getVotoDaFattura(Fattura f){return f.getRecensione().getVoto();}
+    public int getDifferenzaLikeDaFattura(Fattura f){return f.getRecensione().getDifferenzaLike();}
+    public Recensione getRecensioneDaFattura(Fattura f){return f.getRecensione();}
+    public String getDescrizioneRecensioneDaFattura(Fattura f){return f.getRecensione().getDescrizione();}
 
     public void rilasciaRecensione(int voto, String testo,Fattura fatturaSelezionata) throws CampoNonValidoException{
         Recensione nuovaRecensione = new Recensione(voto,testo,fatturaSelezionata);

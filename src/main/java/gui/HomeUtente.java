@@ -268,7 +268,7 @@ public class HomeUtente {
         ArrayList<Fattura> listaFiltrata = new ArrayList<>();
 
         for (Fattura f : listaPartenza) {
-            Gioco giocoBase = f.getGioco().getGioco(); //fatto solo per non scrivere sempre get gioco get gioco
+            Gioco giocoBase = controller.getGiocoDaFattura(f); //fatto solo per non scrivere sempre get gioco get gioco
 
             if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
                     (genereFiltro.getSelectedIndex() == -1 || (giocoBase.getGeneri() != null && giocoBase.getGeneri().contains(genereFiltro.getSelectedItem()))) && //Controllo se il genere della combobox é contenuto nei generi del gioco
