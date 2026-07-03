@@ -13,7 +13,7 @@ public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
     private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
-
+    private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
 
     public Controller(){
         try {
@@ -52,6 +52,7 @@ public class Controller {
         EdizioneGioco edizioneGioco = new EdizioneGioco(gioco,piattaformaDiGioco,60,LocalDate.of(2015, 10, 12));
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
+        listaEdizioniGiochi.add(edizioneGioco);
 
         Fattura fattura1 = new Fattura(utente,edizioneGioco,50);
 
@@ -269,6 +270,10 @@ public class Controller {
 
     public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco(){
         return listaPiattaformeDiGioco;
+    }
+
+    public ArrayList<EdizioneGioco> getEdizioniGiochi() {
+        return listaEdizioniGiochi;
     }
 
 //    Da fare con DAO

@@ -113,6 +113,6 @@ public class Fattura {
 
     @Override
     public String toString() {
-        return this.getGioco().getGioco().getTitolo();
+        return gioco.getGioco().getTitolo() +" ("+ gioco.getPiattaforma().getNome() + ")";
     }
 }

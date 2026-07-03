@@ -128,6 +128,7 @@ public class HomeUtente {
         associaListenerTabbedPane();
 
         //Catalogo
+        associaListenerSliderPrezzoCatalogo();
 
         //Libreria
 
@@ -206,6 +207,35 @@ public class HomeUtente {
                 configuraInterfacciaLibreria();
                 configuraInterfacciaProfilo();
                 configuraInterfacciaCarrello();
+            }
+        });
+    }
+    //Catalogo
+
+    private final int[] fascePrezzo = {0, 15, 35, 60, 90, -1};
+
+    private void associaListenerSliderPrezzoCatalogo() {
+        sliderPrezzoCatalogo.addChangeListener(new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+
+                int indiceSelezionato = sliderPrezzoCatalogo.getValue() / 20;
+
+                if (indiceSelezionato < 0 || indiceSelezionato > 5){
+                    indiceSelezionato = 0;
+                }
+
+                int prezzoScelto = fascePrezzo[indiceSelezionato];
+
+                if (prezzoScelto == -1) {
+                    prezzoFiltroCatalogo.setText("Prezzo: Nessun limite");
+                } else {
+                    prezzoFiltroCatalogo.setText("Prezzo: fino a " + prezzoScelto + " €");
+                }
+
+                if (!sliderPrezzoCatalogo.getValueIsAdjusting()) {
+                    // filtraCatalogo();
+                }
             }
         });
     }
@@ -706,8 +736,11 @@ public class HomeUtente {
         categoriaCatalogo.setText("-");
         testoMediaVoti.setText("-");
         dataDiRilascioCatalogo.setText("-");
+        prezzoFiltroCatalogo.setText("Prezzo: Nessun limite");
 
-        prezzoFiltroCatalogo.setText("Prezzo: ");
+        votoCatalogo.setText("-");
+        valutazioneRecensioneCatalogo.setText("-");
+
 
         configuraComboBoxPiattaformaCatalogo();
         configuraComboBoxGenereCatalogo();

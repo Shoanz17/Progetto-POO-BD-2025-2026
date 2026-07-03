@@ -171,13 +171,18 @@
                     <constraints/>
                     <properties>
                       <font size="18"/>
-                      <majorTickSpacing value="20"/>
+                      <majorTickSpacing value="100"/>
                       <minorTickSpacing value="20"/>
                       <paintLabels value="false"/>
                       <paintTicks value="true"/>
                       <snapToTicks value="true"/>
+                      <value value="100"/>
                       <valueIsAdjusting value="false"/>
                     </properties>
+                    <clientProperties>
+                      <JSlider.isFilled class="java.lang.Boolean" value="false"/>
+                      <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
+                    </clientProperties>
                   </component>
                   <component id="95f6e" class="javax.swing.JComboBox" binding="piattaformaFiltroCatalogo">
                     <constraints/>
