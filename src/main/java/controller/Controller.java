@@ -12,6 +12,8 @@ import java.util.ArrayList;
 public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
+    private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
+
 
     public Controller(){
         try {
@@ -44,9 +46,12 @@ public class Controller {
         listaGeneri.add(genere2);
         listaGeneri.add(genere3);
 
+
         Gioco gioco = new Gioco("The Witcher 3",Categoria.AAA,18,sviluppatore1,listaGeneri);
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco("Switch","Nintendo",true);
         EdizioneGioco edizioneGioco = new EdizioneGioco(gioco,piattaformaDiGioco,60,LocalDate.of(2015, 10, 12));
+
+        listaPiattaformeDiGioco.add(piattaformaDiGioco);
 
         Fattura fattura1 = new Fattura(utente,edizioneGioco,50);
 
@@ -260,6 +265,10 @@ public class Controller {
         fatturaSelezionata.setRecensione(nuovaRecensione);
 
         //da salvare nel dao
+    }
+
+    public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco(){
+        return listaPiattaformeDiGioco;
     }
 
 //    Da fare con DAO

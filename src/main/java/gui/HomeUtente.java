@@ -178,7 +178,7 @@ public class HomeUtente {
         homeUtenteFrame.setContentPane(homeUtentePanel);
         homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //configuraInterfacciaCatalogo();
+        configuraInterfacciaCatalogo();
         configuraInterfacciaLibreria();
         configuraInterfacciaProfilo();
         configuraInterfacciaCarrello();
@@ -696,48 +696,54 @@ public class HomeUtente {
 
 
     //Metodi utilizzati dalle interfacce
-    private void configuraInterfacciaProfilo() {
-        configuraTestoInformazioniPersonali();
-        configuraTestoSaldo();
 
-        testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(utenteLoggato.getDataCreazione()));
-        testoBannato.setVisible(utenteLoggato.isBannato());
-        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
-        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+    private void configuraInterfacciaCatalogo(){
+        sviluppatoreCatalogo.setText("-");
+        prezzoCatalogo.setText("-");
+        piattaformaCatalogo.setText("-");
+        genereCatalogo.setText("-");
+        pegiCatalogo.setText("-");
+        categoriaCatalogo.setText("-");
+        testoMediaVoti.setText("-");
+        dataDiRilascioCatalogo.setText("-");
 
-        filtraUtenti(); //Filtro campo vuoto quindi stampa tutti
-        filtraSviluppatori(); //stessa cosa di sopra
+        prezzoFiltroCatalogo.setText("Prezzo: ");
 
-        testoGiochiRilasciati.setText("Giochi Rilasciati: -");
-        testoGiocoPiuVenduto.setText("Gioco piú venduto: -");
-
-        testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: -");
-        testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: -");
-        testoGenereUtenteSelezionato.setText("Genere: -");
-        testoBannatoUtente.setText("Bannato: -");
-
+        configuraComboBoxPiattaformaCatalogo();
+        configuraComboBoxGenereCatalogo();
+        configuraComboBoxPegiCatalogo();
+        configuraComboBoxCategoriaCatalogo();
     }
 
-    void configuraTestoSaldo() {
-        testoSaldo.setText(String.format("Saldo: %d €", utenteLoggato.getSaldo()));
+    private void configuraComboBoxPiattaformaCatalogo(){
+        DefaultComboBoxModel<PiattaformaDiGioco> modelPiattaforma = new DefaultComboBoxModel<>();
+
+        modelPiattaforma.addAll(controller.getPiattaformeDiGioco());
+
+        piattaformaFiltroCatalogo.setModel(modelPiattaforma);
+        piattaformaFiltroCatalogo.setSelectedIndex(-1);
     }
 
-    void configuraTestoInformazioniPersonali() {
-        testoNome.setText("Nome: " + utenteLoggato.getNome());
-        testoGenere.setText("Genere: " + String.valueOf(utenteLoggato.getGenere()));
-        testoEmail.setText("Email: " + utenteLoggato.getEmail());
-        testoDataDiNascita.setText("Data di nascita: " + String.valueOf(utenteLoggato.getDataNascita()));
+    private void configuraComboBoxGenereCatalogo(){
+        DefaultComboBoxModel<Genere> modelGenere = new DefaultComboBoxModel<>();
+
+        modelGenere.addAll(controller.getGeneri());
+
+        genereFiltroCatalogo.setModel(modelGenere);
+        genereFiltroCatalogo.setSelectedIndex(-1);
     }
 
-    private void configuraInterfacciaCarrello() {
-        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
-        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tabellaGiochiCarrello.setModel(tabellaCarrello);
+    private void configuraComboBoxPegiCatalogo(){
+        pegiFiltroCatalogo.setSelectedIndex(-1);
+    }
+
+    private void configuraComboBoxCategoriaCatalogo(){
+        DefaultComboBoxModel<Categoria> modelCategoria = new DefaultComboBoxModel<>();
+
+        modelCategoria.addAll(controller.getCategorie());
+
+        categoriaFiltroCatalogo.setModel(modelCategoria);
+        categoriaFiltroCatalogo.setSelectedIndex(-1);
     }
 
     private void configuraInterfacciaLibreria() {
@@ -791,5 +797,49 @@ public class HomeUtente {
         homeUtenteFrame.pack();
         homeUtenteFrame.setLocationRelativeTo(null);
         homeUtenteFrame.setVisible(true);
+    }
+
+    private void configuraInterfacciaProfilo() {
+        configuraTestoInformazioniPersonali();
+        configuraTestoSaldo();
+
+        testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(utenteLoggato.getDataCreazione()));
+        testoBannato.setVisible(utenteLoggato.isBannato());
+        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
+        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+
+        filtraUtenti(); //Filtro campo vuoto quindi stampa tutti
+        filtraSviluppatori(); //stessa cosa di sopra
+
+        testoGiochiRilasciati.setText("Giochi Rilasciati: -");
+        testoGiocoPiuVenduto.setText("Gioco piú venduto: -");
+
+        testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: -");
+        testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: -");
+        testoGenereUtenteSelezionato.setText("Genere: -");
+        testoBannatoUtente.setText("Bannato: -");
+
+    }
+
+    void configuraTestoSaldo() {
+        testoSaldo.setText(String.format("Saldo: %d €", utenteLoggato.getSaldo()));
+    }
+
+    void configuraTestoInformazioniPersonali() {
+        testoNome.setText("Nome: " + utenteLoggato.getNome());
+        testoGenere.setText("Genere: " + String.valueOf(utenteLoggato.getGenere()));
+        testoEmail.setText("Email: " + utenteLoggato.getEmail());
+        testoDataDiNascita.setText("Data di nascita: " + String.valueOf(utenteLoggato.getDataNascita()));
+    }
+
+    private void configuraInterfacciaCarrello() {
+        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
+        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabellaGiochiCarrello.setModel(tabellaCarrello);
     }
 }
