@@ -128,6 +128,8 @@ public class HomeUtente {
         associaListenerTabbedPane();
 
         //Catalogo
+
+        associaListenerListaCatalogo();
         associaListenerRicercaCatalogo();
         associaListenerSliderPrezzoCatalogo();
         associaListenerComboBoxPiattaformaCatalogo();
@@ -137,6 +139,8 @@ public class HomeUtente {
         associaListenerDataFiltroCatalogo();
         associaListenerCheckBoxPromozioneCatalogo();
         associaListenerCheckBoxSviluppatoriSeguitiCatalogo();
+
+        associaListenerAggiungiAlCarrello();
 
 
         //Libreria
@@ -221,6 +225,28 @@ public class HomeUtente {
     }
 
     //Catalogo
+    private void associaListenerListaCatalogo(){
+        listaCatalogo.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                EdizioneGioco edizioneGiocoSelezionata = (EdizioneGioco) listaCatalogo.getSelectedValue();
+
+                if (edizioneGiocoSelezionata != null) {
+                    sviluppatoreCatalogo.setText("Sviluppatore: " + controller.getNomeSviluppatoreDaEdizioneGioco(edizioneGiocoSelezionata));
+                    prezzoCatalogo.setText("Prezzo: " + controller.getPrezzoDaEdizioneGioco(edizioneGiocoSelezionata) + "€");
+                    piattaformaCatalogo.setText("Piattaforma: " + controller.getPiattaformaDaEdizioneGioco(edizioneGiocoSelezionata));
+                    genereCatalogo.setText("Generi: " + controller.getGeneriDaEdizioneGioco(edizioneGiocoSelezionata));
+                    pegiCatalogo.setText("Pegi: " + controller.getPegiDaEdizioneGioco(edizioneGiocoSelezionata));
+                    categoriaCatalogo.setText("Categoria: " + controller.getCategoriaDaEdizioneGioco(edizioneGiocoSelezionata));
+                    testoMediaVoti.setText("Media voti: " + controller.getMediaVotiEdizioneGioco(edizioneGiocoSelezionata));
+                    dataDiRilascioCatalogo.setText("Data di rilascio: " + controller.getDataDiRilascioDaEdizioneGioco(edizioneGiocoSelezionata));
+
+                    pulsanteAggiungiAlCarrello.setEnabled(true);
+                }
+            }
+        });
+    }
+
     private void associaListenerRicercaCatalogo() {
         ricercaCatalogo.addKeyListener(new KeyAdapter() {
             @Override
@@ -318,6 +344,21 @@ public class HomeUtente {
         });
     }
 
+    private void associaListenerAggiungiAlCarrello(){
+        pulsanteAggiungiAlCarrello.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    EdizioneGioco giocoScelto = (EdizioneGioco) listaCatalogo.getSelectedValue();
+                    controller.aggiungiAlCarrello(utenteLoggato, giocoScelto);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Gioco aggiunto al carrello", "Successo", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+    }
 
     //Libreria
 
@@ -772,6 +813,9 @@ public class HomeUtente {
         votoCatalogo.setText("-");
         valutazioneRecensioneCatalogo.setText("-");
 
+        pulsanteAggiungiAlCarrello.setEnabled(false);
+        pulsanteLike.setEnabled(false);
+        pulsanteDislike.setEnabled(false);
 
         configuraComboBoxPiattaformaCatalogo();
         configuraComboBoxGenereCatalogo();
@@ -956,9 +1000,9 @@ public class HomeUtente {
 
     void configuraTestoInformazioniPersonali() {
         testoNome.setText("Nome: " + controller.getNomeUtente(utenteLoggato));
-        testoGenere.setText("Genere: " + String.valueOf(controller.getGenereUtente(utenteLoggato)));
+        testoGenere.setText("Genere: " + controller.getGenereUtente(utenteLoggato));
         testoEmail.setText("Email: " + controller.getEmailUtente(utenteLoggato));
-        testoDataDiNascita.setText("Data di nascita: " + String.valueOf(controller.getDataDiNascitaUtente(utenteLoggato)));
+        testoDataDiNascita.setText("Data di nascita: " + controller.getDataDiNascitaUtente(utenteLoggato));
     }
 
     void configuraTestoSaldo() {

@@ -134,7 +134,7 @@ public class Controller {
     }
 
     public int getNumeroRecensioniUtente(Utente utenteLoggato) {
-        return utenteLoggato.getListaAmici().size();
+        return getListaRecensioniUtente(utenteLoggato).size();
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
@@ -203,6 +203,15 @@ public class Controller {
     public String getDescrizioneSviluppatore(Sviluppatore s){return s.getDescrizione();}
     public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s){return s.getListaGiochi().size();}
     public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
+    public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getSviluppatore().getNome();}
+    public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPrezzo();}
+    public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPiattaforma();}
+    public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getGeneri();}
+    public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getPegi();}
+    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco){return 1;} //da fare
+    public Categoria getCategoriaDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getCategoria();}
+    public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getDataRilascio();}
+
 
 
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
@@ -383,6 +392,20 @@ public class Controller {
             }
         }
         return listaFinale;
+    }
+
+    public void aggiungiAlCarrello(Utente utenteLoggato, EdizioneGioco edizioneGiocoSelezionata) throws CampoNonValidoException {
+
+        if (edizioneGiocoSelezionata == null) {
+            throw new CampoNonValidoException("Selezionare un gioco dal catalogo");
+        }
+
+        if (utenteLoggato.getCarrello() == null) {
+            Carrello nuovoCarrello = new Carrello(utenteLoggato);
+            utenteLoggato.setCarrello(nuovoCarrello);
+        }
+
+        utenteLoggato.getCarrello().addEdizione(edizioneGiocoSelezionata);
     }
 
 //    Da fare con DAO
