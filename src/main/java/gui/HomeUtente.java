@@ -234,7 +234,7 @@ public class HomeUtente {
                 }
 
                 if (!sliderPrezzoCatalogo.getValueIsAdjusting()) {
-                    // filtraCatalogo();
+                    filtraCatalogo(prezzoScelto);
                 }
             }
         });
@@ -746,6 +746,8 @@ public class HomeUtente {
         configuraComboBoxGenereCatalogo();
         configuraComboBoxPegiCatalogo();
         configuraComboBoxCategoriaCatalogo();
+
+        filtraCatalogo(-1);
     }
 
     private void configuraComboBoxPiattaformaCatalogo(){
@@ -777,6 +779,33 @@ public class HomeUtente {
 
         categoriaFiltroCatalogo.setModel(modelCategoria);
         categoriaFiltroCatalogo.setSelectedIndex(-1);
+    }
+
+    private void filtraCatalogo(int prezzoSelezionato){
+        String testoRicercaCatalogo = ricercaCatalogo.getText().toLowerCase().trim();
+        DefaultListModel<EdizioneGioco> modelloFiltrato = new DefaultListModel<>();
+        ArrayList<EdizioneGioco> listaPartenza = controller.getEdizioniGiochi();
+
+        ArrayList<EdizioneGioco> listaFiltrata = new ArrayList<>();
+
+        for (EdizioneGioco e : listaPartenza) {
+
+            if (e.getGioco().getTitolo().toLowerCase().contains(testoRicercaCatalogo) &&
+                    (prezzoSelezionato == -1 || e.getPrezzo() <= prezzoSelezionato) &&
+                    (genereFiltroCatalogo.getSelectedIndex() == -1 || (e.getGioco().getGeneri() != null && e.getGioco().getGeneri().contains(genereFiltroCatalogo.getSelectedItem()))) &&
+                    (categoriaFiltroCatalogo.getSelectedIndex() == -1 || e.getGioco().getCategoria().equals(categoriaFiltroCatalogo.getSelectedItem())) &&
+                    (pegiFiltroCatalogo.getSelectedIndex() == -1 || String.valueOf(e.getGioco().getPegi()).equals(pegiFiltroCatalogo.getSelectedItem().toString())) &&
+                    (!checkBoxInPromozione.isSelected() || controller.isInPromozione(e)) &&
+                    (!checkBoXSviluppatori.isSelected() || utenteLoggato.getSviluppatoriSeguiti().contains(e.getGioco().getSviluppatore()))) {
+
+                listaFiltrata.add(e); // Se é tutto apposto filtro
+            }
+        }
+        for (EdizioneGioco e : listaFiltrata) {
+            modelloFiltrato.addElement(e);
+        }
+
+        listaCatalogo.setModel(modelloFiltrato);
     }
 
     private void configuraInterfacciaLibreria() {

@@ -276,6 +276,15 @@ public class Controller {
         return listaEdizioniGiochi;
     }
 
+    public boolean isInPromozione(EdizioneGioco edizioneGioco){
+        for (GiocoInPromozione p : edizioneGioco.getGioco().getPromozioni()){
+            if (p.getPromozione().getDataFine().isAfter(LocalDate.now())){
+                return true;
+            }
+        }
+        return false;
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
