@@ -128,7 +128,16 @@ public class HomeUtente {
         associaListenerTabbedPane();
 
         //Catalogo
+        associaListenerRicercaCatalogo();
         associaListenerSliderPrezzoCatalogo();
+        associaListenerComboBoxPiattaformaCatalogo();
+        associaListenerComboBoxCategoriaCatalogo();
+        associaListenerComboBoxGenereCatalogo();
+        associaListenerComboBoxPegiCatalogo();
+        associaListenerDataFiltroCatalogo();
+        associaListenerCheckBoxPromozioneCatalogo();
+        associaListenerCheckBoxSviluppatoriSeguitiCatalogo();
+
 
         //Libreria
 
@@ -203,7 +212,7 @@ public class HomeUtente {
         tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             @Override
             public void stateChanged(javax.swing.event.ChangeEvent e) {
-                //configuraInterfacciaCatalogo();
+                configuraInterfacciaCatalogo();
                 configuraInterfacciaLibreria();
                 configuraInterfacciaProfilo();
                 configuraInterfacciaCarrello();
@@ -211,6 +220,14 @@ public class HomeUtente {
         });
     }
     //Catalogo
+    private void associaListenerRicercaCatalogo(){
+        ricercaCatalogo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
 
     private final int[] fascePrezzo = {0, 15, 35, 60, 90, -1};
 
@@ -218,27 +235,88 @@ public class HomeUtente {
         sliderPrezzoCatalogo.addChangeListener(new javax.swing.event.ChangeListener() {
             @Override
             public void stateChanged(javax.swing.event.ChangeEvent e) {
-
-                int indiceSelezionato = sliderPrezzoCatalogo.getValue() / 20;
-
-                if (indiceSelezionato < 0 || indiceSelezionato > 5){
-                    indiceSelezionato = 0;
-                }
-
-                int prezzoScelto = fascePrezzo[indiceSelezionato];
-
-                if (prezzoScelto == -1) {
-                    prezzoFiltroCatalogo.setText("Prezzo: Nessun limite");
-                } else {
-                    prezzoFiltroCatalogo.setText("Prezzo: fino a " + prezzoScelto + " €");
-                }
-
-                if (!sliderPrezzoCatalogo.getValueIsAdjusting()) {
-                    filtraCatalogo(prezzoScelto);
-                }
+                filtraCatalogo();
             }
         });
     }
+
+    private void associaListenerComboBoxPiattaformaCatalogo(){
+        piattaformaFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxGenereCatalogo(){
+        genereFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxPegiCatalogo(){
+        pegiFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerDataFiltroCatalogo(){
+        pulsanteDataDiRilascioFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                statoDataRilascio = statoDataRilascio + 1;
+                if (statoDataRilascio == 3){
+                    statoDataRilascio = 0;
+                }
+
+                if (statoDataRilascio == 0){
+                    pulsanteDataDiRilascioFiltroCatalogo.setText("DataRilascio");
+                } else if (statoDataRilascio == 1){
+                    pulsanteDataDiRilascioFiltroCatalogo.setText("DataRilascio ↑");
+                } else if (statoDataRilascio == 2){
+                    pulsanteDataDiRilascioFiltroCatalogo.setText("DataRilascio ↓");
+                }
+
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxCategoriaCatalogo(){
+        categoriaFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxPromozioneCatalogo(){
+        checkBoxInPromozione.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxSviluppatoriSeguitiCatalogo(){
+        checkBoXSviluppatori.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
 
     //Libreria
 
@@ -747,7 +825,7 @@ public class HomeUtente {
         configuraComboBoxPegiCatalogo();
         configuraComboBoxCategoriaCatalogo();
 
-        filtraCatalogo(-1);
+        filtraCatalogo();
     }
 
     private void configuraComboBoxPiattaformaCatalogo(){
@@ -781,7 +859,18 @@ public class HomeUtente {
         categoriaFiltroCatalogo.setSelectedIndex(-1);
     }
 
-    private void filtraCatalogo(int prezzoSelezionato){
+    private void filtraCatalogo(){
+
+        int indiceSelezionato = sliderPrezzoCatalogo.getValue() / 20;
+        if (indiceSelezionato < 0 || indiceSelezionato > 5) indiceSelezionato = 0;
+        int prezzoSelezionato = fascePrezzo[indiceSelezionato];
+
+        if (prezzoSelezionato == -1) {
+            prezzoFiltroCatalogo.setText("Prezzo: Nessun limite");
+        } else {
+            prezzoFiltroCatalogo.setText("Prezzo: fino a " + prezzoSelezionato + " €");
+        }
+
         String testoRicercaCatalogo = ricercaCatalogo.getText().toLowerCase().trim();
         DefaultListModel<EdizioneGioco> modelloFiltrato = new DefaultListModel<>();
         ArrayList<EdizioneGioco> listaPartenza = controller.getEdizioniGiochi();
@@ -801,6 +890,13 @@ public class HomeUtente {
                 listaFiltrata.add(e); // Se é tutto apposto filtro
             }
         }
+
+        if (statoDataRilascio == 1){
+            listaFiltrata.sort((e1, e2) -> e1.getDataRilascio().compareTo(e2.getDataRilascio()));
+        }else if (statoDataRilascio == 2){
+            listaFiltrata.sort((e1,e2) -> e2.getDataRilascio().compareTo(e1.getDataRilascio()));
+        }
+
         for (EdizioneGioco e : listaFiltrata) {
             modelloFiltrato.addElement(e);
         }
