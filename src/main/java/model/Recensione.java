@@ -55,4 +55,9 @@ public class Recensione {
     public void addDislike() {
         this.differenzaLike--;
     }
+
+    @Override
+    public String toString() {
+        return "Da: " + getFattura().getUtente().getNome();
+    }
 }

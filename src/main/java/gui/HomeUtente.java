@@ -142,6 +142,8 @@ public class HomeUtente {
 
         associaListenerAggiungiAlCarrello();
 
+        associaListenerListaRecensioni();
+
 
         //Libreria
 
@@ -242,6 +244,12 @@ public class HomeUtente {
                     dataDiRilascioCatalogo.setText("Data di rilascio: " + controller.getDataDiRilascioDaEdizioneGioco(edizioneGiocoSelezionata));
 
                     pulsanteAggiungiAlCarrello.setEnabled(true);
+
+                    ArrayList<model.Recensione> listaRecensioniGiocoSelezionato = controller.getRecensioniEdizioneGioco(edizioneGiocoSelezionata);
+                    DefaultListModel<model.Recensione> modelloListaRecensioni = new DefaultListModel<>();
+                    modelloListaRecensioni.addAll(listaRecensioniGiocoSelezionato);
+                    listaRecensioniCatalogo.setModel(modelloListaRecensioni);
+
                 }
             }
         });
@@ -356,6 +364,25 @@ public class HomeUtente {
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.WARNING_MESSAGE);
                 }
+            }
+        });
+    }
+
+    private  void associaListenerListaRecensioni(){
+        listaRecensioniCatalogo.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                model.Recensione recensioneSelezionata = (model.Recensione) listaRecensioniCatalogo.getSelectedValue();
+
+                if (recensioneSelezionata != null){
+                    descrizioneRecensioneCatalogo.setText(controller.getDescrizioneRecensione(recensioneSelezionata));
+                    votoCatalogo.setText("Voto: " + controller.getVotoRecensione(recensioneSelezionata));
+                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione(recensioneSelezionata));
+
+                    pulsanteLike.setEnabled(true);
+                    pulsanteDislike.setEnabled(true);
+                }
+
             }
         });
     }
@@ -884,7 +911,7 @@ public class HomeUtente {
 
         String pegiScelto = null;
         if (pegiFiltroCatalogo.getSelectedIndex() != -1) {
-            pegiScelto = pegiFiltroCatalogo.getSelectedItem().toString();
+            pegiScelto = String.valueOf(pegiFiltroCatalogo.getSelectedItem());
         }
 
         boolean inPromozione = checkBoxInPromozione.isSelected();

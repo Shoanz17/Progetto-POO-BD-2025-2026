@@ -14,6 +14,7 @@ public class Controller {
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
     private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
+    private ArrayList<Fattura> listaFatture = new ArrayList<>();
 
     public Controller() {
         try {
@@ -56,6 +57,7 @@ public class Controller {
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
 
+        listaFatture.add(fattura1);
         utente.addGioco(fattura1);
         sviluppatore1.addGioco(gioco);
     }
@@ -407,6 +409,20 @@ public class Controller {
 
         utenteLoggato.getCarrello().addEdizione(edizioneGiocoSelezionata);
     }
+
+    public ArrayList<Recensione> getRecensioniEdizioneGioco(EdizioneGioco edizioneGioco){
+        ArrayList<Recensione> listaRecensioniGioco = new ArrayList<>();
+        for (Fattura f : listaFatture){
+            if(f.getGioco().equals(edizioneGioco) && f.getRecensione() != null) {
+                listaRecensioniGioco.add(f.getRecensione());
+            }
+        }
+        return listaRecensioniGioco;
+    }
+
+    public String getDescrizioneRecensione(Recensione recensione){return recensione.getDescrizione();}
+    public int getVotoRecensione(Recensione recensione){return recensione.getVoto();}
+    public int getDifferenzaLikeRecensione(Recensione recensione){return recensione.getDifferenzaLike();}
 
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
