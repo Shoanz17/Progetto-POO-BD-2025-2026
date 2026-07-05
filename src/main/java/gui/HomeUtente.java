@@ -143,6 +143,8 @@ public class HomeUtente {
         associaListenerAggiungiAlCarrello();
 
         associaListenerListaRecensioni();
+        associaListenerMettiLike();
+        associaListenerMettiDislike();
 
 
         //Libreria
@@ -383,6 +385,34 @@ public class HomeUtente {
                     pulsanteDislike.setEnabled(true);
                 }
 
+            }
+        });
+    }
+
+    private void associaListenerMettiLike(){
+        pulsanteLike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.mettiLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(),utenteLoggato);
+                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private void associaListenerMettiDislike(){
+        pulsanteDislike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.mettiDislikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(),utenteLoggato);
+                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }

@@ -16,6 +16,9 @@ public class Controller {
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
     private ArrayList<Fattura> listaFatture = new ArrayList<>();
 
+    private ArrayList<String> storicoLike = new ArrayList<>();
+    private ArrayList<String> storicoDislike = new ArrayList<>();
+
     public Controller() {
         try {
             creaDatiFittizi();
@@ -423,6 +426,40 @@ public class Controller {
     public String getDescrizioneRecensione(Recensione recensione){return recensione.getDescrizione();}
     public int getVotoRecensione(Recensione recensione){return recensione.getVoto();}
     public int getDifferenzaLikeRecensione(Recensione recensione){return recensione.getDifferenzaLike();}
+
+    public void mettiLikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
+
+        String ricevutaVoto = utenteLoggato.getId() + "_" + recensione.getFattura().getKey();
+
+        if (storicoLike.contains(ricevutaVoto)) {
+            throw new CampoNonValidoException("Hai giá messo Like!");
+        }
+
+        if (storicoDislike.contains(ricevutaVoto)) {
+            storicoDislike.remove(ricevutaVoto);
+            recensione.addLike();
+        } else {
+            storicoLike.add(ricevutaVoto);
+            recensione.addLike();
+        }
+    }
+
+    public void mettiDislikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
+
+        String ricevutaVoto = utenteLoggato.getId() + "_" + recensione.getFattura().getKey();
+
+        if (storicoDislike.contains(ricevutaVoto)) {
+            throw new CampoNonValidoException("Hai già messo Dislike! Review bombing?");
+        }
+
+        if (storicoLike.contains(ricevutaVoto)) {
+            storicoLike.remove(ricevutaVoto);
+            recensione.addDislike();
+        } else {
+            storicoDislike.add(ricevutaVoto);
+            recensione.addDislike();
+        }
+    }
 
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
