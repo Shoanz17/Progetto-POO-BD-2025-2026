@@ -1067,6 +1067,7 @@ public class HomeUtente {
     }
 
     private void configuraInterfacciaCarrello() {
+
         String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
         DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
             @Override
@@ -1074,7 +1075,23 @@ public class HomeUtente {
                 return false;
             }
         };
+
+        if (controller.getCarrelloUtente(utenteLoggato) != null) {
+
+            ArrayList<EdizioneGioco> giochiNelCarrello = controller.getGiochiCarrello(utenteLoggato);
+
+            for (EdizioneGioco ed : giochiNelCarrello) {
+                Object[] riga = {
+                        controller.getTitoloDaEdizioneGioco(ed),
+                        controller.getPiattaformaDaEdizioneGioco(ed),
+                        controller.getPrezzoDaEdizioneGioco(ed) + "€"
+                };
+                tabellaCarrello.addRow(riga);
+            }
+        }
+
         tabellaGiochiCarrello.setModel(tabellaCarrello);
+        testoTotaleCarrello.setText(String.valueOf(controller.getPrezzoCarrello(utenteLoggato)) + "€");
     }
 
     private void mostraForm() {

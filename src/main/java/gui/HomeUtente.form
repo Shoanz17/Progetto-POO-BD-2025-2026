@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="homeUtentePanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="2086" height="897"/>
+      <xy x="20" y="20" width="2086" height="1221"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -905,16 +905,6 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="3c8aa" class="javax.swing.JTable" binding="tabellaGiochiCarrello">
-                <constraints>
-                  <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <font size="24"/>
-                </properties>
-              </component>
               <component id="d676c" class="javax.swing.JButton" binding="pulsanteRimuoviCarrello">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -929,7 +919,8 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font size="18"/>
+                  <font size="40"/>
+                  <foreground color="-16711825"/>
                   <text value="0.00€"/>
                 </properties>
               </component>
@@ -942,6 +933,27 @@
                   <text value="Acquista"/>
                 </properties>
               </component>
+              <scrollpane id="f8e54">
+                <constraints>
+                  <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="3c8aa" class="javax.swing.JTable" binding="tabellaGiochiCarrello">
+                    <constraints/>
+                    <properties>
+                      <autoCreateRowSorter value="false"/>
+                      <fillsViewportHeight value="false"/>
+                      <focusable value="false"/>
+                      <font size="24"/>
+                      <intercellSpacing width="1" height="1"/>
+                      <rowHeight value="40"/>
+                      <rowMargin value="1"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
         </children>

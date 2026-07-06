@@ -461,6 +461,22 @@ public class Controller {
         }
     }
 
+    public Carrello getCarrelloUtente(Utente utenteLoggato){
+        return utenteLoggato.getCarrello();
+    }
+
+    public ArrayList<EdizioneGioco> getGiochiCarrello(Utente utenteLoggato){
+        return utenteLoggato.getCarrello().getListaGiochi();
+    }
+
+    public String getTitoloDaEdizioneGioco(EdizioneGioco edizioneGioco){
+        return edizioneGioco.getGioco().getTitolo();
+    }
+
+    public int getPrezzoCarrello(Utente utenteLoggato){
+        return utenteLoggato.getCarrello().getTotale();
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
