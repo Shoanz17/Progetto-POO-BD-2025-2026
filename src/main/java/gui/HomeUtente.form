@@ -171,13 +171,18 @@
                     <constraints/>
                     <properties>
                       <font size="18"/>
-                      <majorTickSpacing value="20"/>
+                      <majorTickSpacing value="100"/>
                       <minorTickSpacing value="20"/>
                       <paintLabels value="false"/>
                       <paintTicks value="true"/>
                       <snapToTicks value="true"/>
+                      <value value="100"/>
                       <valueIsAdjusting value="false"/>
                     </properties>
+                    <clientProperties>
+                      <JSlider.isFilled class="java.lang.Boolean" value="false"/>
+                      <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
+                    </clientProperties>
                   </component>
                   <component id="95f6e" class="javax.swing.JComboBox" binding="piattaformaFiltroCatalogo">
                     <constraints/>
@@ -196,6 +201,27 @@
                     <constraints/>
                     <properties>
                       <font size="18"/>
+                      <model>
+                        <item value=""/>
+                        <item value="1"/>
+                        <item value="2"/>
+                        <item value="3"/>
+                        <item value="4"/>
+                        <item value="5"/>
+                        <item value="6"/>
+                        <item value="7"/>
+                        <item value="8"/>
+                        <item value="9"/>
+                        <item value="10"/>
+                        <item value="11"/>
+                        <item value="12"/>
+                        <item value="13"/>
+                        <item value="14"/>
+                        <item value="15"/>
+                        <item value="16"/>
+                        <item value="17"/>
+                        <item value="18"/>
+                      </model>
                     </properties>
                   </component>
                   <component id="61962" class="javax.swing.JButton" binding="pulsanteDataDiRilascioFiltroCatalogo">

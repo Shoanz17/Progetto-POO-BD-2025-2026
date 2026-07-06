@@ -72,4 +72,9 @@ public class EdizioneGioco {
         this.prezzo = prezzo;
         this.dataRilascio = dataRilascio;
     }
+
+    @Override
+    public String toString() {
+        return getGioco().getTitolo() + " ("+ getPiattaforma() + ")";
+    }
 }
