@@ -29,7 +29,7 @@ public class HomeSviluppatore {
     private JLabel aggPegi;
     private JButton aggiungiGiocoButton;
     private JComboBox aggCategoria;
-    private JList listaGiochiAggiunti;
+    private JList <Gioco>listaGiochiAggiunti;
     private JTextField textTitolo;
     private JLabel titolo;
     private JLabel genere;
@@ -47,24 +47,7 @@ public class HomeSviluppatore {
     private JScrollPane checkPiattScroll;
     private JPanel piattaformaPanel;
     private JPanel aggiungiGioco;
-    private JPanel modificaGioco;
-    private JList listaModificaGioco;
-    private JLabel modificaTitolo;
-    private JTextField modificaTitoloText;
-    private JLabel modificaCategoria;
-    private JLabel modificaPegi;
-    private JLabel modificaPrezzo;
     private JComboBox modificaCategoriaCombo;
-    private JTextField modificaPegiText;
-    private JTextField modificaPrezzoText;
-    private JLabel modificaDataRilascio;
-    private JTextField modificaDataRilascioText;
-    private JButton aggiungiGenere;
-    private JButton rimuoviGenere;
-    private JLabel modificaPiattaforma;
-    private JLabel modificaGenere;
-    private JButton aggiungiPiatttaforma;
-    private JButton rimuoviPiattaforma;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
     private List<JCheckBox> listaCheckboxPiattaforma = new ArrayList<>();
@@ -76,7 +59,12 @@ public class HomeSviluppatore {
     public HomeSviluppatore() {
         Controller controller = new Controller();
         this.controller = controller;
+
+
+
+        popolaListe();
         selezioneListaLibreria();
+        pannelloAggMod();
         inserimentoGioco();
     }
 
@@ -89,8 +77,37 @@ public class HomeSviluppatore {
     }
 
 
+
+
+    private void popolaListe() {
+        // creiamo i modelli corretti
+        modelLibreria = new DefaultListModel<>();
+        modelPannelloControllo = new DefaultListModel<>();
+
+
+        // prendiamo i giochi dal controller
+        ArrayList<Gioco> tuttiIGiochi = controller.getListaGiochi();
+
+
+        // riempiamo i modelli con gli oggetti Gioco
+        if (tuttiIGiochi != null) {
+            for (Gioco gioco : tuttiIGiochi) {
+                modelLibreria.addElement(gioco);
+                modelPannelloControllo.addElement(gioco);
+            }
+        }
+
+        // colleghiamo i modelli alle liste visive
+        listaTitoli.setModel(modelLibreria);
+        listaGiochiAggiunti.setModel(modelPannelloControllo);
+
+
+    }
+
+
     private void selezioneListaLibreria() {
         listaTitoli.addListSelectionListener(new ListSelectionListener() {
+
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 // questo if serve a evitare di eseguire il codice 2 volte
@@ -131,6 +148,47 @@ public class HomeSviluppatore {
             }
         });
     }
+
+
+    private void pannelloAggMod(){
+    listaGiochiAggiunti.addListSelectionListener(new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
+                if(giocoSelezionato!= null)
+                {
+                    textTitolo.setText(giocoSelezionato.getTitolo());
+                    textPegi.setText(String.valueOf(giocoSelezionato.getPegi()));
+                    aggCategoria.setSelectedItem(giocoSelezionato.getCategoria());
+
+                    if (!giocoSelezionato.getEdizioni().isEmpty()) {
+                        EdizioneGioco ed = giocoSelezionato.getEdizioni().get(0);
+                        textPrezzo.setText(String.valueOf(ed.getPrezzo()));
+                        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        textDataRilascio.setText(ed.getDataRilascio().format(formatter));
+
+                        for(JCheckBox cb : listaCheckboxGeneri ) {cb.setSelected(false);}
+
+                        for(JCheckBox cb : listaCheckboxGeneri )
+                        {if(giocoSelezionato.getGeneri().contains(cb.getText())){cb.setSelected(true);}}
+
+                        for (JCheckBox cbP : listaCheckboxPiattaforma){cbP.setSelected(false);}
+
+                        for(JCheckBox cbP : listaCheckboxPiattaforma)
+                        {if(cbP.getText().equals(ed.getPiattaforma().getNome())){cbP.setSelected(true);}}
+                    }
+
+
+                }
+
+            }
+
+
+        }
+    });
+    }
+
 
 
     private void inserimentoGioco() {
@@ -231,13 +289,6 @@ public class HomeSviluppatore {
         piattaformaPanel.revalidate();
         piattaformaPanel.repaint();
 
-        // inizializziamo la lista di destra
-        modelPannelloControllo = new DefaultListModel<>();
-        listaGiochiAggiunti.setModel(modelPannelloControllo);
-
-        // inizializziamo la Libreria e colleghiamola
-        modelLibreria = new DefaultListModel<>();
-        listaTitoli.setModel(modelLibreria);
     }
 
     private void configuraAzioneAggiungi() {
