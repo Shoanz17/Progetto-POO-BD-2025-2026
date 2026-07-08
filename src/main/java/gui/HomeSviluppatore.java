@@ -27,7 +27,7 @@ public class HomeSviluppatore {
     private JLabel categoria;
     private JTextField textPegi;
     private JLabel aggPegi;
-    private JButton aggiungiGiocoButton;
+    private JButton aggModButton;
     private JComboBox aggCategoria;
     private JList <Gioco>listaGiochiAggiunti;
     private JTextField textTitolo;
@@ -158,6 +158,7 @@ public class HomeSviluppatore {
                 Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
                 if(giocoSelezionato!= null)
                 {
+                    aggModButton.setText("Salva modifiche");
                     textTitolo.setText(giocoSelezionato.getTitolo());
                     textPegi.setText(String.valueOf(giocoSelezionato.getPegi()));
                     aggCategoria.setSelectedItem(giocoSelezionato.getCategoria());
@@ -170,8 +171,14 @@ public class HomeSviluppatore {
 
                         for(JCheckBox cb : listaCheckboxGeneri ) {cb.setSelected(false);}
 
-                        for(JCheckBox cb : listaCheckboxGeneri )
-                        {if(giocoSelezionato.getGeneri().contains(cb.getText())){cb.setSelected(true);}}
+                        for(JCheckBox cb : listaCheckboxGeneri ){
+                            for(Genere g : giocoSelezionato.getGeneri())
+                            {
+                            {if(cb.getText().equals(g.toString())){cb.setSelected(true);}}
+
+                            }
+                        }
+
 
                         for (JCheckBox cbP : listaCheckboxPiattaforma){cbP.setSelected(false);}
 
@@ -292,14 +299,16 @@ public class HomeSviluppatore {
     }
 
     private void configuraAzioneAggiungi() {
-        aggiungiGiocoButton.addActionListener(e -> {
+
+        aggModButton.addActionListener(e -> {
+        Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
             String titolo = textTitolo.getText().trim();
             Categoria categoriaEnum = (Categoria) aggCategoria.getSelectedItem();
             String pegiStr = textPegi.getText().trim();
             String prezzoStr = textPrezzo.getText().trim();
             String dataRilascio = textDataRilascio.getText().trim();
 
-            // Controlliamo che anche la data sia compilata
+            // controlliamo che anche la data sia compilata
             if (titolo.isEmpty() ||
                     pegiStr.isEmpty() || prezzoStr.isEmpty() || dataRilascio.isEmpty() || dataRilascio.equals("GG/MM/AAAA")) {
 
@@ -309,11 +318,12 @@ public class HomeSviluppatore {
 
 
 
-
             try {
-                // conversioni dei tipi di dati
                 int pegi = Integer.parseInt(pegiStr);
                 double prezzo = Double.parseDouble(prezzoStr.replace(",", "."));
+
+
+                // conversioni dei tipi di dati
                 Sviluppatore sviluppatoreLoggato = new Sviluppatore("Sviluppatore test", "uaomA11@", "salve a tutti");
 
 
@@ -336,7 +346,17 @@ public class HomeSviluppatore {
                 }
 
 
-                Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
+                pulisciCampiInserimento();
+
+                JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
+            if (giocoSelezionato!= null)
+            {
+                giocoSelezionato.setTitolo(titolo);
+                giocoSelezionato.setPegi(pegi);
+                giocoSelezionato.setCategoria(categoriaEnum);
+                giocoSelezionato.getGeneri().clear();
+
+            }else{ Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
 
                 // convertiamo la stringa della data in un oggetto LocalDate
                 java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -349,11 +369,7 @@ public class HomeSviluppatore {
 
 
                 modelPannelloControllo.addElement(nuovoGioco);
-                modelLibreria.addElement(nuovoGioco);
-
-                pulisciCampiInserimento();
-
-                JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
+                modelLibreria.addElement(nuovoGioco);}
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Errore nei dati numerici!\nIl PEGI deve essere un intero.\nIl Prezzo deve essere un numero decimale.");
