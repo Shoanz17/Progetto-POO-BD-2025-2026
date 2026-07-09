@@ -6,6 +6,8 @@ import model.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,8 @@ public class HomeSviluppatore {
     private JScrollPane checkPiattScroll;
     private JPanel piattaformaPanel;
     private JPanel aggiungiGioco;
+    private JButton reset;
+    private JButton rimuoviGiocoButton;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -66,6 +70,7 @@ public class HomeSviluppatore {
         selezioneListaLibreria();
         pannelloAggMod();
         inserimentoGioco();
+
     }
 
     public static void main(String[] args) {
@@ -73,6 +78,8 @@ public class HomeSviluppatore {
         frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+//        frame.setSize(800,600);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
@@ -156,6 +163,8 @@ public class HomeSviluppatore {
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
+
+
                 if(giocoSelezionato!= null)
                 {
                     aggModButton.setText("Salva modifiche");
@@ -197,7 +206,6 @@ public class HomeSviluppatore {
     }
 
 
-
     private void inserimentoGioco() {
         inizializzaGraficaControllo();
         configuraAzioneAggiungi();
@@ -228,11 +236,6 @@ public class HomeSviluppatore {
             }
         });
 
-        /*String[] generiTest = {
-                "Azione", "Avventura", "RPG", "Strategia",
-                "Sport", "Corse", "Simulazione", "Picchiaduro",
-                "Horror", "Puzzle", "Arcade", "Sparatutto"
-        };*/
 
         generiPanel.setLayout(new BoxLayout(generiPanel, BoxLayout.Y_AXIS));
 
@@ -262,11 +265,6 @@ public class HomeSviluppatore {
         generiPanel.revalidate();
         generiPanel.repaint();
 
-
-//        String[] piattaformaTest = {
-//                "PS4", "PS5", "Nintendo Switch", "PC",
-//                "WII", "XBOX", "XBOX360"
-//        };
 
         piattaformaPanel.setLayout(new BoxLayout(piattaformaPanel, BoxLayout.Y_AXIS));
 
@@ -318,7 +316,10 @@ public class HomeSviluppatore {
 
 
 
+
             try {
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate dataLocale = LocalDate.parse(dataRilascio, formatter);
                 int pegi = Integer.parseInt(pegiStr);
                 double prezzo = Double.parseDouble(prezzoStr.replace(",", "."));
 
@@ -346,21 +347,36 @@ public class HomeSviluppatore {
                 }
 
 
-                pulisciCampiInserimento();
 
-                JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
             if (giocoSelezionato!= null)
             {
                 giocoSelezionato.setTitolo(titolo);
                 giocoSelezionato.setPegi(pegi);
                 giocoSelezionato.setCategoria(categoriaEnum);
-                giocoSelezionato.getGeneri().clear();
 
-            }else{ Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
 
-                // convertiamo la stringa della data in un oggetto LocalDate
-                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate dataLocale = LocalDate.parse(dataRilascio, formatter);
+                for (EdizioneGioco ed : new ArrayList<EdizioneGioco>( giocoSelezionato.getEdizioni()))
+                {giocoSelezionato.removeEdizione(ed);}
+
+
+                for (PiattaformaDiGioco newPiattaforma : listaPiattaforma) {
+                    EdizioneGioco edizioneMod = new EdizioneGioco(giocoSelezionato, newPiattaforma, (int) prezzo, dataLocale);
+                    giocoSelezionato.addEdizione(edizioneMod);
+                }
+
+                for (Genere g : new ArrayList<Genere>( giocoSelezionato.getGeneri()))
+                    {giocoSelezionato.removeGenere(g);}
+
+                for(Genere g : listaGeneri)
+                    {giocoSelezionato.addGenere(g);}
+
+                JOptionPane.showMessageDialog(null, "Modifiche salvate con Successo!");
+
+
+            }else
+
+                { Gioco nuovoGioco = new Gioco(titolo, categoriaEnum, pegi, sviluppatoreLoggato, listaGeneri);
+
 
                 for (PiattaformaDiGioco newPiattaforma : listaPiattaforma) {
                     EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, newPiattaforma, (int) prezzo, dataLocale);
@@ -369,7 +385,14 @@ public class HomeSviluppatore {
 
 
                 modelPannelloControllo.addElement(nuovoGioco);
-                modelLibreria.addElement(nuovoGioco);}
+                modelLibreria.addElement(nuovoGioco);
+                JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
+
+                }
+
+                pulisciCampiInserimento();
+                aggModButton.setText("Aggiungi gioco");
+
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Errore nei dati numerici!\nIl PEGI deve essere un intero.\nIl Prezzo deve essere un numero decimale.");
@@ -381,7 +404,26 @@ public class HomeSviluppatore {
                 JOptionPane.showMessageDialog(null, "Formato data non valido! Usa il formato GG/MM/AAAA.");
             }
         });
+
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listaGiochiAggiunti.clearSelection();
+                pulisciCampiInserimento();
+                aggModButton.setText("Aggiungi gioco");
+            }
+
+    });
+
+        rimuoviGiocoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Stop killing games!");
+            }
+        });
     }
+
+
 
     private void pulisciCampiInserimento() {
         // ripulisce i campi scritti in precedenza

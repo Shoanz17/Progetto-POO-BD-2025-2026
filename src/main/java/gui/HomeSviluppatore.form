@@ -5,7 +5,11 @@
     <constraints>
       <xy x="20" y="20" width="1116" height="1254"/>
     </constraints>
-    <properties/>
+    <properties>
+      <minimumSize width="0" height="0"/>
+      <opaque value="false"/>
+      <preferredSize width="800" height="600"/>
+    </properties>
     <border type="none"/>
     <children>
       <tabbedpane id="acccd" binding="finestre">
@@ -221,7 +225,7 @@
                     <border type="none"/>
                     <children/>
                   </grid>
-                  <grid id="f3bb7" binding="aggiungiGioco" layout-manager="GridLayoutManager" row-count="11" column-count="15" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="f3bb7" binding="aggiungiGioco" layout-manager="GridLayoutManager" row-count="11" column-count="16" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <tabbedpane title="Aggiungi/Modifica gioco"/>
@@ -231,22 +235,22 @@
                     <children>
                       <hspacer id="c013e">
                         <constraints>
-                          <grid row="9" column="1" row-span="1" col-span="14" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                          <grid row="9" column="1" row-span="1" col-span="15" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                       </hspacer>
                       <hspacer id="9aac8">
                         <constraints>
-                          <grid row="10" column="1" row-span="1" col-span="14" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                          <grid row="10" column="1" row-span="1" col-span="15" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                       </hspacer>
                       <hspacer id="9262e">
                         <constraints>
-                          <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                          <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                       </hspacer>
                       <scrollpane id="170f9">
                         <constraints>
-                          <grid row="1" column="3" row-span="6" col-span="12" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                          <grid row="1" column="4" row-span="6" col-span="12" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties/>
                         <border type="none"/>
@@ -420,6 +424,22 @@
                           </grid>
                         </children>
                       </scrollpane>
+                      <component id="dcaea" class="javax.swing.JButton" binding="reset">
+                        <constraints>
+                          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="reset"/>
+                        </properties>
+                      </component>
+                      <component id="77a0d" class="javax.swing.JButton" binding="rimuoviGiocoButton" default-binding="true">
+                        <constraints>
+                          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Rimuovi gioco"/>
+                        </properties>
+                      </component>
                     </children>
                   </grid>
                 </children>
