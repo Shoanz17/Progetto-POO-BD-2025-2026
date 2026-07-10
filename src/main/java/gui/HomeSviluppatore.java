@@ -77,8 +77,8 @@ public class HomeSviluppatore {
         JFrame frame = new JFrame("HomeSviluppatore");
         frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-//        frame.setSize(800,600);
+        frame.setSize(1100,620);
+//        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
