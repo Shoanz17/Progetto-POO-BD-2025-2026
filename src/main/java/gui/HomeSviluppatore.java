@@ -8,6 +8,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,11 @@ public class HomeSviluppatore {
     private JPanel aggiungiGioco;
     private JButton reset;
     private JButton rimuoviGiocoButton;
+    private JTextField ricercaPannello;
+    private JLabel nomeSviluppatore;
+    private JLabel descrizioneSviluppatore;
+    private JLabel seguitiSvilup;
+    private JTextArea textArea1;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -58,6 +65,7 @@ public class HomeSviluppatore {
 
     private DefaultListModel<Gioco> modelPannelloControllo;
     private DefaultListModel<Gioco> modelLibreria;
+    ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
     private Controller controller;
 
     public HomeSviluppatore() {
@@ -67,6 +75,8 @@ public class HomeSviluppatore {
 
 
         popolaListe();
+        ricercaListaLib();
+        ricercaPannello();
         selezioneListaLibreria();
         pannelloAggMod();
         inserimentoGioco();
@@ -77,7 +87,7 @@ public class HomeSviluppatore {
         JFrame frame = new JFrame("HomeSviluppatore");
         frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1100,620);
+        frame.setSize(1100,628);
 //        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -101,6 +111,7 @@ public class HomeSviluppatore {
             for (Gioco gioco : tuttiIGiochi) {
                 modelLibreria.addElement(gioco);
                 modelPannelloControllo.addElement(gioco);
+                listaCompletaGiochi.add(gioco);
             }
         }
 
@@ -108,6 +119,42 @@ public class HomeSviluppatore {
         listaTitoli.setModel(modelLibreria);
         listaGiochiAggiunti.setModel(modelPannelloControllo);
 
+    }
+
+    private void filtraLista(String testoCercato,DefaultListModel<Gioco> modelloDestinazione)
+        {
+            modelloDestinazione.clear();
+
+
+            for(Gioco gioco: listaCompletaGiochi) {
+                String titolo = gioco.getTitolo().toLowerCase();
+
+                if (titolo.contains(testoCercato)) {
+                    modelloDestinazione.addElement(gioco);
+                }
+            }
+        }
+
+
+    private void ricercaListaLib() {
+        barraRicerca.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+
+                String testoCercato = barraRicerca.getText().toLowerCase();
+                filtraLista(testoCercato,modelLibreria);
+            }
+        });
+    }
+
+    private void ricercaPannello()
+    {
+        ricercaPannello.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String testoCercato = ricercaPannello.getText().toLowerCase();
+                filtraLista(testoCercato,modelPannelloControllo);
+            }
+        });
 
     }
 
