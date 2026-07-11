@@ -6,6 +6,7 @@ import model.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -56,8 +57,12 @@ public class HomeSviluppatore {
     private JTextField ricercaPannello;
     private JLabel nomeSviluppatore;
     private JLabel descrizioneSviluppatore;
+    private JLabel strike;
+    private JTextArea descrizioneArea;
+    private JButton gestioneProfilo;
     private JLabel seguitiSvilup;
-    private JTextArea textArea1;
+    private JPanel profilo;
+    private JLabel fondiSvilup;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -80,6 +85,8 @@ public class HomeSviluppatore {
         selezioneListaLibreria();
         pannelloAggMod();
         inserimentoGioco();
+        profilo();
+        gestProfilo();
 
     }
 
@@ -470,7 +477,49 @@ public class HomeSviluppatore {
         });
     }
 
+    private void profilo()
+        {
+            descrizioneArea.setText("wao siamo il team sega e ci facciamo tante seggi, fasmgneornsdfznfmgsz,xczgmfszxvzz");
 
+            descrizioneArea.setEditable(false);
+            descrizioneArea.setLineWrap(true);
+            descrizioneArea.setWrapStyleWord(true);
+            descrizioneArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            descrizioneArea.setFocusable(false);
+        }
+
+
+    private void gestProfilo(Sviluppatore sviluppatoreCorrente) {
+        gestioneProfilo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel finestraGestione = new JPanel();
+
+                JTextField campoNome = new JTextField(sviluppatoreCorrente.getNome());
+                JTextArea campoDescrizione = new JTextArea(sviluppatoreCorrente.getDescrizione());
+
+                finestraGestione.add(new JLabel("nome:"));
+                finestraGestione.add(campoNome);
+
+                JPasswordField campoPass = new JPasswordField();
+                finestraGestione.add(new JLabel("nuova password:"));
+                finestraGestione.add(campoPass);
+
+                finestraGestione.add(new JLabel("nuova descrizione"));
+                finestraGestione.add(campoDescrizione);
+
+                int risultato = JOptionPane.showConfirmDialog
+                        (null,finestraGestione, "Modifica Profilo", JOptionPane.OK_CANCEL_OPTION);
+
+                if(risultato==JOptionPane.OK_OPTION)
+                {
+                    sviluppatoreCorrente.setNome(campoNome.getText());
+
+                }
+
+            }
+        });
+    }
 
     private void pulisciCampiInserimento() {
         // ripulisce i campi scritti in precedenza
