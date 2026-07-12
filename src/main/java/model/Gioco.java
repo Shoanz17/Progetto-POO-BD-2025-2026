@@ -21,14 +21,15 @@ public class Gioco {
 
 
     //Il gioco nasce senza edizioni o promozioni perché queste non posso nascere senza un riferimento a un gioco
+
     /**
      * Costruttore utilizzato dalla GUI per la creazione di un nuovo Gioco da zero.
      *
-     * @param titolo Titolo scelto per il gioco.
-     * @param categoria Categoria di budget del gioco.
-     * @param pegi Età minima consigliata per il gioco.
+     * @param titolo       Titolo scelto per il gioco.
+     * @param categoria    Categoria di budget del gioco.
+     * @param pegi         Età minima consigliata per il gioco.
      * @param sviluppatore Sviluppatore/Publisher creatore del gioco.
-     * @param generi Lista dei generi assegnati al gioco.
+     * @param generi       Lista dei generi assegnati al gioco.
      * @throws CampoNonValidoException Se lo sviluppatore è nullo, la lista generi è vuota o se titolo/pegi violano i vincoli.
      */
     public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, ArrayList<Genere> generi) throws CampoNonValidoException {
@@ -53,10 +54,10 @@ public class Gioco {
      * Costruttore utilizzato dal DAO per ricostruire un Gioco già esistente nel Database.
      *
      * @param sviluppatore Sviluppatore/publisher del Gioco.
-     * @param id ID univoco generato dal Database.
-     * @param titolo Titolo del Gioco.
-     * @param categoria Categoria del Gioco.
-     * @param pegi Pegi del Gioco.
+     * @param id           ID univoco generato dal Database.
+     * @param titolo       Titolo del Gioco.
+     * @param categoria    Categoria del Gioco.
+     * @param pegi         Pegi del Gioco.
      * @throws CampoNonValidoException Se il DB restituisce uno sviluppatore nullo (DB Corrotto).
      */
     public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi) throws CampoNonValidoException {
@@ -73,6 +74,12 @@ public class Gioco {
         //obbligatorio per il controller riempire gli arraylist successivamente a questo
     }
 
+    /**
+     * Associa il gioco a una nuova promozione.
+     *
+     * @param promozione L'istanza della promozione a cui far partecipare il gioco.
+     * @throws CampoNonValidoException Se la promozione è nulla o se il gioco vi partecipa già.
+     */
     public void addPromozione(GiocoInPromozione promozione) throws CampoNonValidoException {
         if (promozione == null) {
             throw new CampoNonValidoException("Promozione non esistente");
@@ -83,6 +90,12 @@ public class Gioco {
         promozioni.add(promozione);
     }
 
+    /**
+     * Aggiunge un nuovo genere alla lista dei generi del gioco.
+     *
+     * @param genere Il genere da aggiungere.
+     * @throws CampoNonValidoException Se il genere è nullo o è già presente.
+     */
     public void addGenere(Genere genere) throws CampoNonValidoException {
         if (genere == null) {
             throw new CampoNonValidoException("Genere non disponibile");
@@ -94,6 +107,12 @@ public class Gioco {
     }
 
 
+    /**
+     * Associa una nuova copia vendibile (edizione) al gioco base.
+     *
+     * @param edizione L'edizione da rilasciare.
+     * @throws CampoNonValidoException Se l'edizione è nulla o è già stata aggiunta in precedenza.
+     */
     public void addEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null) {
             throw new CampoNonValidoException("Edizione di gioco non disponibile");
