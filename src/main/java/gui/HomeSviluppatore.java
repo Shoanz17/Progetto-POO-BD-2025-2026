@@ -86,7 +86,9 @@ public class HomeSviluppatore {
         pannelloAggMod();
         inserimentoGioco();
         profilo();
-        gestProfilo();
+        gestProfilo(controller.getListaSviluppatoriLoggati().get(0));
+
+//        if(controller.getListaSviluppatoriLoggati().isEmpty()){
 
     }
 
@@ -322,7 +324,7 @@ public class HomeSviluppatore {
 
         piattaformaPanel.setLayout(new BoxLayout(piattaformaPanel, BoxLayout.Y_AXIS));
 
-        for (PiattaformaDiGioco nomePiattaforma : controller.getListaPiattaforma()) {
+        for (PiattaformaDiGioco nomePiattaforma : controller.getPiattaformeDiGioco()) {
             JCheckBox cb = new JCheckBox(nomePiattaforma.toString());
             listaCheckboxPiattaforma.add(cb);
             piattaformaPanel.add(cb);
@@ -493,7 +495,12 @@ public class HomeSviluppatore {
         gestioneProfilo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JPanel finestraGestione = new JPanel();
+                JFrame finestraGestione = new JFrame("Modifica Profilo");
+                finestraGestione.setSize(400,300);
+                finestraGestione.setLayout( new GridLayout(4,2));
+//                finestraGestione.pack();
+                finestraGestione.setLocationRelativeTo(null);
+                finestraGestione.setVisible(true);
 
                 JTextField campoNome = new JTextField(sviluppatoreCorrente.getNome());
                 JTextArea campoDescrizione = new JTextArea(sviluppatoreCorrente.getDescrizione());
@@ -508,12 +515,27 @@ public class HomeSviluppatore {
                 finestraGestione.add(new JLabel("nuova descrizione"));
                 finestraGestione.add(campoDescrizione);
 
-                int risultato = JOptionPane.showConfirmDialog
-                        (null,finestraGestione, "Modifica Profilo", JOptionPane.OK_CANCEL_OPTION);
+                JButton pulsanteSalva = new JButton("Salva");
+                finestraGestione.add(pulsanteSalva);
 
-                if(risultato==JOptionPane.OK_OPTION)
+
+
                 {
-                    sviluppatoreCorrente.setNome(campoNome.getText());
+                    try{
+                        sviluppatoreCorrente.setNome(campoNome.getText());
+                        sviluppatoreCorrente.setDescrizione(campoDescrizione.getText());
+                        if(campoPass.getPassword().length > 0)
+                        {
+                            String nuovaPass = new String(campoPass.getPassword());
+                            sviluppatoreCorrente.setPassword(nuovaPass);
+                        }
+
+                    }
+
+                    catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog
+                                (null,"i dati che hai scelto non sono validi");
+                    }
 
                 }
 
