@@ -21,14 +21,15 @@ public class Gioco {
 
 
     //Il gioco nasce senza edizioni o promozioni perché queste non posso nascere senza un riferimento a un gioco
+
     /**
      * Costruttore utilizzato dalla GUI per la creazione di un nuovo Gioco da zero.
      *
-     * @param titolo Titolo scelto per il gioco.
-     * @param categoria Categoria di budget del gioco.
-     * @param pegi Età minima consigliata per il gioco.
+     * @param titolo       Titolo scelto per il gioco.
+     * @param categoria    Categoria di budget del gioco.
+     * @param pegi         Età minima consigliata per il gioco.
      * @param sviluppatore Sviluppatore/Publisher creatore del gioco.
-     * @param generi Lista dei generi assegnati al gioco.
+     * @param generi       Lista dei generi assegnati al gioco.
      * @throws CampoNonValidoException Se lo sviluppatore è nullo, la lista generi è vuota o se titolo/pegi violano i vincoli.
      */
     public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, ArrayList<Genere> generi) throws CampoNonValidoException {
@@ -36,7 +37,7 @@ public class Gioco {
         if (sviluppatore == null) {
             throw new CampoNonValidoException("Lo sviluppatore non é valido (?)");
         }
-        if(generi == null || generi.isEmpty()) {
+        if (generi == null || generi.isEmpty()) {
             throw new CampoNonValidoException("Non esiste gioco senza generi");
         }
 
@@ -53,10 +54,10 @@ public class Gioco {
      * Costruttore utilizzato dal DAO per ricostruire un Gioco già esistente nel Database.
      *
      * @param sviluppatore Sviluppatore/publisher del Gioco.
-     * @param id ID univoco generato dal Database.
-     * @param titolo Titolo del Gioco.
-     * @param categoria Categoria del Gioco.
-     * @param pegi Pegi del Gioco.
+     * @param id           ID univoco generato dal Database.
+     * @param titolo       Titolo del Gioco.
+     * @param categoria    Categoria del Gioco.
+     * @param pegi         Pegi del Gioco.
      * @throws CampoNonValidoException Se il DB restituisce uno sviluppatore nullo (DB Corrotto).
      */
     public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi) throws CampoNonValidoException {
@@ -73,31 +74,49 @@ public class Gioco {
         //obbligatorio per il controller riempire gli arraylist successivamente a questo
     }
 
+    /**
+     * Associa il gioco a una nuova promozione.
+     *
+     * @param promozione L'istanza della promozione a cui far partecipare il gioco.
+     * @throws CampoNonValidoException Se la promozione è nulla o se il gioco vi partecipa già.
+     */
     public void addPromozione(GiocoInPromozione promozione) throws CampoNonValidoException {
-        if (promozione == null){
+        if (promozione == null) {
             throw new CampoNonValidoException("Promozione non esistente");
         }
-        if (this.promozioni.contains(promozione)){
+        if (this.promozioni.contains(promozione)) {
             throw new CampoNonValidoException("Il gioco ha già partecipato a questa promozione");
         }
         promozioni.add(promozione);
     }
 
+    /**
+     * Aggiunge un nuovo genere alla lista dei generi del gioco.
+     *
+     * @param genere Il genere da aggiungere.
+     * @throws CampoNonValidoException Se il genere è nullo o è già presente.
+     */
     public void addGenere(Genere genere) throws CampoNonValidoException {
-        if (genere == null){
+        if (genere == null) {
             throw new CampoNonValidoException("Genere non disponibile");
         }
-        if (this.generi.contains(genere)){
+        if (this.generi.contains(genere)) {
             throw new CampoNonValidoException("Il gioco ha già questo genere");
         }
         generi.add(genere);
     }
 
+    /**
+     * Associa una nuova copia vendibile (edizione) al gioco base.
+     *
+     * @param edizione L'edizione da rilasciare.
+     * @throws CampoNonValidoException Se l'edizione è nulla o è già stata aggiunta in precedenza.
+     */
     public void addEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
-        if (edizione == null){
+        if (edizione == null) {
             throw new CampoNonValidoException("Edizione di gioco non disponibile");
         }
-        if (this.edizioni.contains(edizione)){
+        if (this.edizioni.contains(edizione)) {
             throw new CampoNonValidoException("Questa edizione del gioco è già uscita");
         }
         edizioni.add(edizione);
@@ -105,30 +124,30 @@ public class Gioco {
 
     //metodi per admin
     public void removeEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
-        if (edizione == null){
+        if (edizione == null) {
             throw new CampoNonValidoException("Edizione di gioco non disponibile");
         }
-        if (!this.edizioni.contains(edizione)){
+        if (!this.edizioni.contains(edizione)) {
             throw new CampoNonValidoException("Questa edizione é giá stata rimossa");
         }
         edizioni.remove(edizione);
     }
 
     public void removeGenere(Genere genere) throws CampoNonValidoException {
-        if (genere == null){
+        if (genere == null) {
             throw new CampoNonValidoException("Genere non disponibile");
         }
-        if (!this.generi.contains(genere)){
+        if (!this.generi.contains(genere)) {
             throw new CampoNonValidoException("Il gioco giá non ha questo genere");
         }
         generi.remove(genere);
     }
 
     public void removePromozione(GiocoInPromozione promozione) throws CampoNonValidoException {
-        if (promozione == null){
+        if (promozione == null) {
             throw new CampoNonValidoException("Promozione non esistente");
         }
-        if (!this.promozioni.contains(promozione)){
+        if (!this.promozioni.contains(promozione)) {
             throw new CampoNonValidoException("Il gioco giá non ha partecipato a questa promozione");
         }
         promozioni.remove(promozione);
@@ -145,6 +164,7 @@ public class Gioco {
     public int getId() {return id;}
 
     //Lista di set
+
     /**
      * Imposta il titolo del gioco verificandone la lunghezza.
      *
@@ -152,7 +172,7 @@ public class Gioco {
      * @throws CampoNonValidoException Se il titolo è vuoto, nullo o supera i 40 caratteri.
      */
     public void setTitolo(String titolo) throws CampoNonValidoException {
-        if (titolo == null || titolo.trim().isEmpty() || titolo.length() > 40){
+        if (titolo == null || titolo.trim().isEmpty() || titolo.length() > 40) {
             throw new CampoNonValidoException("Il titolo massimo 40 caratteri");
         }
         this.titolo = titolo;
@@ -172,7 +192,7 @@ public class Gioco {
      * @throws CampoNonValidoException Se il valore è inferiore a 3 o superiore a 18.
      */
     public void setPegi(int pegi) throws CampoNonValidoException {
-        if (pegi < 3 || pegi > 18){
+        if (pegi < 3 || pegi > 18) {
             throw new CampoNonValidoException("Il PEGI deve essere tra 3 e 18 anni");
         }
         this.pegi = pegi;
