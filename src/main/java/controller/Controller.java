@@ -226,16 +226,18 @@ public class Controller {
         utenteLoggato.removeAmico(utenteSelezionato);
     }
 
-    public ArrayList<Fattura> getListaRecensioniUtente(Utente utenteLoggato) {
-        ArrayList<Fattura> listaFiltrata = new ArrayList<>();
+    public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) {
+        ArrayList<Recensione> listaRecensioni = new ArrayList<>();
 
         for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
             if (f.getRecensione() != null) {
-                listaFiltrata.add(f);
+                listaRecensioni.add(f.getRecensione());
             }
         }
-        return listaFiltrata;
+        return listaRecensioni;
     }
+
+    public Fattura getFatturaDaRecensione(Recensione r){return r.getFattura();}
 
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);

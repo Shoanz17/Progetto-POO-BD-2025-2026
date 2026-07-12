@@ -58,10 +58,8 @@ public class VisualizzaRecensioni {
             }
         };
 
-        acquistiUtenteConRecensione = controller.getListaRecensioniUtente(utenteLoggato);
-
-        for (Fattura f : acquistiUtenteConRecensione) {
-            Recensione r = f.getRecensione();
+        for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato)) {
+            Fattura f = controller.getFatturaDaRecensione(r);
 
             Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
             modelloRecensioni.addRow(riga);
