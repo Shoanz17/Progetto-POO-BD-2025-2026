@@ -2,6 +2,11 @@ package model;
 
 import java.util.ArrayList;
 
+/**
+ * Rappresenta l'IP (Proprietà Intellettuale) di un Gioco e non la sua copia digitale vendibile
+ * Contiene al suo interno lo {@link Sviluppatore} che lo ha ideato, la {@link Categoria},
+ * il titolo, il PEGI, i suoi {@link Genere} e le eventuali {@link GiocoInPromozione} a cui partecipa.
+ */
 public class Gioco {
     private int id;
     private String titolo;
@@ -14,8 +19,18 @@ public class Gioco {
     private ArrayList<EdizioneGioco> edizioni = new ArrayList<>();
     private ArrayList<GiocoInPromozione> promozioni = new ArrayList<>();
 
-    //Costruttore per la GUI
+
     //Il gioco nasce senza edizioni o promozioni perché queste non posso nascere senza un riferimento a un gioco
+    /**
+     * Costruttore utilizzato dalla GUI per la creazione di un nuovo Gioco da zero.
+     *
+     * @param titolo Titolo scelto per il gioco.
+     * @param categoria Categoria di budget del gioco.
+     * @param pegi Età minima consigliata per il gioco.
+     * @param sviluppatore Sviluppatore/Publisher creatore del gioco.
+     * @param generi Lista dei generi assegnati al gioco.
+     * @throws CampoNonValidoException Se lo sviluppatore è nullo, la lista generi è vuota o se titolo/pegi violano i vincoli.
+     */
     public Gioco(String titolo, Categoria categoria, int pegi, Sviluppatore sviluppatore, ArrayList<Genere> generi) throws CampoNonValidoException {
 
         if (sviluppatore == null) {
@@ -33,6 +48,17 @@ public class Gioco {
     }
 
     //Costruttore per Database
+
+    /**
+     * Costruttore utilizzato dal DAO per ricostruire un Gioco già esistente nel Database.
+     *
+     * @param sviluppatore Sviluppatore/publisher del Gioco.
+     * @param id ID univoco generato dal Database.
+     * @param titolo Titolo del Gioco.
+     * @param categoria Categoria del Gioco.
+     * @param pegi Pegi del Gioco.
+     * @throws CampoNonValidoException Se il DB restituisce uno sviluppatore nullo (DB Corrotto).
+     */
     public Gioco(Sviluppatore sviluppatore, int id, String titolo, Categoria categoria, int pegi) throws CampoNonValidoException {
         if (sviluppatore == null) {
             throw new CampoNonValidoException("DB Corrotto: Sviluppatore mancante!");
@@ -52,7 +78,7 @@ public class Gioco {
             throw new CampoNonValidoException("Promozione non esistente");
         }
         if (this.promozioni.contains(promozione)){
-            throw new CampoNonValidoException("Il gioco ha già partecipato ha questa promozione");
+            throw new CampoNonValidoException("Il gioco ha già partecipato a questa promozione");
         }
         promozioni.add(promozione);
     }
@@ -113,12 +139,18 @@ public class Gioco {
     public Categoria getCategoria() {return categoria;}
     public int getPegi() {return pegi;}
     public Sviluppatore getSviluppatore() {return sviluppatore;}
-    public ArrayList<Genere> getGeneri() {return generi;}
-    public ArrayList<EdizioneGioco> getEdizioni() {return edizioni;}
-    public ArrayList<GiocoInPromozione> getPromozioni() {return promozioni;}
+    public ArrayList<Genere> getGeneri() {return new ArrayList<>(generi);}
+    public ArrayList<EdizioneGioco> getEdizioni() {return new ArrayList<>(edizioni);}
+    public ArrayList<GiocoInPromozione> getPromozioni() {return new ArrayList<>(promozioni);}
     public int getId() {return id;}
 
     //Lista di set
+    /**
+     * Imposta il titolo del gioco verificandone la lunghezza.
+     *
+     * @param titolo Il nome del gioco.
+     * @throws CampoNonValidoException Se il titolo è vuoto, nullo o supera i 40 caratteri.
+     */
     public void setTitolo(String titolo) throws CampoNonValidoException {
         if (titolo == null || titolo.trim().isEmpty() || titolo.length() > 40){
             throw new CampoNonValidoException("Il titolo massimo 40 caratteri");
@@ -133,6 +165,12 @@ public class Gioco {
         this.categoria = categoria;
     }
 
+    /**
+     * Imposta la classificazione PEGI del gioco.
+     *
+     * @param pegi Valore numerico per l'età minima consentita.
+     * @throws CampoNonValidoException Se il valore è inferiore a 3 o superiore a 18.
+     */
     public void setPegi(int pegi) throws CampoNonValidoException {
         if (pegi < 3 || pegi > 18){
             throw new CampoNonValidoException("Il PEGI deve essere tra 3 e 18 anni");
