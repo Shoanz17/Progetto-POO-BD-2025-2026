@@ -3,9 +3,11 @@ package model;
 import java.util.ArrayList;
 
 /**
- * Rappresenta l'IP (Proprietà Intellettuale) di un Gioco e non la sua copia digitale vendibile
+ * Rappresenta l'IP (Proprietà Intellettuale) di un videogioco base e non la sua copia digitale vendibile
+ * (le singole versioni acquistabili per console/PC sono gestite tramite le sue {@link EdizioneGioco}).
  * Contiene al suo interno lo {@link Sviluppatore} che lo ha ideato, la {@link Categoria},
- * il titolo, il PEGI, i suoi {@link Genere} e le eventuali {@link GiocoInPromozione} a cui partecipa.
+ * il titolo, la classificazione PEGI, i suoi {@link Genere}, la lista di {@link EdizioneGioco} rilasciate sul mercato
+ * e le eventuali {@link GiocoInPromozione} a cui partecipa o ha partecipato.
  */
 public class Gioco {
     private int id;
