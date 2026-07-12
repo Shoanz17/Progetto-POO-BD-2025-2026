@@ -805,52 +805,37 @@ public class HomeUtente {
                 int rigaSelezionata = tabellaGiochiCarrello.getSelectedRow();
 
                 if (rigaSelezionata != -1) {
-                    DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-                    tabellaCarrello.removeRow(rigaSelezionata);
-                    ricalcolaTotaleCarrello();
+                    try {
+                        EdizioneGioco giocoDaRimuovere = controller.getGiochiCarrello(utenteLoggato).get(rigaSelezionata);
+
+                        controller.rimuoviDalCarrello(utenteLoggato, giocoDaRimuovere);
+
+                        configuraInterfacciaCarrello();
+
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Seleziona prima un gioco dalla tabella per rimuoverlo!", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
     }
-
     private void associaListenerAcquista() {
         pulsanteAcquista.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-                double saldoUtente = 0.0; //Aggiunto per testing
-                double calcoloTotale = ricalcolaTotaleCarrello();
+                try {
+                    controller.acquista(utenteLoggato);
 
-                if (tabellaCarrello.getRowCount() == 0) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Vuoi acquistare il nulla?", "Attenzione", JOptionPane.WARNING_MESSAGE);
-                } else if (calcoloTotale > saldoUtente) {  //saldoUtente va cambiata con la variabile di saldo giusta
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Saldo insufficiente", "Errore", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    saldoUtente -= calcoloTotale;
-                    testoSaldo.setText(String.format("%.2f €", saldoUtente));
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato! Troverai i tuoi giochi con relative Key nella Libreria.", "Successo", JOptionPane.INFORMATION_MESSAGE);
 
-                    tabellaCarrello.setRowCount(0);
-                    testoTotaleCarrello.setText("0.00 €");
-
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato, troverai i tuoi giochi con relative Key nella Libreria", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                    configuraInterfacciaCarrello();
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
-    }
-
-    private double ricalcolaTotaleCarrello() {
-        double totale = 0.0;
-        DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-
-        for (int i = 0; i < tabellaCarrello.getRowCount(); i++) {
-            double prezzo = (Double) tabellaCarrello.getValueAt(i, 2);
-            totale += prezzo;
-        }
-        testoTotaleCarrello.setText(String.format("%.2f €", totale));
-
-        return totale;
     }
 
 
@@ -1067,6 +1052,7 @@ public class HomeUtente {
     }
 
     private void configuraInterfacciaCarrello() {
+
         String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
         DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
             @Override
@@ -1074,7 +1060,23 @@ public class HomeUtente {
                 return false;
             }
         };
+
+        if (controller.getCarrelloUtente(utenteLoggato) != null) {
+
+            ArrayList<EdizioneGioco> giochiNelCarrello = controller.getGiochiCarrello(utenteLoggato);
+
+            for (EdizioneGioco ed : giochiNelCarrello) {
+                Object[] riga = {
+                        controller.getTitoloDaEdizioneGioco(ed),
+                        controller.getPiattaformaDaEdizioneGioco(ed),
+                        controller.getPrezzoDaEdizioneGioco(ed) + "€"
+                };
+                tabellaCarrello.addRow(riga);
+            }
+        }
+
         tabellaGiochiCarrello.setModel(tabellaCarrello);
+        testoTotaleCarrello.setText(String.valueOf(controller.getPrezzoCarrello(utenteLoggato)) + "€");
     }
 
     private void mostraForm() {

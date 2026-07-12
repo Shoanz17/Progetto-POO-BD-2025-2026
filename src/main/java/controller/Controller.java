@@ -61,7 +61,6 @@ public class Controller {
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
 
         listaFatture.add(fattura1);
-        utente.addGioco(fattura1);
         sviluppatore1.addGioco(gioco);
     }
 
@@ -401,6 +400,9 @@ public class Controller {
 
     public void aggiungiAlCarrello(Utente utenteLoggato, EdizioneGioco edizioneGiocoSelezionata) throws CampoNonValidoException {
 
+        if (utenteLoggato.getCarrello().getListaGiochi().contains(edizioneGiocoSelezionata)){
+            throw new CampoNonValidoException("Hai giá aggiunto questo gioco al carrello");
+        }
         if (edizioneGiocoSelezionata == null) {
             throw new CampoNonValidoException("Selezionare un gioco dal catalogo");
         }
@@ -459,6 +461,53 @@ public class Controller {
             storicoDislike.add(ricevutaVoto);
             recensione.addDislike();
         }
+    }
+
+    public Carrello getCarrelloUtente(Utente utenteLoggato){
+        return utenteLoggato.getCarrello();
+    }
+
+    public ArrayList<EdizioneGioco> getGiochiCarrello(Utente utenteLoggato){
+        return utenteLoggato.getCarrello().getListaGiochi();
+    }
+
+    public String getTitoloDaEdizioneGioco(EdizioneGioco edizioneGioco){
+        return edizioneGioco.getGioco().getTitolo();
+    }
+
+    public int getPrezzoCarrello(Utente utenteLoggato){
+        return utenteLoggato.getCarrello().getTotale();
+    }
+
+    public void rimuoviDalCarrello(Utente utenteLoggato, EdizioneGioco edizioneGioco) throws CampoNonValidoException {
+
+        if (utenteLoggato.getCarrello() == null) {
+            throw new CampoNonValidoException("Il carrello è già vuoto!");
+        }
+        utenteLoggato.getCarrello().removeEdizione(edizioneGioco);
+    }
+
+    public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
+        Carrello carrello = utenteLoggato.getCarrello();
+
+        if (carrello == null || carrello.getListaGiochi().isEmpty()) {
+            throw new CampoNonValidoException("Vuoi acquistare il nulla?");
+        }
+
+
+        if (utenteLoggato.getSaldo() < carrello.getTotale()) {
+            throw new CampoNonValidoException("Saldo insufficiente.");
+        }
+
+        utenteLoggato.rimuoviSaldo(carrello.getTotale());
+
+        for (EdizioneGioco giocoAcquistato : carrello.getListaGiochi()) {
+            Fattura nuovaFattura = new Fattura(utenteLoggato, giocoAcquistato, giocoAcquistato.getPrezzo());
+            utenteLoggato.addGioco(nuovaFattura);
+            listaFatture.add(nuovaFattura);   // SOLO PER TEST
+        }
+
+        utenteLoggato.getCarrello().svuotaCarrello();
     }
 
 //    Da fare con DAO
