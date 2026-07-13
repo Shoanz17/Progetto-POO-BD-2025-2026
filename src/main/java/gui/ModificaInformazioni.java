@@ -9,6 +9,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Finestra GUI che permette all'{@link Utente} loggato di modificare
+ * le proprie informazioni di base.
+ */
+
 public class ModificaInformazioni {
     private JPanel modificaInformazioniPanel;
     private JTextField textFieldNome;
