@@ -12,6 +12,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * Finestra di dialogo (Boundary) che permette all'{@link Utente} di consultare
+ * lo storico delle proprie {@link Recensione} rilasciate.
+ * Consente di visualizzarne i dettagli e di eliminare una recensione
+ * precedentemente pubblicata tramite il {@link Controller}.
+ */
 public class VisualizzaRecensioni {
     private JPanel visualizzaRecensioniPanel;
     private JTable tabellaRecensioni;
@@ -58,8 +64,12 @@ public class VisualizzaRecensioni {
             }
         };
 
+        acquistiUtenteConRecensione = new ArrayList<>();
+
         for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato)) {
             Fattura f = controller.getFatturaDaRecensione(r);
+
+            acquistiUtenteConRecensione.add(f);
 
             Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
             modelloRecensioni.addRow(riga);

@@ -518,7 +518,7 @@
                 </constraints>
                 <properties>
                   <font size="18"/>
-                  <text value="Lascia una rilasciaRecensione!"/>
+                  <text value="Lascia una Recensione!"/>
                 </properties>
               </component>
               <component id="eda06" class="javax.swing.JButton" binding="pulsanteCopiaKey">
