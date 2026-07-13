@@ -88,7 +88,6 @@ public class HomeSviluppatore {
         profilo();
         gestProfilo(controller.getListaSviluppatoriLoggati().get(0));
 
-//        if(controller.getListaSviluppatoriLoggati().isEmpty()){
 
     }
 
@@ -496,32 +495,62 @@ public class HomeSviluppatore {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame finestraGestione = new JFrame("Modifica Profilo");
-                finestraGestione.setSize(400,300);
+                finestraGestione.setSize(500,300);
                 finestraGestione.setLayout( new GridLayout(4,2));
 //                finestraGestione.pack();
                 finestraGestione.setLocationRelativeTo(null);
                 finestraGestione.setVisible(true);
 
-                JTextField campoNome = new JTextField(sviluppatoreCorrente.getNome());
-                JTextArea campoDescrizione = new JTextArea(sviluppatoreCorrente.getDescrizione());
+                JTextField campoNome = new JTextField(sviluppatoreCorrente.getNome(),15);
+                JPanel pannelloNome = new JPanel(new GridBagLayout());
+                pannelloNome.add(campoNome);
+                finestraGestione.add(new JLabel("Nome:",SwingConstants.CENTER));
+                finestraGestione.add(pannelloNome);
 
-                finestraGestione.add(new JLabel("nome:"));
-                finestraGestione.add(campoNome);
 
-                JPasswordField campoPass = new JPasswordField();
-                finestraGestione.add(new JLabel("nuova password:"));
-                finestraGestione.add(campoPass);
+                JPasswordField campoPass = new JPasswordField(15);
+                JPanel pannelloPass = new JPanel(new GridBagLayout());
+                pannelloPass.add(campoPass);
+                finestraGestione.add(new JLabel("Nuova password:",SwingConstants.CENTER));
+                finestraGestione.add(pannelloPass);
 
-                finestraGestione.add(new JLabel("nuova descrizione"));
-                finestraGestione.add(campoDescrizione);
 
+                JTextArea campoDescrizione = new JTextArea(sviluppatoreCorrente.getDescrizione(),4,20);
+                JPanel pannelloDescrizione =  new JPanel();
+                JScrollPane scrollDescrizione = new JScrollPane(campoDescrizione);
+                pannelloDescrizione.add(scrollDescrizione);
+                finestraGestione.add(new JLabel("Nuova descrizione:",SwingConstants.CENTER));
+                finestraGestione.add(pannelloDescrizione);
+
+
+                JPanel pannelloSalva = new JPanel(new GridBagLayout());
                 JButton pulsanteSalva = new JButton("Salva");
-                finestraGestione.add(pulsanteSalva);
+                finestraGestione.add(new JLabel(" ",SwingConstants.CENTER));
+                pannelloSalva.add(pulsanteSalva);
+                finestraGestione.add(pannelloSalva);
 
+                pulsanteSalva.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try{
+                            sviluppatoreCorrente.setNome(campoNome.getText());
+                            sviluppatoreCorrente.setDescrizione(campoDescrizione.getText());
+                            sviluppatoreCorrente.setPassword(new String(campoPass.getPassword()));
+
+                            finestraGestione.dispose();
+                        }
+                        catch (CampoNonValidoException ex)
+                        {
+                            JOptionPane.showMessageDialog(null,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    }
+                });
 
 
                 {
                     try{
+
                         sviluppatoreCorrente.setNome(campoNome.getText());
                         sviluppatoreCorrente.setDescrizione(campoDescrizione.getText());
                         if(campoPass.getPassword().length > 0)
