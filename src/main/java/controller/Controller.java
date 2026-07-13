@@ -9,6 +9,14 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 
+/**
+ * Rappresenta il Control nel pattern architetturale BCE.
+ * Agisce come "cervello" e coordinatore centrale dell'applicazione, facendo da ponte tra le
+ * interfacce grafiche e le classi model.
+ * Si occupa di processare gli input dell'utente, effettuare validazioni di sicurezza e integrità sui dati,
+ * gestire i flussi di acquisto e delegare le operazioni di salvataggio
+ * e recupero delle informazioni del Database.
+ */
 public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
@@ -145,6 +153,13 @@ public class Controller {
         utenteLoggato.aggiungiSaldo(saldo);
     }
 
+    /**
+     * Effettua il parsing di una stringa testuale in intero per l'aggiunta di fondi al portafoglio virtuale.
+     *
+     * @param utenteLoggato L'utente che richiede la ricarica.
+     * @param saldoTesto L'importo da ricaricare come testo.
+     * @throws CampoNonValidoException Se il campo è vuoto o se non contiene un numero intero valido.
+     */
     public void aggiungiSaldo(Utente utenteLoggato, String saldoTesto) throws CampoNonValidoException {
         try {
             if (saldoTesto == null || saldoTesto.trim().isEmpty()) {
@@ -175,6 +190,13 @@ public class Controller {
         utenteLoggato.setGenere(genere);
     }
 
+    /**
+     * Modifica la data di nascita dell'utente convertendo e validando la stringa immessa.
+     *
+     * @param dataDiNascita La nuova data in formato "dd/MM/yyyy".
+     * @param utenteLoggato L'utente da modificare.
+     * @throws CampoNonValidoException Se la data non rispetta il formato o non esiste sul calendario.
+     */
     public void setDataDiNascitaUtente(String dataDiNascita, Utente utenteLoggato) throws CampoNonValidoException {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
@@ -226,6 +248,12 @@ public class Controller {
         utenteLoggato.removeAmico(utenteSelezionato);
     }
 
+    /**
+     * Recupera lo storico delle recensioni lasciate da un utente analizzando tutte le sue fatture di acquisto.
+     *
+     * @param utenteLoggato L'utente di cui estrarre le recensioni.
+     * @return Una lista contenente tutte le recensioni rilasciate, vuota se non ne ha mai scritte.
+     */
     public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) {
         ArrayList<Recensione> listaRecensioni = new ArrayList<>();
 
@@ -239,6 +267,12 @@ public class Controller {
 
     public Fattura getFatturaDaRecensione(Recensione r){return r.getFattura();}
 
+    /**
+     * Rimuove la recensione associata a una determinata fattura, scollegandola.
+     *
+     * @param fattura La fattura da cui scollegare la recensione.
+     * @throws CampoNonValidoException Se si verificano errori di eliminazione dal Database.
+     */
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);
         //Da eliminare dal database
@@ -273,6 +307,14 @@ public class Controller {
     public String getKeyDaFattura(Fattura f){return f.getKey();}
     public int getPrezzoAcquistoDaFattura(Fattura f){return f.getPrezzoAcquisto();}
 
+    /**
+     * Crea una nuova recensione e la collega  all'acquisto (Fattura) dell'utente.
+     *
+     * @param voto Il punteggio assegnato al gioco.
+     * @param testo Il testo descrittivo della recensione.
+     * @param fatturaSelezionata La fattura relativa all'acquisto del gioco recensito.
+     * @throws CampoNonValidoException Se i limiti del voto o del testo vengono violati.
+     */
     public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
         Recensione nuovaRecensione = new Recensione(voto, testo, fatturaSelezionata);
 
@@ -289,6 +331,12 @@ public class Controller {
         return listaEdizioniGiochi;
     }
 
+    /**
+     * Verifica se una determinata edizione di gioco sta partecipando a una promozione ancora attiva.
+     *
+     * @param edizioneGioco L'edizione da controllare.
+     * @return true se c'è almeno una promozione in corso, false altrimenti.
+     */
     public boolean isInPromozione(EdizioneGioco edizioneGioco) {
         for (GiocoInPromozione p : edizioneGioco.getGioco().getPromozioni()) {
             if (p.getPromozione().getDataFine().isAfter(LocalDate.now())) {
@@ -298,6 +346,21 @@ public class Controller {
         return false;
     }
 
+    /**
+     * Filtra il catalogo globale dei giochi in base ai parametri scelti dall'utente nella GUI.
+     * Applica controlli a cascata su stringhe, budget, generi ed eventuali limitazioni.
+     *
+     * @param testoRicerca Titolo da cercare.
+     * @param prezzoMax Limite massimo di prezzo.
+     * @param genere Genere specifico richiesto.
+     * @param categoria Categoria di budget richiesta.
+     * @param pegi Età minima richiesta in formato testuale.
+     * @param inPromozione Flag per mostrare solo i giochi attualmente scontati.
+     * @param traSeguiti Flag per mostrare solo i giochi degli sviluppatori seguiti dall'utente.
+     * @param utenteLoggato L'utente che sta effettuando la ricerca.
+     * @param ordinamentoData 1 per data crescente, 2 per data decrescente, 0 nessun ordinamento.
+     * @return La lista delle edizioni di gioco che soddisfano tutti i criteri.
+     */
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) {
 
         ArrayList<EdizioneGioco> listaFiltrata = new ArrayList<>();
@@ -325,6 +388,19 @@ public class Controller {
         return listaFiltrata;
     }
 
+    /**
+     * Filtra e ordina la libreria personale (i giochi acquistati) dell'utente corrente.
+     *
+     * @param testoRicerca Titolo da cercare nella propria libreria.
+     * @param utenteLoggato L'utente di cui ispezionare gli acquisti.
+     * @param genereFiltro Genere specifico da filtrare.
+     * @param categoriaFiltro Categoria specifica da filtrare.
+     * @param pegiFiltro Restrizione PEGI.
+     * @param statoDataRilascio Stato per l'ordinamento sulla data di rilascio del gioco.
+     * @param statoPrezzoFiltro Stato per l'ordinamento sul prezzo pagato.
+     * @param statoDataAcquisto Stato per l'ordinamento sulla data della transazione.
+     * @return La lista delle fatture filtrate e ordinate.
+     */
     public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereFiltro, Categoria categoriaFiltro, String pegiFiltro, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) {
 
         ArrayList<Fattura> listaFiltrata = new ArrayList<>();
@@ -363,6 +439,10 @@ public class Controller {
 
     }
 
+    /**
+     * Genera un elenco di utenti filtrato per nome, potendo restringere la ricerca ai soli amici (Utilizzato in HomeUtente).
+     * Esclude automaticamente l'utente loggato dai risultati.
+     */
     public ArrayList<Utente> getUtentiFiltrati(boolean checkBoxAmici, String testoRicerca, Utente utenteLoggato) {
         ArrayList<Utente> listaFiltrata;
 
@@ -382,6 +462,9 @@ public class Controller {
         return listaFinale;
     }
 
+    /**
+     * Genera un elenco di sviluppatori filtrato per nome, potendo restringere la ricerca a quelli già seguiti (Utilizzato in HomeUtente).
+     */
     public ArrayList<Sviluppatore> getSviluppatoriFiltrati(boolean checkBoxSviluppatore, String testoRicerca, Utente utenteLoggato) {
         ArrayList<Sviluppatore> listaFiltrata;
 
@@ -400,6 +483,12 @@ public class Controller {
         return listaFinale;
     }
 
+    /**
+     * Aggiunge un'edizione di gioco al carrello dell'utente. Se l'utente non ha un carrello attivo,
+     * lo inizializza.
+     *
+     * @throws CampoNonValidoException Se il gioco è nullo o è già presente nel carrello.
+     */
     public void aggiungiAlCarrello(Utente utenteLoggato, EdizioneGioco edizioneGiocoSelezionata) throws CampoNonValidoException {
 
         if (utenteLoggato.getCarrello().getListaGiochi().contains(edizioneGiocoSelezionata)){
@@ -417,6 +506,9 @@ public class Controller {
         utenteLoggato.getCarrello().addEdizione(edizioneGiocoSelezionata);
     }
 
+    /**
+     * Estrapola tutte le recensioni rilasciate dagli utenti per una specifica edizione di un gioco.
+     */
     public ArrayList<Recensione> getRecensioniEdizioneGioco(EdizioneGioco edizioneGioco){
         ArrayList<Recensione> listaRecensioniGioco = new ArrayList<>();
         for (Fattura f : listaFatture){
@@ -431,6 +523,13 @@ public class Controller {
     public int getVotoRecensione(Recensione recensione){return recensione.getVoto();}
     public int getDifferenzaLikeRecensione(Recensione recensione){return recensione.getDifferenzaLike();}
 
+    /**
+     * Assegna Like a una recensione. Utilizza un identificativo univoco (ID Utente + Key del gioco)
+     * per impedire voti multipli dallo stesso account.
+     * Se l'utente aveva precedentemente messo un dislike, questo viene annullato in favore del like.
+     *
+     * @throws CampoNonValidoException Se l'utente ha già messo like a questa specifica recensione.
+     */
     public void mettiLikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
 
         String ricevutaVoto = utenteLoggato.getId() + "_" + recensione.getFattura().getKey();
@@ -448,6 +547,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Assegna un Dislike a una recensione sfruttando lo stesso sistema di protezione anti-spam del Like.
+     * Se l'utente aveva precedentemente messo un like, questo viene annullato in favore del dislike.
+     *
+     * @throws CampoNonValidoException Se l'utente ha già messo dislike a questa specifica recensione.
+     */
     public void mettiDislikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
 
         String ricevutaVoto = utenteLoggato.getId() + "_" + recensione.getFattura().getKey();
@@ -481,6 +586,11 @@ public class Controller {
         return utenteLoggato.getCarrello().getTotale();
     }
 
+    /**
+     * Rimuove un gioco specifico dal carrello dell'utente.
+     *
+     * @throws CampoNonValidoException Se il carrello è già nullo/vuoto o se la rimozione fallisce.
+     */
     public void rimuoviDalCarrello(Utente utenteLoggato, EdizioneGioco edizioneGioco) throws CampoNonValidoException {
 
         if (utenteLoggato.getCarrello() == null) {
@@ -489,6 +599,14 @@ public class Controller {
         utenteLoggato.getCarrello().removeEdizione(edizioneGioco);
     }
 
+    /**
+     * Finalizza la transazione: verifica i fondi dell'utente, scala l'importo totale del carrello,
+     * genera le relative {@link Fattura} inserendole nella libreria,
+     * e infine svuota il carrello.
+     *
+     * @param utenteLoggato L'utente che sta completando la transazione.
+     * @throws CampoNonValidoException Se il carrello è vuoto o se il saldo non è sufficiente a coprire la spesa.
+     */
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
         Carrello carrello = utenteLoggato.getCarrello();
 
