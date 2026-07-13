@@ -70,7 +70,7 @@ public class Promozione {
     public String getNome() {return nome;}
     public LocalDate getDataInizio() {return dataInizio;}
     public LocalDate getDataFine() {return dataFine;}
-    public ArrayList<GiocoInPromozione> getGiochiInPromozione() {return giochiInPromozione;}
+    public ArrayList<GiocoInPromozione> getGiochiInPromozione() {return new ArrayList<>(giochiInPromozione);}
 
     // Lista set
     /**
