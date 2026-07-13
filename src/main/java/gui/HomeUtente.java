@@ -118,6 +118,16 @@ public class HomeUtente {
     private int statoPrezzoFiltro = 0;
     private int statoDataAcquisto = 0;
 
+    /**
+     * Interfaccia grafica principale dedicata all'{@link Utente}.
+     * Gestisce la visualizzazione a schede divisa in quattro sezioni:
+     * - Catalogo: per filtrare, visualizzare e aggiungere al carrello le edizioni dei giochi.
+     * - Libreria: per visualizzare i giochi acquistati, copiare le Key e rilasciare recensioni.
+     * - Profilo: per gestire le informazioni personali, il saldo, gli amici e gli sviluppatori seguiti.
+     * - Carrello: per riepilogare gli elementi selezionati e finalizzare l'acquisto.
+     * Tutte le azioni dell'utente vengono eseguite mediante GUI e delegate al {@link Controller}.
+     */
+
     public HomeUtente(Controller controller, JFrame accediGUI, Utente accountLoggato) {
         this.controller = controller;
         this.utenteLoggato = accountLoggato;
