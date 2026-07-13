@@ -4,6 +4,8 @@ import controller.Controller;
 import model.*;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -77,12 +79,14 @@ public class HomeAdmin {
     private JLabel nomePromozione;
     private JLabel dataInizioPromozione;
     private JLabel dataFinePromozione;
+    private JLabel nStrike;
 
     private JFrame adminFrame;
     private Controller controller;
     private Admin admin;
 
     //DA FARE: ActionListener di Rimborsa e Rimuovi recensione nel tab Utenti
+    //Action Listener del tabbed pane per caricare solo la tab che clicco e non tutto subito
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
@@ -92,11 +96,19 @@ public class HomeAdmin {
 
         configuraInterfaccia();
 
+        //Utenti
         associaListenerCheckBoxBannatiUtenti();
         associaListenerRicercaUtenti();
         associaListenerTabellaUtenti();
-
         associaListenerPulsanteBannaUtenteUtenti();
+
+        //Sviluppatori
+        associaListenerListaSviluppatori();
+        associaListenerRicercaSviluppatori();
+        associaListenerCheckBoxBannatiSviluppatori();
+        associaListenerAggiungiStrike();
+        associaListenerRimuovitStrike();
+
         associaListenerPulsanteLogout(accediGUI);
 
         mostraForm();
@@ -110,6 +122,7 @@ public class HomeAdmin {
         adminFrame.setMinimumSize(new Dimension(900, 600));
 
         configuraPannelloUtenti();
+        configuraPannelloSviluppatori();
 
     }
 
@@ -124,8 +137,15 @@ public class HomeAdmin {
         String[] colonneGiochi = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforma", "Prezzo"};
         configuraTabella(colonneGiochi, tabellaGiochiUtenti);
 
-
     }
+
+    private void configuraPannelloSviluppatori(){
+        filtraSviluppatori(); //riempio lista sviluppatori
+
+        String[] colonneSviluppatori = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforme"};
+        configuraTabella(colonneSviluppatori, tabellaGiochiSviluppatori);
+    }
+
     private void configuraTabella(String[] colonne, JTable tabella) {
 
         DefaultTableModel modelloIniziale = new DefaultTableModel(colonne, 0) {
@@ -207,7 +227,7 @@ public class HomeAdmin {
                     controller.getTitoloDaFattura(gioco),
                     controller.getCategoriaDaFattura(gioco),
                     controller.getPegiDaFattura(gioco),
-                    controller.getGeneriDaFattura(gioco),
+                    controller.getGeneriDaFattura(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
                     controller.getPiattaformaDaFattura(gioco),
                     controller.getPrezzoAcquistoDaFattura(gioco)
             };
@@ -255,6 +275,133 @@ public class HomeAdmin {
                 } else JOptionPane.showMessageDialog(adminFrame, "Nessun utente selezionato", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         });
+    }
+
+    //PANNELLO SVILUPPATORI
+
+    private void associaListenerListaSviluppatori(){
+        listaSviluppatori.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting()){ //serve a evitare che la funzione parta 2 volte (click e rilascio)
+
+                    Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                    if(sviluppatoreSelezionato != null){
+                        descrizioneSviluppatori.setText(controller.getDescrizioneSviluppatore(sviluppatoreSelezionato));
+                        aggiornaStrike(sviluppatoreSelezionato);
+
+                        riempiTabellaGiochiSviluppatore(sviluppatoreSelezionato);
+
+                    } else
+                        descrizioneSviluppatori.setText("");
+                }
+            }
+        });
+    }
+
+    private void riempiTabellaGiochiSviluppatore(Sviluppatore sviluppatore){
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(EdizioneGioco gioco : controller.getListaEdizioniSviluppatore(sviluppatore)){
+            Object[] riga = {
+                    controller.getTitoloDaEdizioneGioco(gioco),
+                    controller.getCategoriaDaEdizioneGioco(gioco),
+                    controller.getPegiDaEdizioneGioco(gioco),
+                    controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                    controller.getPiattaformaDaEdizioneGioco(gioco)
+            };
+            righe.add(riga);
+        }
+        aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
+    }
+
+    private void associaListenerRicercaSviluppatori(){
+        ricercaSviluppatori.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraSviluppatori();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxBannatiSviluppatori(){
+        checkBoxBannatiSviluppatori.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraSviluppatori();
+            }
+        });
+    }
+
+    private void filtraSviluppatori() {
+        String testoRicerca = ricercaSviluppatori.getText().toLowerCase().trim();
+
+        DefaultListModel<Sviluppatore> modelloSviluppatori = new DefaultListModel<>();
+
+        //filtro in base alla checkBox e alla barra di ricerca
+        boolean flag = checkBoxBannatiSviluppatori.isSelected();
+        for(Sviluppatore sviluppatore : controller.getListaSviluppatoriLoggati()){
+            if(controller.isSviluppatoreBannato(sviluppatore) == flag && controller.getNomeSviluppatore(sviluppatore).toLowerCase().contains(testoRicerca)){
+
+                modelloSviluppatori.addElement(sviluppatore);
+
+            }
+        }
+
+        listaSviluppatori.setModel(modelloSviluppatori);
+    }
+
+    private void associaListenerAggiungiStrike(){
+        pulsanteAggiungiStrike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                if(sviluppatoreSelezionato != null){
+                    try {
+
+                        controller.addStrikeSviluppatore(sviluppatoreSelezionato);
+                        aggiornaStrike(sviluppatoreSelezionato);
+                        filtraSviluppatori();
+
+                    } catch (CampoNonValidoException ex) {
+
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+            }
+        });
+    }
+
+    private void associaListenerRimuovitStrike(){
+        pulsanteRimuoviStrike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                if(sviluppatoreSelezionato != null){
+                    try {
+
+                        controller.removeStrikeSviluppatore(sviluppatoreSelezionato);
+                        aggiornaStrike(sviluppatoreSelezionato);
+                        filtraSviluppatori();
+
+                    } catch (CampoNonValidoException ex) {
+
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+            }
+        });
+    }
+
+    private void aggiornaStrike(Sviluppatore sviluppatore){
+        nStrike.setText("Strike: " + controller.getStrikeSviluppatore(sviluppatore));
     }
 
     private void associaListenerPulsanteLogout(JFrame accediGUI){

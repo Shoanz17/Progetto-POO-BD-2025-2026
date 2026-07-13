@@ -33,10 +33,22 @@ public class Sviluppatore extends Account{
 
     public void addStrike() throws CampoNonValidoException
     {
-        if(this.strike>=3)
-        {throw new CampoNonValidoException("l'utente è già bannato");}
+        if(isBannato())
+        {throw new CampoNonValidoException("L'utente è già bannato");}
 
         this.strike++;
+    }
+
+    public void removeStrike() throws CampoNonValidoException {
+        if(this.strike <= 0) throw new CampoNonValidoException("Gli strike non possono essere sotto lo 0");
+            else
+                this.strike--;
+    }
+
+    public boolean isBannato(){
+        if(this.strike>=3) return true;
+
+        return false;
     }
 
     public ArrayList<Gioco> getListaGiochi(){return listaGiochi;}
@@ -82,6 +94,7 @@ public class Sviluppatore extends Account{
 
         this.listaGiochi.add(gioco);
     }
+
 
 }
 

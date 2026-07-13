@@ -226,7 +226,18 @@ public class Controller {
     }
 
     public String getDescrizioneSviluppatore(Sviluppatore s){return s.getDescrizione();}
+    public ArrayList<EdizioneGioco> getListaEdizioniSviluppatore(Sviluppatore s) {
+        ArrayList<EdizioneGioco> lista = new ArrayList<>();
+        for(EdizioneGioco edizioneGioco : getEdizioniGiochi()){
+            if(getNomeSviluppatoreDaEdizioneGioco(edizioneGioco).equals(getNomeSviluppatore(s))) lista.add(edizioneGioco);
+        }
+        return lista;
+    }
     public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s){return s.getListaGiochi().size();}
+    public boolean isSviluppatoreBannato(Sviluppatore s){return s.isBannato();}
+    public void addStrikeSviluppatore(Sviluppatore s) throws CampoNonValidoException {s.addStrike();}
+    public void removeStrikeSviluppatore(Sviluppatore s) throws CampoNonValidoException {s.removeStrike();}
+    public int getStrikeSviluppatore(Sviluppatore s) {return s.getStrike();}
     public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getSviluppatore().getNome();}
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPrezzo();}
