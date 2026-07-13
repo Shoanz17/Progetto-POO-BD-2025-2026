@@ -89,7 +89,7 @@
                 </constraints>
                 <properties>
                   <font size="18" style="1"/>
-                  <text value="Rimuovi recensione"/>
+                  <text value="Rimuovi rilasciaRecensione"/>
                 </properties>
               </component>
               <scrollpane id="f3498">
@@ -605,7 +605,7 @@
                 </constraints>
                 <properties>
                   <font size="18" style="1"/>
-                  <text value="Rimuovi recensione"/>
+                  <text value="Rimuovi rilasciaRecensione"/>
                 </properties>
               </component>
               <scrollpane id="c31a">

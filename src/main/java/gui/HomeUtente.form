@@ -318,7 +318,7 @@
                 </constraints>
                 <properties>
                   <font size="18"/>
-                  <text value="Valutazione recensione: [votoRecensione]"/>
+                  <text value="Valutazione rilasciaRecensione: [votoRecensione]"/>
                 </properties>
               </component>
               <component id="635e3" class="javax.swing.JButton" binding="pulsanteAggiungiAlCarrello">
@@ -518,7 +518,7 @@
                 </constraints>
                 <properties>
                   <font size="18"/>
-                  <text value="Lascia una recensione!"/>
+                  <text value="Lascia una rilasciaRecensione!"/>
                 </properties>
               </component>
               <component id="eda06" class="javax.swing.JButton" binding="pulsanteCopiaKey">

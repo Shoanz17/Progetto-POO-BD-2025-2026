@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Recensione {
+public class RilasciaRecensione {
     private JPanel recensionePanel;
     private JButton pulsanteRilasciaRecensione;
     private JSpinner spinnerVoto;
@@ -24,7 +24,13 @@ public class Recensione {
     private Utente utenteLoggato;
     private Fattura fatturaSelezionata;
 
-    public Recensione(Controller controller, HomeUtente homeUtente, Utente utenteLoggato, Fattura fatturaSelezionata) {
+    /**
+     * Finestra GUI che permette all'{@link Utente} di rilasciare o
+     * sovrascrivere una recensione per un gioco precedentemente acquistato (associato a una {@link Fattura}).
+     * L'interfaccia raccoglie un voto numerico (da 0 a 100) e una descrizione testuale,
+     * delegando poi l'effettivo salvataggio dei dati al {@link Controller}.
+     */
+    public RilasciaRecensione(Controller controller, HomeUtente homeUtente, Utente utenteLoggato, Fattura fatturaSelezionata) {
 
         this.controller = controller;
         this.homeUtente = homeUtente;
@@ -42,7 +48,7 @@ public class Recensione {
         pulsanteRilasciaRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int risposta = 0;
+                int risposta = JOptionPane.YES_OPTION;
                 if (controller.getRecensioneDaFattura(fatturaSelezionata) != null) {
                     risposta = JOptionPane.showConfirmDialog(recensioneFrame, "Sovrascriverai la recensione giá lasciata", "Sicuro?", JOptionPane.YES_NO_OPTION);
                 }
