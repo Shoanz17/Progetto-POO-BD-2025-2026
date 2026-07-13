@@ -2,7 +2,6 @@ package controller;
 
 import model.*;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -73,6 +72,9 @@ public class Controller {
         listaFatture.add(fattura1);
         sviluppatore1.addGioco(gioco);
     }
+
+    public String getNomeAccount(Account account) {return account.getNome();}
+    public String getNomeGenereEnum(GenereEnum genere){return genere.name();}
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException {
         Account.verificaFormatoNome(nome);
@@ -196,15 +198,24 @@ public class Controller {
         }
     }
 
+    public int getIdUtente(Utente u){return u.getId();}
     public int getNumeroGiochiAcquistatiUtente(Utente u){return u.getGiochiAcquistati().size();}
     public GenereEnum getGenereUtente(Utente u){return u.getGenere();}
     public String getNomeUtente(Utente u){return u.getNome();}
     public String getEmailUtente(Utente u){return u.getEmail();}
     public LocalDate getDataDiNascitaUtente(Utente u){return u.getDataNascita();}
     public int getSaldoUtente(Utente u){return u.getSaldo();}
+    public ArrayList<Fattura> getLibreriaUtente(Utente u){return u.getGiochiAcquistati();}
     public LocalDate getDataCreazioneAccountUtente(Utente u){return u.getDataCreazione();}
     public boolean isUtenteBannato(Utente u){return u.isBannato();}
-
+    public Utente getUtenteById(int idUtente){ //DA FARE COL DAO
+        for(Account utente : listaAccountLoggati){
+            if(utente.getId() == idUtente){
+                return (Utente) utente;
+            }
+        }
+        return null;
+    }
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
@@ -236,15 +247,15 @@ public class Controller {
         utenteLoggato.removeAmico(utenteSelezionato);
     }
 
-    public ArrayList<Fattura> getListaRecensioniUtente(Utente utenteLoggato) {
-        ArrayList<Fattura> listaFiltrata = new ArrayList<>();
+    public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) {
+        ArrayList<Recensione> listaRecensioni = new ArrayList<>();
 
         for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
             if (f.getRecensione() != null) {
-                listaFiltrata.add(f);
+                listaRecensioni.add(f.getRecensione());
             }
         }
-        return listaFiltrata;
+        return listaRecensioni;
     }
 
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {

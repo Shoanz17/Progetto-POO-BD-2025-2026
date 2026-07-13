@@ -1,9 +1,7 @@
 package gui;
 
 import controller.Controller;
-import model.Admin;
-import model.CampoNonValidoException;
-import model.Utente;
+import model.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -84,6 +82,8 @@ public class HomeAdmin {
     private Controller controller;
     private Admin admin;
 
+    //DA FARE: ActionListener di Rimborsa e Rimuovi recensione nel tab Utenti
+
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
         if(admin == null) throw new IllegalArgumentException("Admin passato inesistente");
@@ -109,6 +109,11 @@ public class HomeAdmin {
         adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         adminFrame.setMinimumSize(new Dimension(900, 600));
 
+        configuraPannelloUtenti();
+
+    }
+
+    private void configuraPannelloUtenti(){
         String[] colonneUtenti = {"ID", "Nickname", "Email", "Data di Nascita", "Saldo"};
         configuraTabella(colonneUtenti, tabellaUtenti);
         filtraUtenti(); //riempio la tabella senza filtri
@@ -118,8 +123,9 @@ public class HomeAdmin {
 
         String[] colonneGiochi = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforma", "Prezzo"};
         configuraTabella(colonneGiochi, tabellaGiochiUtenti);
-    }
 
+
+    }
     private void configuraTabella(String[] colonne, JTable tabella) {
 
         DefaultTableModel modelloIniziale = new DefaultTableModel(colonne, 0) {
@@ -141,13 +147,13 @@ public class HomeAdmin {
         //filtro in base alla checkBox e alla barra di ricerca
         boolean flag = checkBoxBannatiUtenti.isSelected();
         for(Utente utente : controller.getListaUtentiLoggati()){
-            if(utente.isBannato() == flag && utente.getNome().toLowerCase().contains(testoRicerca)){
+            if(utente.isBannato() == flag && controller.getNomeUtente(utente).toLowerCase().contains(testoRicerca)){
                 Object[] riga = {
-                        utente.getId(),
-                        utente.getNome(),
-                        utente.getEmail(),
-                        utente.getDataNascita(),
-                        utente.getSaldo()
+                        controller.getIdUtente(utente),
+                        controller.getNomeUtente(utente),
+                        controller.getEmailUtente(utente),
+                        controller.getDataDiNascitaUtente(utente),
+                        controller.getSaldoUtente(utente)
                 };
                 righe.add(riga);
             }
@@ -184,12 +190,43 @@ public class HomeAdmin {
                 int rigaSelezionata = tabellaUtenti.getSelectedRow();
 
                 if (rigaSelezionata != -1) {
-                    Object selezione = tabellaUtenti.getValueAt(rigaSelezionata, 1);
-                    System.out.println("Utente cliccato con il mouse: " + selezione);
-                    //riempio le altre liste pescando i dati dal db
+                    int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
+                    Utente utente = controller.getUtenteById(selezione);
+                    riempiTabellaGiochiUtente(utente);
+                    riempiTabellaRecensioniUtente(utente);
                 }
             }
         });
+    }
+
+    private void riempiTabellaGiochiUtente(Utente utente){
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(Fattura gioco : controller.getLibreriaUtente(utente)){
+            Object[] riga = {
+                    controller.getTitoloDaFattura(gioco),
+                    controller.getCategoriaDaFattura(gioco),
+                    controller.getPegiDaFattura(gioco),
+                    controller.getGeneriDaFattura(gioco),
+                    controller.getPiattaformaDaFattura(gioco),
+                    controller.getPrezzoAcquistoDaFattura(gioco)
+            };
+            righe.add(riga);
+        }
+        aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
+    }
+
+    private void riempiTabellaRecensioniUtente(Utente utente){
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(model.Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE cambia model.
+            Object[] riga = {
+                    controller.getVotoRecensione(recensione),
+                    controller.getDifferenzaLikeRecensione(recensione)
+            };
+            righe.add(riga);
+        }
+        aggiornaContenutoTabella(tabellaRecensioniUtenti, righe);
     }
 
     private void associaListenerPulsanteBannaUtenteUtenti(){
@@ -205,7 +242,7 @@ public class HomeAdmin {
                     if(risposta == JOptionPane.YES_OPTION) {
                         try {
 
-                            controller.invertiStatoBan((int) tabellaUtenti.getValueAt(rigaSelezionata, 0));
+                            controller.invertiStatoBan((int) tabellaUtenti.getValueAt(rigaSelezionata, 0)); //passa id dell'utente selezionato e banna o sbanna
                             filtraUtenti();
 
                         } catch (CampoNonValidoException ex) {
