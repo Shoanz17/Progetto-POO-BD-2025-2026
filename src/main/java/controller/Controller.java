@@ -13,6 +13,7 @@ public class Controller {
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
     private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
+    private ArrayList<Gioco> listaGiochi = new ArrayList<>();
     private ArrayList<Fattura> listaFatture = new ArrayList<>();
 
     private ArrayList<String> storicoLike = new ArrayList<>();
@@ -66,6 +67,7 @@ public class Controller {
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
         listaEdizioniGiochi.add(edizioneGioco);
+        listaGiochi.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
 
@@ -234,10 +236,11 @@ public class Controller {
         return lista;
     }
     public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s){return s.getListaGiochi().size();}
-    public boolean isSviluppatoreBannato(Sviluppatore s){return s.isBannato();}
-    public void addStrikeSviluppatore(Sviluppatore s) throws CampoNonValidoException {s.addStrike();}
-    public void removeStrikeSviluppatore(Sviluppatore s) throws CampoNonValidoException {s.removeStrike();}
-    public int getStrikeSviluppatore(Sviluppatore s) {return s.getStrike();}
+    public boolean isSviluppatoreBannato(Sviluppatore sviluppatore){return sviluppatore.isBannato();}
+    public void addStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {sviluppatore.addStrike();}
+    public void removeStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {sviluppatore.removeStrike();}
+    public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
+    public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
     public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getSviluppatore().getNome();}
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPrezzo();}
@@ -286,6 +289,33 @@ public class Controller {
         }
         return categorie;
     }
+
+    //metodi per prendere dati da un gioco
+    public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
+    public String getTitoloGioco(Gioco gioco) {return gioco.getTitolo();}
+    public Categoria getCategoriaGioco(Gioco gioco) {return gioco.getCategoria();}
+    public int getPegiGioco(Gioco gioco) {return gioco.getPegi();}
+    public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) {return gioco.getGeneri();}
+
+    //metodi per modificare un gioco
+    public void updateTitoloGioco(Gioco gioco, String titolo) throws CampoNonValidoException { gioco.setTitolo(titolo); }
+    public void updateCategoriaGioco(Gioco gioco, Categoria categoria) throws CampoNonValidoException { gioco.setCategoria(categoria); }
+    public void updatePegiGioco(Gioco gioco, int pegi) throws CampoNonValidoException { gioco.setPegi(pegi); }
+    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException { gioco.setListaGeneri(generi); }
+
+    //metodi per prendere dati dei generi
+    public String getNomeGenere(Genere genere) {return genere.getNome();}
+    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) { //DA FARE col DAO
+        ArrayList<Genere> listaGeneri = new ArrayList<>();
+
+        for(Genere genere : this.listaGeneri){
+            if(listaNomi.contains(genere.getNome()))
+                listaGeneri.add(genere);
+        }
+
+        return listaGeneri;
+    }
+
     // metodi per prendere dati da una fattura
     public String getTitoloDaFattura(Fattura f) {return f.getGioco().getGioco().getTitolo();}
     public String getPiattaformaDaFattura(Fattura f) {return f.getGioco().getPiattaforma().getNome();}
