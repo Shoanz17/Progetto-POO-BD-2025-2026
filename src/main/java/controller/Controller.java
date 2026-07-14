@@ -316,6 +316,12 @@ public class Controller {
         return listaGeneri;
     }
 
+    public void createGenere(String nome) throws CampoNonValidoException {
+        Genere genere = new Genere(nome);
+
+        listaGeneri.add(genere); //DA FARE modificare col dao e IMPORTANTE se il genere già esiste non aggiungerlo
+    }
+
     // metodi per prendere dati da una fattura
     public String getTitoloDaFattura(Fattura f) {return f.getGioco().getGioco().getTitolo();}
     public String getPiattaformaDaFattura(Fattura f) {return f.getGioco().getPiattaforma().getNome();}
@@ -578,17 +584,10 @@ public class Controller {
 
 
     public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
-        Utente utente = trovaUtentePerId(idUtente);
+        Utente utente = getUtenteById(idUtente);
 
         if(utente == null) throw new CampoNonValidoException("Operazione non andata a buon fine");
 
         utente.setBannato(!utente.isBannato()); //magari potrei lanciare un eccezione
-    }
-
-    public Utente trovaUtentePerId(int idUtente){
-        for(Utente utente : getListaUtentiLoggati()){ //qui c'è un doppio ciclo ma andrà risolto col db
-            if(utente.getId() == idUtente) return utente;
-        }
-        return null;
     }
 }

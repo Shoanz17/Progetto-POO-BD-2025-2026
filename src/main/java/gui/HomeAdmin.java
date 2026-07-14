@@ -119,6 +119,10 @@ public class HomeAdmin {
         associaListenerModificaPegi();
         associaListenerPulsanteConfermaGeneri();
 
+        //Generi
+        associaListenerRicercaGeneri();
+        associaListenerPulsanteAggiungiGenere();
+
         associaListenerPulsanteLogout(accediGUI);
 
         mostraForm();
@@ -133,6 +137,7 @@ public class HomeAdmin {
         configuraPannelloUtenti();
         configuraPannelloSviluppatori();
         configuraPannelloGiochi();
+        configuraPannelloGeneri();
 
     }
 
@@ -650,6 +655,56 @@ public class HomeAdmin {
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+            }
+        });
+    }
+
+    //PANNELLO GENERI
+
+    private void configuraPannelloGeneri(){
+        filtraGeneri();
+        campoNomeGenere.setText("");
+    }
+
+    private void associaListenerRicercaGeneri(){
+        ricercaGeneri.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraGeneri();
+            }
+        });
+    }
+
+    private void filtraGeneri(){
+        String testoRicerca = ricercaGeneri.getText().toLowerCase().trim();
+
+        DefaultListModel<Genere> modelloGeneri = new DefaultListModel<>();
+
+        if(testoRicerca.isEmpty()) modelloGeneri.addAll(controller.getGeneri()); //se non ho niente da filtrare passo tutto
+        else {
+            for(Genere genere : controller.getGeneri()){
+                if(controller.getNomeGenere(genere).toLowerCase().contains(testoRicerca))
+
+                    modelloGeneri.addElement(genere);
+            }
+
+        }
+
+        listaGeneri.setModel(modelloGeneri);
+    }
+
+    private void associaListenerPulsanteAggiungiGenere(){
+        pulsanteAggiungiGenere.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    controller.createGenere(campoNomeGenere.getText());
+                    filtraGeneri();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                }
             }
         });
     }
