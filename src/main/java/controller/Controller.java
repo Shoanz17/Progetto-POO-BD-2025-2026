@@ -19,6 +19,8 @@ public class Controller {
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
 
+    private ArrayList<Gioco> listaGioco= new ArrayList<>();
+
     public Controller() {
         try {
             creaDatiFittizi();
@@ -45,18 +47,47 @@ public class Controller {
         Genere genere1 = new Genere(0, "Azione");
         Genere genere2 = new Genere(1, "Sopravvivenza");
         Genere genere3 = new Genere(2, "JRPG");
+        Genere genere4 = new Genere(3,"Rpg");
+        Genere genere5 = new Genere(4,"Fortnite");
+        Genere genere6 = new Genere(5,"SparaTutto");
+        Genere genere7 = new Genere(6,"Arcade");
 
         listaGeneri.add(genere1);
         listaGeneri.add(genere2);
         listaGeneri.add(genere3);
+        listaGeneri.add(genere4);
+        listaGeneri.add(genere5);
+        listaGeneri.add(genere6);
+        listaGeneri.add(genere7);
 
 
-        Gioco gioco = new Gioco("The Witcher 3", Categoria.AAA, 18, sviluppatore1, listaGeneri);
+
+        Gioco gioco = new Gioco("The Witcher 3", Categoria.AAA, 18, sviluppatore1,listaGeneri );
+
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco("Switch", "Nintendo", true);
+        PiattaformaDiGioco piattaformaDiGioco2 = new PiattaformaDiGioco("PS5", "Sony", false);
+        PiattaformaDiGioco piattaformaDiGioco3 = new PiattaformaDiGioco("PC", "None", false);
+        PiattaformaDiGioco piattaformaDiGioco4 = new PiattaformaDiGioco("PS4", "Sony", false);
+        PiattaformaDiGioco piattaformaDiGioco5 = new PiattaformaDiGioco("Xbox", "Microsoft", false);
+        PiattaformaDiGioco piattaformaDiGioco6 = new PiattaformaDiGioco("Xbox360", "Microsoft", false);
+
+        listaPiattaformeDiGioco.add(piattaformaDiGioco);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco2);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco3);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco4);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco5);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco6);
+
+
+
+
         EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaformaDiGioco, 60, LocalDate.of(2015, 10, 12));
+
+        gioco.addEdizione(edizioneGioco);
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
         listaEdizioniGiochi.add(edizioneGioco);
+        listaGioco.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
 
@@ -194,7 +225,7 @@ public class Controller {
     public int getSaldoUtente(Utente u){return u.getSaldo();}
     public LocalDate getDataCreazioneAccountUtente(Utente u){return u.getDataCreazione();}
     public boolean isUtenteBannato(Utente u){return u.isBannato();}
-
+    public ArrayList<Gioco> getListaGiochi() {return listaGioco;}
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);

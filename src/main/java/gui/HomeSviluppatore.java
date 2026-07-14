@@ -63,6 +63,7 @@ public class HomeSviluppatore {
     private JLabel seguitiSvilup;
     private JPanel profilo;
     private JLabel fondiSvilup;
+    private JTextArea textAreaGeneri;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -72,6 +73,8 @@ public class HomeSviluppatore {
     private DefaultListModel<Gioco> modelLibreria;
     ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
     private Controller controller;
+
+
 
     public HomeSviluppatore() {
         Controller controller = new Controller();
@@ -83,9 +86,10 @@ public class HomeSviluppatore {
         ricercaListaLib();
         ricercaPannello();
         selezioneListaLibreria();
+        graficaLibreriaGen();
         pannelloAggMod();
         inserimentoGioco();
-        profilo();
+        profilo(controller.getListaSviluppatoriLoggati().get(0));
         gestProfilo(controller.getListaSviluppatoriLoggati().get(0));
 
 
@@ -99,6 +103,8 @@ public class HomeSviluppatore {
 //        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+
     }
 
 
@@ -172,6 +178,7 @@ public class HomeSviluppatore {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
+
                 // questo if serve a evitare di eseguire il codice 2 volte
                 if (!e.getValueIsAdjusting()) {
 
@@ -181,13 +188,18 @@ public class HomeSviluppatore {
                     if (giocoSelezionato != null) {
                         // 1. accumuliamo tutti i generi
                         String generiUniti = "";
-                        for (Genere g : giocoSelezionato.getGeneri()) {
-                            if (!generiUniti.isEmpty()) {
-                                generiUniti += ", "; // aggiunge la virgola tra un genere e l'altro
-                            }
-                            generiUniti += g.toString();
-                        }
 
+                        for (Genere g : giocoSelezionato.getGeneri()) {
+
+                            if (!generiUniti.isEmpty()) {
+
+                                generiUniti += ", "; // aggiunge la virgola tra un genere e l'altro
+
+                            }
+
+                            generiUniti += g.toString();
+
+                        }
                         // 2. accumuliamo tutte le piattaforme dalle edizioni
                         String piattaformeUnite = "";
                         for (EdizioneGioco ed : giocoSelezionato.getEdizioni()) {
@@ -200,15 +212,26 @@ public class HomeSviluppatore {
                         // 3. aggiorniamo le Label con le stringhe complete
                         Titolo.setText("Titolo: " + giocoSelezionato.getTitolo());
                         lblCategoria.setText("Categoria: " + giocoSelezionato.getCategoria());
-                        lblGenere.setText("Genere: " + generiUniti);
+                        textAreaGeneri.setText("Genere: " + generiUniti);
                         Piattaforma.setText("Piattaforma: " + piattaformeUnite);
                         pegi.setText("Pegi: " + giocoSelezionato.getPegi());
+
                     }
 
 
                 }
             }
         });
+    }
+
+    private void graficaLibreriaGen()
+    {
+        textAreaGeneri.setText("Genere:");
+        textAreaGeneri.setLineWrap(true);
+        textAreaGeneri.setWrapStyleWord(true);
+        textAreaGeneri.setEditable(false);
+        textAreaGeneri.setOpaque(false);
+        textAreaGeneri.setFont(Titolo.getFont());
     }
 
 
@@ -237,10 +260,7 @@ public class HomeSviluppatore {
 
                         for(JCheckBox cb : listaCheckboxGeneri ){
                             for(Genere g : giocoSelezionato.getGeneri())
-                            {
-                            {if(cb.getText().equals(g.toString())){cb.setSelected(true);}}
-
-                            }
+                            {{if(cb.getText().equals(g.toString())){cb.setSelected(true);}}}
                         }
 
 
@@ -478,10 +498,10 @@ public class HomeSviluppatore {
         });
     }
 
-    private void profilo()
+    private void profilo(Sviluppatore sviluppatoreCorrente)
         {
+            nomeSviluppatore.setText(controller.getNomeSviluppatore(sviluppatoreCorrente));
             descrizioneArea.setText("wao siamo il team sega e ci facciamo tante seggi, fasmgneornsdfznfmgsz,xczgmfszxvzz");
-
             descrizioneArea.setEditable(false);
             descrizioneArea.setLineWrap(true);
             descrizioneArea.setWrapStyleWord(true);
