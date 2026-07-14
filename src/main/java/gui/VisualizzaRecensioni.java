@@ -58,12 +58,10 @@ public class VisualizzaRecensioni {
             }
         };
 
-        acquistiUtenteConRecensione = controller.getListaRecensioniUtente(utenteLoggato);
+        for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato)) {
+            Fattura f = controller.getFatturaDaRecensione(r);
 
-        for (Fattura f : acquistiUtenteConRecensione) {
-            Recensione r = f.getRecensione();
-
-            Object[] riga = {f.getGioco().getGioco().getTitolo(), f.getGioco().getPiattaforma().getNome(), r.getVoto(), r.getDifferenzaLike()};
+            Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
             modelloRecensioni.addRow(riga);
         }
         tabellaRecensioni.setModel(modelloRecensioni);
@@ -76,7 +74,7 @@ public class VisualizzaRecensioni {
                 int rigaSelezionata = tabellaRecensioni.getSelectedRow();
                 if (rigaSelezionata != -1) {
                     Fattura f = acquistiUtenteConRecensione.get(rigaSelezionata);
-                    textDescrizione.setText(f.getRecensione().getDescrizione());
+                    textDescrizione.setText(controller.getDescrizioneRecensioneDaFattura(f));
                 }
             }
         });

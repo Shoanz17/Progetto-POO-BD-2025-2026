@@ -18,7 +18,6 @@ public class Controller {
 
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
-    private ArrayList<Gioco> listaGioco = new ArrayList<>();
 
     public Controller() {
         try {
@@ -35,7 +34,6 @@ public class Controller {
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
         Sviluppatore sviluppatore1 = new Sviluppatore("Nintendo", "NintendoTheBest100!!", "Noi facciamo i giochi peggiori");
 
-
         Admin admin = new Admin("aa", "Password2@");
 
         listaAccountLoggati.add(utente);
@@ -47,40 +45,18 @@ public class Controller {
         Genere genere1 = new Genere(0, "Azione");
         Genere genere2 = new Genere(1, "Sopravvivenza");
         Genere genere3 = new Genere(2, "JRPG");
-        Genere genere4 = new Genere(3,"Rpg");
-        Genere genere5 = new Genere(4,"Fortnite");
-        Genere genere6 = new Genere(5,"SparaTutto");
-        Genere genere7 = new Genere(6,"Arcade");
-
-
 
         listaGeneri.add(genere1);
         listaGeneri.add(genere2);
         listaGeneri.add(genere3);
 
+
         Gioco gioco = new Gioco("The Witcher 3", Categoria.AAA, 18, sviluppatore1, listaGeneri);
+        PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco("Switch", "Nintendo", true);
+        EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaformaDiGioco, 60, LocalDate.of(2015, 10, 12));
 
-        PiattaformaDiGioco piattaforma1 = new PiattaformaDiGioco("PS3","Sony",false);
-        PiattaformaDiGioco piattaforma2 = new PiattaformaDiGioco("PS4","Sony",false);
-        PiattaformaDiGioco piattaforma3 = new PiattaformaDiGioco("PS5","Sony",false);
-        PiattaformaDiGioco piattaforma4 = new PiattaformaDiGioco("Switch","Nintendo",true);
-        PiattaformaDiGioco piattaforma5 = new PiattaformaDiGioco("Switch Oled","Nintendo",true);
-        PiattaformaDiGioco piattaforma6 = new PiattaformaDiGioco("XBOX","Microsoft",false);
-
-        EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaforma1, 60, LocalDate.of(2015, 10, 12));
-
-        listaPiattaformeDiGioco.add(piattaforma1);
-        listaPiattaformeDiGioco.add(piattaforma2);
-        listaPiattaformeDiGioco.add(piattaforma3);
-        listaPiattaformeDiGioco.add(piattaforma4);
-        listaPiattaformeDiGioco.add(piattaforma5);
-        listaPiattaformeDiGioco.add(piattaforma6);
-
-
-
+        listaPiattaformeDiGioco.add(piattaformaDiGioco);
         listaEdizioniGiochi.add(edizioneGioco);
-
-        listaGioco.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
 
@@ -250,16 +226,18 @@ public class Controller {
         utenteLoggato.removeAmico(utenteSelezionato);
     }
 
-    public ArrayList<Fattura> getListaRecensioniUtente(Utente utenteLoggato) {
-        ArrayList<Fattura> listaFiltrata = new ArrayList<>();
+    public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) {
+        ArrayList<Recensione> listaRecensioni = new ArrayList<>();
 
         for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
             if (f.getRecensione() != null) {
-                listaFiltrata.add(f);
+                listaRecensioni.add(f.getRecensione());
             }
         }
-        return listaFiltrata;
+        return listaRecensioni;
     }
+
+    public Fattura getFatturaDaRecensione(Recensione r){return r.getFattura();}
 
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);
@@ -294,7 +272,6 @@ public class Controller {
     public LocalDate getDataAcquistoDaFattura(Fattura f){return (f.getDataAcquisto());}
     public String getKeyDaFattura(Fattura f){return f.getKey();}
     public int getPrezzoAcquistoDaFattura(Fattura f){return f.getPrezzoAcquisto();}
-    public ArrayList<Gioco> getListaGiochi() {return listaGioco;}
 
     public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
         Recensione nuovaRecensione = new Recensione(voto, testo, fatturaSelezionata);

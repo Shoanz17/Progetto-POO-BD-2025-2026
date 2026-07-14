@@ -7,10 +7,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class HomeUtente {
@@ -30,7 +27,6 @@ public class HomeUtente {
     private JLabel pegiLibreria;
     private JLabel keyLibreria;
     private JLabel dataAcquistoLibreria;
-    private JButton pulsanteFiltra;
     private JButton pulsanteResetFiltri;
     private JComboBox genereFiltro;
     private JButton dataFiltro;
@@ -118,6 +114,10 @@ public class HomeUtente {
     private Controller controller;
     private Utente utenteLoggato;
 
+    private int statoDataRilascio = 0;
+    private int statoPrezzoFiltro = 0;
+    private int statoDataAcquisto = 0;
+
     public HomeUtente(Controller controller, JFrame accediGUI, Utente accountLoggato) {
         this.controller = controller;
         this.utenteLoggato = accountLoggato;
@@ -125,13 +125,42 @@ public class HomeUtente {
         //metodi base per il funzionamento
         configuraInterfaccia();
         associaListenerLogout(accediGUI);
+        associaListenerTabbedPane();
 
         //Catalogo
+
+        associaListenerListaCatalogo();
+        associaListenerRicercaCatalogo();
+        associaListenerSliderPrezzoCatalogo();
+        associaListenerComboBoxPiattaformaCatalogo();
+        associaListenerComboBoxCategoriaCatalogo();
+        associaListenerComboBoxGenereCatalogo();
+        associaListenerComboBoxPegiCatalogo();
+        associaListenerDataFiltroCatalogo();
+        associaListenerCheckBoxPromozioneCatalogo();
+        associaListenerCheckBoxSviluppatoriSeguitiCatalogo();
+
+        associaListenerAggiungiAlCarrello();
+
+        associaListenerListaRecensioni();
+        associaListenerMettiLike();
+        associaListenerMettiDislike();
+
 
         //Libreria
 
         associaListenerRilasciaRecensione();
+
+        associaListenerListaLibreria();
         associaListenerCopiaKey();
+        associaListenerRicercaLibreria();
+        associaListenerDataFiltro();
+        associaListenerPrezzoAcquistoFiltro();
+        associaListenerDataAcquistoFiltro();
+        associaListenerComboBoxGenere();
+        associaListenerComboBoxCategoria();
+        associaListenerComboBoxPegi();
+        associaListenerPulsanteResetFiltro();
 
         //Profilo
 
@@ -162,6 +191,17 @@ public class HomeUtente {
     }
 
     //metodi base per il funzionamento
+    private void configuraInterfaccia() {
+        homeUtenteFrame = new JFrame("Home Utente");
+        homeUtenteFrame.setContentPane(homeUtentePanel);
+        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        configuraInterfacciaCatalogo();
+        configuraInterfacciaLibreria();
+        configuraInterfacciaProfilo();
+        configuraInterfacciaCarrello();
+    }
+
     private void associaListenerLogout(JFrame accediGUI) {
         pulsanteLogout.addActionListener(new ActionListener() {
             @Override
@@ -176,15 +216,205 @@ public class HomeUtente {
         });
     }
 
-    private void configuraInterfaccia() {
-        homeUtenteFrame = new JFrame("Home Utente");
-        homeUtenteFrame.setContentPane(homeUtentePanel);
-        homeUtenteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private void associaListenerTabbedPane() {
+        tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                configuraInterfacciaCatalogo();
+                configuraInterfacciaLibreria();
+                configuraInterfacciaProfilo();
+                configuraInterfacciaCarrello();
+            }
+        });
+    }
 
-        //configuraInterfacciaCatalogo();
-        configuraInterfacciaLibreria();
-        configuraInterfacciaProfilo();
-        configuraInterfacciaCarrello();
+    //Catalogo
+    private void associaListenerListaCatalogo(){
+        listaCatalogo.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                EdizioneGioco edizioneGiocoSelezionata = (EdizioneGioco) listaCatalogo.getSelectedValue();
+
+                if (edizioneGiocoSelezionata != null) {
+                    sviluppatoreCatalogo.setText("Sviluppatore: " + controller.getNomeSviluppatoreDaEdizioneGioco(edizioneGiocoSelezionata));
+                    prezzoCatalogo.setText("Prezzo: " + controller.getPrezzoDaEdizioneGioco(edizioneGiocoSelezionata) + "€");
+                    piattaformaCatalogo.setText("Piattaforma: " + controller.getPiattaformaDaEdizioneGioco(edizioneGiocoSelezionata));
+                    genereCatalogo.setText("Generi: " + controller.getGeneriDaEdizioneGioco(edizioneGiocoSelezionata));
+                    pegiCatalogo.setText("Pegi: " + controller.getPegiDaEdizioneGioco(edizioneGiocoSelezionata));
+                    categoriaCatalogo.setText("Categoria: " + controller.getCategoriaDaEdizioneGioco(edizioneGiocoSelezionata));
+                    testoMediaVoti.setText("Media voti: " + controller.getMediaVotiEdizioneGioco(edizioneGiocoSelezionata));
+                    dataDiRilascioCatalogo.setText("Data di rilascio: " + controller.getDataDiRilascioDaEdizioneGioco(edizioneGiocoSelezionata));
+
+                    pulsanteAggiungiAlCarrello.setEnabled(true);
+
+                    ArrayList<model.Recensione> listaRecensioniGiocoSelezionato = controller.getRecensioniEdizioneGioco(edizioneGiocoSelezionata);
+                    DefaultListModel<model.Recensione> modelloListaRecensioni = new DefaultListModel<>();
+                    modelloListaRecensioni.addAll(listaRecensioniGiocoSelezionato);
+                    listaRecensioniCatalogo.setModel(modelloListaRecensioni);
+
+                }
+            }
+        });
+    }
+
+    private void associaListenerRicercaCatalogo() {
+        ricercaCatalogo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private final int[] fascePrezzo = {0, 15, 35, 60, 90, -1};
+
+    private void associaListenerSliderPrezzoCatalogo() {
+        sliderPrezzoCatalogo.addChangeListener(new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxPiattaformaCatalogo() {
+        piattaformaFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxGenereCatalogo() {
+        genereFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxPegiCatalogo() {
+        pegiFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerDataFiltroCatalogo() {
+        pulsanteDataDiRilascioFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                statoDataRilascio = statoDataRilascio + 1;
+                if (statoDataRilascio == 3) {
+                    statoDataRilascio = 0;
+                }
+
+                if (statoDataRilascio == 0) {
+                    pulsanteDataDiRilascioFiltroCatalogo.setText("DataRilascio");
+                } else if (statoDataRilascio == 1) {
+                    pulsanteDataDiRilascioFiltroCatalogo.setText("DataRilascio ↑");
+                } else if (statoDataRilascio == 2) {
+                    pulsanteDataDiRilascioFiltroCatalogo.setText("DataRilascio ↓");
+                }
+
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxCategoriaCatalogo() {
+        categoriaFiltroCatalogo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxPromozioneCatalogo() {
+        checkBoxInPromozione.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxSviluppatoriSeguitiCatalogo() {
+        checkBoXSviluppatori.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraCatalogo();
+            }
+        });
+    }
+
+    private void associaListenerAggiungiAlCarrello(){
+        pulsanteAggiungiAlCarrello.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    EdizioneGioco giocoScelto = (EdizioneGioco) listaCatalogo.getSelectedValue();
+                    controller.aggiungiAlCarrello(utenteLoggato, giocoScelto);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Gioco aggiunto al carrello", "Successo", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private  void associaListenerListaRecensioni(){
+        listaRecensioniCatalogo.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                model.Recensione recensioneSelezionata = (model.Recensione) listaRecensioniCatalogo.getSelectedValue();
+
+                if (recensioneSelezionata != null){
+                    descrizioneRecensioneCatalogo.setText(controller.getDescrizioneRecensione(recensioneSelezionata));
+                    votoCatalogo.setText("Voto: " + controller.getVotoRecensione(recensioneSelezionata));
+                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione(recensioneSelezionata));
+
+                    pulsanteLike.setEnabled(true);
+                    pulsanteDislike.setEnabled(true);
+                }
+
+            }
+        });
+    }
+
+    private void associaListenerMettiLike(){
+        pulsanteLike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.mettiLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(),utenteLoggato);
+                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private void associaListenerMettiDislike(){
+        pulsanteDislike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.mettiDislikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(),utenteLoggato);
+                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     //Libreria
@@ -193,7 +423,34 @@ public class HomeUtente {
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Recensione recensione = new Recensione(homeUtenteFrame);
+                Recensione recensione = new Recensione(controller, HomeUtente.this, utenteLoggato, (Fattura) listaLibreria.getSelectedValue());
+            }
+        });
+    }
+
+    private void associaListenerListaLibreria() {
+        listaLibreria.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Fattura fatturaSelezionata = (Fattura) listaLibreria.getSelectedValue();
+
+                if (fatturaSelezionata != null) {
+                    edizioneLibreria.setText("Titolo: " + controller.getTitoloDaFattura(fatturaSelezionata));
+                    piattaformaDiGiocoLibreria.setText("Piattaforma: " + controller.getPiattaformaDaFattura(fatturaSelezionata));
+                    dataRilascioLibreria.setText("Data di rilascio: " + String.valueOf(controller.getDataRilascioDaFattura(fatturaSelezionata)));
+                    categoriaLibreria.setText("Categoria: " + String.valueOf(controller.getCategoriaDaFattura(fatturaSelezionata)));
+                    pegiLibreria.setText("Pegi: " + String.valueOf(controller.getPegiDaFattura(fatturaSelezionata)));
+                    generiLibreria.setText("Generi: " + String.valueOf(controller.getGeneriDaFattura(fatturaSelezionata)));
+                    sviluppatoreLibreria.setText("Sviluppatore: " + String.valueOf(controller.getSviluppatoreDaFattura(fatturaSelezionata)));
+
+                    dataAcquistoLibreria.setText("Data d'acquisto: " + String.valueOf(controller.getDataAcquistoDaFattura(fatturaSelezionata)));
+                    keyLibreria.setText(controller.getKeyDaFattura(fatturaSelezionata));
+                    prezzoAcquistoLibreria.setText("Prezzo: " + String.valueOf(controller.getPrezzoAcquistoDaFattura(fatturaSelezionata) + "€"));
+
+                    pulsanteCopiaKey.setEnabled(true);
+                    pulsanteRecensione.setEnabled(true);
+                }
+
             }
         });
     }
@@ -210,6 +467,144 @@ public class HomeUtente {
         });
     }
 
+    private void associaListenerRicercaLibreria() {
+        ricercaLibreria.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerDataFiltro() {
+        dataFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoPrezzoFiltro = 0;
+                prezzoAcquistoFiltro.setText("Prezzo");
+                statoDataAcquisto = 0;
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                statoDataRilascio = statoDataRilascio + 1;
+                if (statoDataRilascio == 3) {
+                    statoDataRilascio = 0;
+                }
+
+                if (statoDataRilascio == 0) {
+                    dataFiltro.setText("DataRilascio");
+                } else if (statoDataRilascio == 1) {
+                    dataFiltro.setText("DataRilascio ↑");
+                } else if (statoDataRilascio == 2) {
+                    dataFiltro.setText("DataRilascio ↓");
+                }
+
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerPrezzoAcquistoFiltro() {
+        prezzoAcquistoFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoDataRilascio = 0;
+                dataFiltro.setText("DataRilascio");
+                statoDataAcquisto = 0;
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                statoPrezzoFiltro = statoPrezzoFiltro + 1;
+                if (statoPrezzoFiltro == 3) {
+                    statoPrezzoFiltro = 0;
+                }
+
+                if (statoPrezzoFiltro == 0) {
+                    prezzoAcquistoFiltro.setText("Prezzo");
+                } else if (statoPrezzoFiltro == 1) {
+                    prezzoAcquistoFiltro.setText("Prezzo↑");
+                } else if (statoPrezzoFiltro == 2) {
+                    prezzoAcquistoFiltro.setText("Prezzo↓");
+                }
+
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerDataAcquistoFiltro() {
+        dataAcquistoFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statoPrezzoFiltro = 0;
+                prezzoAcquistoFiltro.setText("Prezzo");
+                statoDataRilascio = 0;
+                dataFiltro.setText("DataRilascio");
+
+                statoDataAcquisto = statoDataAcquisto + 1;
+
+                if (statoDataAcquisto == 3) {
+                    statoDataAcquisto = 0;
+                }
+
+                if (statoDataAcquisto == 0) {
+                    dataAcquistoFiltro.setText("DataAcquisto");
+                } else if (statoDataAcquisto == 1) {
+                    dataAcquistoFiltro.setText("DataAcquisto↑");
+                } else if (statoDataAcquisto == 2) {
+                    dataAcquistoFiltro.setText("DataAcquisto↓");
+                }
+
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxGenere() {
+        genereFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxCategoria() {
+        categoriaFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerComboBoxPegi() {
+        pegiFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraLibreria();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteResetFiltro() {
+        pulsanteResetFiltri.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ricercaLibreria.setText("");
+
+                genereFiltro.setSelectedIndex(-1);
+                categoriaFiltro.setSelectedIndex(-1);
+                pegiFiltro.setSelectedIndex(-1);
+
+                dataFiltro.setText("DataRilascio");
+                prezzoAcquistoFiltro.setText("Prezzo");
+                dataAcquistoFiltro.setText("DataAcquisto");
+
+                filtraLibreria();
+            }
+        });
+    }
+
+    ;
     //Profilo
 
     private void associaListenerModificaInformazioni() {
@@ -246,8 +641,8 @@ public class HomeUtente {
                 Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
 
                 if (sviluppatoreSelezionato != null) {
-                    descrizioneSviluppatoreProfilo.setText(sviluppatoreSelezionato.getDescrizione());
-                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: " + String.valueOf(sviluppatoreSelezionato.getListaGiochi().size()));
+                    descrizioneSviluppatoreProfilo.setText(controller.getDescrizioneSviluppatore(sviluppatoreSelezionato));
+                    testoGiochiRilasciati.setText("Numero di giochi rilasciati: " + String.valueOf(controller.getNumeroGiochiRilasciatiSviluppatore(sviluppatoreSelezionato)));
                     //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
                 }
             }
@@ -279,7 +674,7 @@ public class HomeUtente {
                 try {
                     controller.aggiungiSviluppatoreSeguito(utenteLoggato, (Sviluppatore) listaSviluppatori.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai seguito " + ((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai seguito " + (controller.getNomeSviluppatore((Sviluppatore) listaSviluppatori.getSelectedValue())));
                     filtraSviluppatori();
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
@@ -295,7 +690,7 @@ public class HomeUtente {
                 try {
                     controller.rimuoviSviluppatoreSeguito(utenteLoggato, (Sviluppatore) listaSviluppatori.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai rimosso " + ((Sviluppatore) listaSviluppatori.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai rimosso " + (controller.getNomeSviluppatore((Sviluppatore) listaSviluppatori.getSelectedValue())));
                     filtraSviluppatori();
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
@@ -307,20 +702,16 @@ public class HomeUtente {
     private void filtraSviluppatori() {
         String testoRicerca = ricercaSviluppatori.getText().toLowerCase().trim();
         DefaultListModel<Sviluppatore> modelloFiltrato = new DefaultListModel<>();
-        ArrayList<Sviluppatore> listaFiltrata;
 
-        if (checkBoxSeguiti.isSelected()) {
-            listaFiltrata = utenteLoggato.getSviluppatoriSeguiti();
-        } else {
-            listaFiltrata = controller.getListaSviluppatoriLoggati();
-        }
+        boolean checkBoxSviluppatoriSeguiti = checkBoxSeguiti.isSelected();
+
+        ArrayList<Sviluppatore> listaFiltrata = controller.getSviluppatoriFiltrati(checkBoxSviluppatoriSeguiti, testoRicerca, utenteLoggato);
 
         for (Sviluppatore s : listaFiltrata) {
-            if (s.getNome().toLowerCase().contains(testoRicerca)) {
-                modelloFiltrato.addElement(s);
-            }
+            modelloFiltrato.addElement(s);
         }
         listaSviluppatori.setModel(modelloFiltrato);
+
     }
 
     private void associaListenerListaUtenti() {
@@ -330,10 +721,10 @@ public class HomeUtente {
                 Utente utenteSelezionato = (Utente) listaUtente.getSelectedValue();
 
                 if (utenteSelezionato != null) {
-                    testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: " + String.valueOf(utenteSelezionato.getGiochiAcquistati().size()));
+                    testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: " + String.valueOf(controller.getNumeroGiochiAcquistatiUtente(utenteSelezionato)));
                     testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
-                    testoGenereUtenteSelezionato.setText("Genere: " + String.valueOf(utenteSelezionato.getGenere()));
-                    if (utenteSelezionato.isBannato() == true) {
+                    testoGenereUtenteSelezionato.setText("Genere: " + String.valueOf(controller.getGenereUtente(utenteSelezionato)));
+                    if (controller.isUtenteBannato(utenteSelezionato)){
                         testoBannatoUtente.setText("Bannato: Si");
                     } else testoBannatoUtente.setText("Bannato: No");
                 }
@@ -353,19 +744,14 @@ public class HomeUtente {
     private void filtraUtenti() {
         String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
         DefaultListModel<Utente> modelloFiltrato = new DefaultListModel<>();
-        ArrayList<Utente> listaFiltrata;
 
-        if (checkBoxAmici.isSelected()) {
-            listaFiltrata = utenteLoggato.getListaAmici();
-        } else {
-            listaFiltrata = controller.getListaUtentiLoggati();
-        }
+        boolean checkBoxAmiciFiltro = checkBoxAmici.isSelected();
 
+        ArrayList<Utente> listaFiltrata = controller.getUtentiFiltrati(checkBoxAmiciFiltro, testoRicerca, utenteLoggato);
         for (Utente u : listaFiltrata) {
-            if (u != utenteLoggato && u.getNome().toLowerCase().contains(testoRicerca)) {
-                modelloFiltrato.addElement(u);
-            }
+            modelloFiltrato.addElement(u);
         }
+
         listaUtente.setModel(modelloFiltrato);
     }
 
@@ -385,7 +771,7 @@ public class HomeUtente {
                 try {
                     controller.aggiungiAmico(utenteLoggato, (Utente) listaUtente.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai aggiunto " + ((Utente) listaUtente.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai aggiunto " + (controller.getNomeUtente((Utente) listaUtente.getSelectedValue())));
                     filtraUtenti();
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
@@ -401,7 +787,7 @@ public class HomeUtente {
                 try {
                     controller.rimuoviAmico(utenteLoggato, (Utente) listaUtente.getSelectedValue());
 
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai rimosso " + ((Utente) listaUtente.getSelectedValue()).getNome());
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Hai rimosso " + (controller.getNomeUtente((Utente) listaUtente.getSelectedValue())));
                     filtraUtenti();
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
@@ -419,109 +805,143 @@ public class HomeUtente {
                 int rigaSelezionata = tabellaGiochiCarrello.getSelectedRow();
 
                 if (rigaSelezionata != -1) {
-                    DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-                    tabellaCarrello.removeRow(rigaSelezionata);
-                    ricalcolaTotaleCarrello();
+                    try {
+                        EdizioneGioco giocoDaRimuovere = controller.getGiochiCarrello(utenteLoggato).get(rigaSelezionata);
+
+                        controller.rimuoviDalCarrello(utenteLoggato, giocoDaRimuovere);
+
+                        configuraInterfacciaCarrello();
+
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Seleziona prima un gioco dalla tabella per rimuoverlo!", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
     }
-
     private void associaListenerAcquista() {
         pulsanteAcquista.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-                double saldoUtente = 0.0; //Aggiunto per testing
-                double calcoloTotale = ricalcolaTotaleCarrello();
+                try {
+                    controller.acquista(utenteLoggato);
 
-                if (tabellaCarrello.getRowCount() == 0) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Vuoi acquistare il nulla?", "Attenzione", JOptionPane.WARNING_MESSAGE);
-                } else if (calcoloTotale > saldoUtente) {  //saldoUtente va cambiata con la variabile di saldo giusta
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Saldo insufficiente", "Errore", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    saldoUtente -= calcoloTotale;
-                    testoSaldo.setText(String.format("%.2f €", saldoUtente));
+                    JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato! Troverai i tuoi giochi con relative Key nella Libreria.", "Successo", JOptionPane.INFORMATION_MESSAGE);
 
-                    tabellaCarrello.setRowCount(0);
-                    testoTotaleCarrello.setText("0.00 €");
-
-                    JOptionPane.showMessageDialog(homeUtenteFrame, "Acquisto completato, troverai i tuoi giochi con relative Key nella Libreria", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                    configuraInterfacciaCarrello();
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
     }
 
-    private double ricalcolaTotaleCarrello() {
-        double totale = 0.0;
-        DefaultTableModel tabellaCarrello = (DefaultTableModel) tabellaGiochiCarrello.getModel();
-
-        for (int i = 0; i < tabellaCarrello.getRowCount(); i++) {
-            double prezzo = (Double) tabellaCarrello.getValueAt(i, 2);
-            totale += prezzo;
-        }
-        testoTotaleCarrello.setText(String.format("%.2f €", totale));
-
-        return totale;
-    }
-
 
     //Metodi utilizzati dalle interfacce
-    private void configuraInterfacciaProfilo() {
-        configuraTestoInformazioniPersonali();
-        configuraTestoSaldo();
 
-        testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(utenteLoggato.getDataCreazione()));
-        testoBannato.setVisible(utenteLoggato.isBannato());
-        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(utenteLoggato.getGiochiAcquistati().size()));
-        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+    private void configuraInterfacciaCatalogo() {
+        sviluppatoreCatalogo.setText("-");
+        prezzoCatalogo.setText("-");
+        piattaformaCatalogo.setText("-");
+        genereCatalogo.setText("-");
+        pegiCatalogo.setText("-");
+        categoriaCatalogo.setText("-");
+        testoMediaVoti.setText("-");
+        dataDiRilascioCatalogo.setText("-");
+        prezzoFiltroCatalogo.setText("Prezzo: Nessun limite");
 
-        filtraUtenti(); //Filtro campo vuoto quindi stampa tutti
-        filtraSviluppatori(); //stessa cosa di sopra
+        votoCatalogo.setText("-");
+        valutazioneRecensioneCatalogo.setText("-");
 
-        testoGiochiRilasciati.setText("Giochi Rilasciati: -");
-        testoGiocoPiuVenduto.setText("Gioco piú venduto: -");
+        pulsanteAggiungiAlCarrello.setEnabled(false);
+        pulsanteLike.setEnabled(false);
+        pulsanteDislike.setEnabled(false);
 
-        testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: -");
-        testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: -");
-        testoGenereUtenteSelezionato.setText("Genere: -");
-        testoBannatoUtente.setText("Bannato: -");
+        configuraComboBoxPiattaformaCatalogo();
+        configuraComboBoxGenereCatalogo();
+        configuraComboBoxPegiCatalogo();
+        configuraComboBoxCategoriaCatalogo();
 
+        filtraCatalogo();
     }
 
-    void configuraTestoSaldo() {
-        testoSaldo.setText(String.format("Saldo: %d €", utenteLoggato.getSaldo()));
+    private void configuraComboBoxPiattaformaCatalogo() {
+        DefaultComboBoxModel<PiattaformaDiGioco> modelPiattaforma = new DefaultComboBoxModel<>();
+
+        modelPiattaforma.addAll(controller.getPiattaformeDiGioco());
+
+        piattaformaFiltroCatalogo.setModel(modelPiattaforma);
+        piattaformaFiltroCatalogo.setSelectedIndex(-1);
     }
 
-    void configuraTestoInformazioniPersonali() {
-        testoNome.setText("Nome: " + utenteLoggato.getNome());
-        testoGenere.setText("Genere: " + String.valueOf(utenteLoggato.getGenere()));
-        testoEmail.setText("Email: " + utenteLoggato.getEmail());
-        testoDataDiNascita.setText("Data di nascita: " + String.valueOf(utenteLoggato.getDataNascita()));
+    private void configuraComboBoxGenereCatalogo() {
+        DefaultComboBoxModel<Genere> modelGenere = new DefaultComboBoxModel<>();
+
+        modelGenere.addAll(controller.getGeneri());
+
+        genereFiltroCatalogo.setModel(modelGenere);
+        genereFiltroCatalogo.setSelectedIndex(-1);
     }
 
-    private void configuraInterfacciaCarrello() {
-        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
-        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tabellaGiochiCarrello.setModel(tabellaCarrello);
+    private void configuraComboBoxPegiCatalogo() {
+        pegiFiltroCatalogo.setSelectedIndex(-1);
+    }
+
+    private void configuraComboBoxCategoriaCatalogo() {
+        DefaultComboBoxModel<Categoria> modelCategoria = new DefaultComboBoxModel<>();
+
+        modelCategoria.addAll(controller.getCategorie());
+
+        categoriaFiltroCatalogo.setModel(modelCategoria);
+        categoriaFiltroCatalogo.setSelectedIndex(-1);
+    }
+
+    private void filtraCatalogo() {
+
+        int indiceSelezionato = sliderPrezzoCatalogo.getValue() / 20;
+        if (indiceSelezionato < 0 || indiceSelezionato > 5) {
+            indiceSelezionato = 0;
+        }
+        int prezzoSelezionato = fascePrezzo[indiceSelezionato];
+
+        if (prezzoSelezionato == -1) {
+            prezzoFiltroCatalogo.setText("Prezzo: Nessun limite");
+        } else {
+            prezzoFiltroCatalogo.setText("Prezzo: fino a " + prezzoSelezionato + " €");
+        }
+
+        String testoRicerca = ricercaCatalogo.getText().toLowerCase().trim();
+
+        Genere genereScelto = null;
+        if (genereFiltroCatalogo.getSelectedIndex() != -1) {
+            genereScelto = (Genere) genereFiltroCatalogo.getSelectedItem();
+        }
+
+        Categoria categoriaScelta = null;
+        if (categoriaFiltroCatalogo.getSelectedIndex() != -1) {
+            categoriaScelta = (Categoria) categoriaFiltroCatalogo.getSelectedItem();
+        }
+
+        String pegiScelto = null;
+        if (pegiFiltroCatalogo.getSelectedIndex() != -1) {
+            pegiScelto = String.valueOf(pegiFiltroCatalogo.getSelectedItem());
+        }
+
+        boolean inPromozione = checkBoxInPromozione.isSelected();
+        boolean traSeguiti = checkBoXSviluppatori.isSelected();
+
+        ArrayList<EdizioneGioco> risultati = controller.getCatalogoFiltrato(testoRicerca, prezzoSelezionato, genereScelto, categoriaScelta, pegiScelto, inPromozione, traSeguiti, utenteLoggato, statoDataRilascio);
+
+        DefaultListModel<EdizioneGioco> modelloFiltrato = new DefaultListModel<>();
+        for (EdizioneGioco e : risultati) {
+            modelloFiltrato.addElement(e);
+        }
+        listaCatalogo.setModel(modelloFiltrato);
     }
 
     private void configuraInterfacciaLibreria() {
-        configuraSvuotaDati();
-        configuraComboBoxGenere();
-        configuraComboBoxCategoria();
-//        configuraComboBoxPegi();
-
-    }
-
-    private void configuraSvuotaDati() {
         edizioneLibreria.setText("-");
         piattaformaDiGiocoLibreria.setText("-");
         prezzoAcquistoLibreria.setText("-");
@@ -536,6 +956,13 @@ public class HomeUtente {
         // Disabilita i pulsanti per evitare click nulli
         pulsanteCopiaKey.setEnabled(false);
         pulsanteRecensione.setEnabled(false);
+
+        configuraComboBoxGenere();
+        configuraComboBoxCategoria();
+        configuraComboBoxPegi();
+
+        filtraLibreria();
+
     }
 
     private void configuraComboBoxGenere() {
@@ -555,6 +982,101 @@ public class HomeUtente {
 
         categoriaFiltro.setModel(modelCategoria);
         categoriaFiltro.setSelectedIndex(-1);
+    }
+
+    private void configuraComboBoxPegi() {
+        pegiFiltro.setSelectedIndex(-1);
+    }
+
+    private void filtraLibreria() {
+
+        String testoRicerca = ricercaLibreria.getText().toLowerCase().trim();
+        DefaultListModel<Fattura> modelloFiltrato = new DefaultListModel<>();
+
+        Genere genereScelto = null;
+        if (genereFiltro.getSelectedIndex() != -1) {
+            genereScelto = (Genere) genereFiltro.getSelectedItem();
+        }
+
+        Categoria categoriaScelta = null;
+        if (categoriaFiltro.getSelectedIndex() != -1) {
+            categoriaScelta = (Categoria) categoriaFiltro.getSelectedItem();
+        }
+
+        String pegiScelto = null;
+        if (pegiFiltro.getSelectedIndex() != -1) {
+            pegiScelto = String.valueOf(pegiFiltro.getSelectedItem());
+        }
+
+        ArrayList<Fattura> listaFiltrata = controller.getLibreriaFiltrata(testoRicerca, utenteLoggato, genereScelto, categoriaScelta, pegiScelto, statoDataRilascio, statoPrezzoFiltro, statoDataAcquisto);
+
+        for (Fattura f : listaFiltrata) {
+            modelloFiltrato.addElement(f);
+        }
+
+        listaLibreria.setModel(modelloFiltrato);
+
+    }
+
+    private void configuraInterfacciaProfilo() {
+        configuraTestoInformazioniPersonali();
+        configuraTestoSaldo();
+
+        testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(controller.getDataCreazioneAccountUtente(utenteLoggato)));
+        testoBannato.setVisible(controller.isUtenteBannato(utenteLoggato));
+        testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(controller.getNumeroGiochiAcquistatiUtente(utenteLoggato)));
+        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+
+        filtraUtenti(); //Filtro campo vuoto quindi stampa tutti
+        filtraSviluppatori(); //stessa cosa di sopra
+
+        testoGiochiRilasciati.setText("Giochi Rilasciati: -");
+        testoGiocoPiuVenduto.setText("Gioco piú venduto: -");
+
+        testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: -");
+        testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: -");
+        testoGenereUtenteSelezionato.setText("Genere: -");
+        testoBannatoUtente.setText("Bannato: -");
+
+    }
+
+    void configuraTestoInformazioniPersonali() {
+        testoNome.setText("Nome: " + controller.getNomeUtente(utenteLoggato));
+        testoGenere.setText("Genere: " + controller.getGenereUtente(utenteLoggato));
+        testoEmail.setText("Email: " + controller.getEmailUtente(utenteLoggato));
+        testoDataDiNascita.setText("Data di nascita: " + controller.getDataDiNascitaUtente(utenteLoggato));
+    }
+
+    void configuraTestoSaldo() {
+        testoSaldo.setText(String.format("Saldo: %d €", controller.getSaldoUtente(utenteLoggato)));
+    }
+
+    private void configuraInterfacciaCarrello() {
+
+        String[] colonne = {"Titolo Gioco", "Piattaforma", "Prezzo"};
+        DefaultTableModel tabellaCarrello = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        if (controller.getCarrelloUtente(utenteLoggato) != null) {
+
+            ArrayList<EdizioneGioco> giochiNelCarrello = controller.getGiochiCarrello(utenteLoggato);
+
+            for (EdizioneGioco ed : giochiNelCarrello) {
+                Object[] riga = {
+                        controller.getTitoloDaEdizioneGioco(ed),
+                        controller.getPiattaformaDaEdizioneGioco(ed),
+                        controller.getPrezzoDaEdizioneGioco(ed) + "€"
+                };
+                tabellaCarrello.addRow(riga);
+            }
+        }
+
+        tabellaGiochiCarrello.setModel(tabellaCarrello);
+        testoTotaleCarrello.setText(String.valueOf(controller.getPrezzoCarrello(utenteLoggato)) + "€");
     }
 
     private void mostraForm() {
