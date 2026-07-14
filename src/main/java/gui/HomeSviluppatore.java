@@ -514,12 +514,13 @@ public class HomeSviluppatore {
         gestioneProfilo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame finestraGestione = new JFrame("Modifica Profilo");
+                JDialog finestraGestione = new JDialog();
+//                JFrame finestraGestione = new JFrame("Modifica Profilo");
+                finestraGestione.setTitle("Modifica profilo");
+                finestraGestione.setModal(true);
                 finestraGestione.setSize(500,300);
                 finestraGestione.setLayout( new GridLayout(4,2));
-//                finestraGestione.pack();
                 finestraGestione.setLocationRelativeTo(null);
-                finestraGestione.setVisible(true);
 
                 JTextField campoNome = new JTextField(sviluppatoreCorrente.getNome(),15);
                 JPanel pannelloNome = new JPanel(new GridBagLayout());
@@ -555,7 +556,13 @@ public class HomeSviluppatore {
                         try{
                             sviluppatoreCorrente.setNome(campoNome.getText());
                             sviluppatoreCorrente.setDescrizione(campoDescrizione.getText());
+
+                            if(!new String(campoPass.getPassword()).isEmpty())
+                            {
                             sviluppatoreCorrente.setPassword(new String(campoPass.getPassword()));
+
+                            }
+
 
                             finestraGestione.dispose();
                         }
@@ -566,6 +573,7 @@ public class HomeSviluppatore {
 
                     }
                 });
+                finestraGestione.setVisible(true);
 
 
                 {
