@@ -2,6 +2,7 @@ package gui;
 
 import controller.Controller;
 import model.*;
+import model.Recensione;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -128,6 +129,9 @@ public class HomeAdmin {
         associaListenerRicercaPiattaforme();
         associaListenerAggiungiPiattaforma();
 
+        //Recensioni
+        associaListenerRicercaRecensioni();
+
         associaListenerPulsanteLogout(accediGUI);
 
         mostraForm();
@@ -144,6 +148,7 @@ public class HomeAdmin {
         configuraPannelloGiochi();
         configuraPannelloGeneri();
         configuraPannelloPiattaforme();
+        configuraPannelloRecensioni();
 
     }
 
@@ -253,7 +258,7 @@ public class HomeAdmin {
     private void riempiTabellaRecensioniUtente(Utente utente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(model.Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE cambia model.
+        for(model.Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE dao
             Object[] riga = {
                     controller.getVotoRecensione(recensione),
                     controller.getDifferenzaLikeRecensione(recensione)
@@ -783,6 +788,31 @@ public class HomeAdmin {
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
                 }
+            }
+        });
+    }
+
+    //PANNELLO RECENSIONI
+    private void configuraPannelloRecensioni(){
+        descrizioneRecensioneRecensioni.setText("");
+        String[] colonneRecensioni = {"Autore", "Voto", "DifferenzaLike"};
+        configuraTabella(colonneRecensioni, tabellaRecensioni);
+        //filtraRecensioni(); DA FARE con dao
+    }
+
+//    private void filtraRecensioni(){
+//        String testoRicerca = ricercaRecensioni.getText().toLowerCase().trim();
+//
+//        ArrayList<Object[]> righe = new ArrayList<>();
+//
+//        for(Recensione recensione : controller.recension)
+//    }
+
+    private void associaListenerRicercaRecensioni(){
+        ricercaRecensioni.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                //filtraRecensioni();
             }
         });
     }
