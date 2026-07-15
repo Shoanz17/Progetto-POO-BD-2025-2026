@@ -252,7 +252,6 @@ public class Controller {
     public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getDataRilascio();}
 
 
-
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         utenteLoggato.addAmico(utenteSelezionato);
     }
@@ -322,6 +321,17 @@ public class Controller {
         listaGeneri.add(genere); //DA FARE modificare col dao e IMPORTANTE se il genere già esiste non aggiungerlo
     }
 
+    //metodi per prendere dati da Piattaforma
+    public String getNomePiattaforma(PiattaformaDiGioco piattaformaDiGioco) { return piattaformaDiGioco.getNome(); }
+    public String getProduttorePiattaforma(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.getProduttore();}
+    public boolean isPortabile(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.isPortatile();}
+
+    public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
+        PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome, produttore, portabile);
+
+        listaPiattaformeDiGioco.add(piattaformaDiGioco);
+    }
+
     // metodi per prendere dati da una fattura
     public String getTitoloDaFattura(Fattura f) {return f.getGioco().getGioco().getTitolo();}
     public String getPiattaformaDaFattura(Fattura f) {return f.getGioco().getPiattaforma().getNome();}
@@ -344,7 +354,7 @@ public class Controller {
 
         fatturaSelezionata.setRecensione(nuovaRecensione);
 
-        //da salvare nel dao
+        //DA FARE salvare nel dao
     }
 
     public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() {

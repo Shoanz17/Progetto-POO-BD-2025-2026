@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class HomeAdmin {
@@ -123,6 +124,10 @@ public class HomeAdmin {
         associaListenerRicercaGeneri();
         associaListenerPulsanteAggiungiGenere();
 
+        //Piattaforme
+        associaListenerRicercaPiattaforme();
+        associaListenerAggiungiPiattaforma();
+
         associaListenerPulsanteLogout(accediGUI);
 
         mostraForm();
@@ -138,6 +143,7 @@ public class HomeAdmin {
         configuraPannelloSviluppatori();
         configuraPannelloGiochi();
         configuraPannelloGeneri();
+        configuraPannelloPiattaforme();
 
     }
 
@@ -493,7 +499,18 @@ public class HomeAdmin {
         titoloGioco.setText("");
         categoriaGioco.setText("");
         pegiGioco.setText("");
-        //listaGeneriGioco//svuota
+
+        //svuoto la lista generi
+        for (Component componente : pannelloGeneriGioco.getComponents()) {
+
+            // Verifichiamo che il componente sia una CheckBox
+            if (componente instanceof JCheckBox) {
+                JCheckBox casella = (JCheckBox) componente;
+
+                // Togliamo la spunta
+                casella.setSelected(false);
+            }
+        }
     }
 
     private void associaListenerRicercaGiochi(){
@@ -701,6 +718,67 @@ public class HomeAdmin {
 
                     controller.createGenere(campoNomeGenere.getText());
                     filtraGeneri();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                }
+            }
+        });
+    }
+
+    //PANNELLO PIATTAFORME
+    private void configuraPannelloPiattaforme(){
+        String[] colonnePiattaforme = {"Nome", "Produttore", "Portabilità"};
+        configuraTabella(colonnePiattaforme, tabellaPiattaforme);
+        filtraPiattaforme();
+
+        //DA FARE valutare se fare o no questo metodo per essere user friendly
+        svuotaDatiPiattaforma();
+    }
+
+    private void filtraPiattaforme(){
+        String testoRicerca = ricercaPiattaforme.getText().toLowerCase().trim();
+
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(PiattaformaDiGioco piattaforma : controller.getPiattaformeDiGioco()){
+            //per ottimizzare il codice evitando che faccia tanti contains inutilmente se il testo è vuoto
+            if(testoRicerca.isEmpty() || controller.getNomePiattaforma(piattaforma).toLowerCase().contains(testoRicerca)){
+                Object[] riga = {
+                        controller.getNomePiattaforma(piattaforma),
+                        controller.getProduttorePiattaforma(piattaforma),
+                        controller.isPortabile(piattaforma)
+                };
+                righe.add(riga);
+            }
+        }
+
+        aggiornaContenutoTabella(tabellaPiattaforme, righe);
+    }
+
+    private void svuotaDatiPiattaforma(){
+        campoNomePiattaforma.setText("");
+        campoProduttore.setText("");
+        checkBoxPortabilita.setSelected(false);
+    }
+
+    private void associaListenerRicercaPiattaforme(){
+        ricercaPiattaforme.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraPiattaforme();
+            }
+        });
+    }
+
+    private void associaListenerAggiungiPiattaforma(){
+        pulsanteAggiungiPiattaforma.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    controller.createPiattaforma(campoNomePiattaforma.getText(), campoProduttore.getText(), checkBoxPortabilita.isSelected());
+                    filtraPiattaforme();
 
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
