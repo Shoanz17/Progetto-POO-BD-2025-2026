@@ -428,6 +428,8 @@ public class HomeSviluppatore {
                 }
 
 
+                if (listaPiattaforma.isEmpty()||listaGeneri.isEmpty())
+                {JOptionPane.showMessageDialog(null,"Attenzione: devi selezionare almeno un genere e una piattaforma!");return;}
 
             if (giocoSelezionato!= null)
             {
@@ -468,7 +470,7 @@ public class HomeSviluppatore {
                 JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
 
                 }
-
+                listaGiochiAggiunti.clearSelection();
                 pulisciCampiInserimento();
                 aggModButton.setText("Aggiungi gioco");
 
