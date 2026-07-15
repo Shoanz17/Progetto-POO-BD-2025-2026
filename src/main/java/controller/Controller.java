@@ -168,7 +168,26 @@ public class Controller {
         return listaSviluppatoriLoggati;
     }
 
-    public int getNumeroRecensioniUtente(Utente utenteLoggato) {
+    public ArrayList<PiattaformaDiGioco> getPiattaformeDaGioco(Gioco gioco) {
+        ArrayList<PiattaformaDiGioco> listaPiattaforme = new ArrayList<>();
+        for(EdizioneGioco ed : gioco.getEdizioni()){
+            listaPiattaforme.add(ed.getPiattaforma());
+        }
+
+
+        return listaPiattaforme;
+    }
+
+    public PiattaformaDiGioco getPiattaformaDaNome(String nome)
+    {for(PiattaformaDiGioco p : listaPiattaformeDiGioco )
+        {
+        if(p.getNome().equals(nome)){return p;}
+         }
+         return null;
+    }
+
+
+        public int getNumeroRecensioniUtente(Utente utenteLoggato) {
         return getListaRecensioniUtente(utenteLoggato).size();
     }
 
@@ -275,6 +294,21 @@ public class Controller {
         //Da eliminare dal database
     }
 
+    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) { //DA FARE col DAO
+        ArrayList<Genere> listaGeneri = new ArrayList<>();
+
+        for(Genere genere : this.listaGeneri){
+            if(listaNomi.contains(genere.getNome()))
+                listaGeneri.add(genere);
+        }
+
+        return listaGeneri;
+    }
+
+    public void addEdizioneAlDB(EdizioneGioco ed) {
+        listaEdizioniGiochi.add(ed);
+    }
+
     public ArrayList<Genere> getGeneri() {
         return listaGeneri;
     }
@@ -328,6 +362,9 @@ public class Controller {
         }
         return false;
     }
+
+
+    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException { gioco.setListaGeneri(generi); }
 
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) {
 

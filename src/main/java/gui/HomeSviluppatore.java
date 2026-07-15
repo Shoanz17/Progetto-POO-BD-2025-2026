@@ -173,6 +173,7 @@ public class HomeSviluppatore {
     }
 
 
+
     private void selezioneListaLibreria() {
         listaTitoli.addListSelectionListener(new ListSelectionListener() {
 
@@ -236,50 +237,55 @@ public class HomeSviluppatore {
 
 
     private void pannelloAggMod(){
-    listaGiochiAggiunti.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting()) {
-                Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
+        listaGiochiAggiunti.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
 
 
-                if(giocoSelezionato!= null)
-                {
-                    aggModButton.setText("Salva modifiche");
-                    textTitolo.setText(giocoSelezionato.getTitolo());
-                    textPegi.setText(String.valueOf(giocoSelezionato.getPegi()));
-                    aggCategoria.setSelectedItem(giocoSelezionato.getCategoria());
+                    if(giocoSelezionato!= null)
+                    {
+                        aggModButton.setText("Salva modifiche");
+                        textTitolo.setText(giocoSelezionato.getTitolo());
+                        textPegi.setText(String.valueOf(giocoSelezionato.getPegi()));
+                        aggCategoria.setSelectedItem(giocoSelezionato.getCategoria());
 
-                    if (!giocoSelezionato.getEdizioni().isEmpty()) {
-                        EdizioneGioco ed = giocoSelezionato.getEdizioni().get(0);
-                        textPrezzo.setText(String.valueOf(ed.getPrezzo()));
-                        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                        textDataRilascio.setText(ed.getDataRilascio().format(formatter));
+                        if (!giocoSelezionato.getEdizioni().isEmpty()) {
+                            EdizioneGioco ed = giocoSelezionato.getEdizioni().get(0);
+                            textPrezzo.setText(String.valueOf(ed.getPrezzo()));
+                            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                            textDataRilascio.setText(ed.getDataRilascio().format(formatter));
 
-                        for(JCheckBox cb : listaCheckboxGeneri ) {cb.setSelected(false);}
+                            //for(JCheckBox cb : listaCheckboxGeneri ) {cb.setSelected(false);}
 
-                        for(JCheckBox cb : listaCheckboxGeneri ){
-                            for(Genere g : giocoSelezionato.getGeneri())
-                            {{if(cb.getText().equals(g.toString())){cb.setSelected(true);}}}
+                            for(JCheckBox cb : listaCheckboxGeneri ){
+                                for(Genere g : giocoSelezionato.getGeneri())
+                                {{if(cb.getText().equals(g.toString())){cb.setSelected(true);}}}
+                            }
+
+
+                            //for (JCheckBox cbP : listaCheckboxPiattaforma){cbP.setSelected(false);}
+
+                            for(EdizioneGioco edizioneGioco : giocoSelezionato.getEdizioni()){
+                                for(JCheckBox cbP : listaCheckboxPiattaforma)
+                                {
+                                    if(cbP.getText().equals(edizioneGioco.getPiattaforma().getNome())) cbP.setSelected(true);
+                                }
+                            }
+
+
                         }
 
 
-                        for (JCheckBox cbP : listaCheckboxPiattaforma){cbP.setSelected(false);}
-
-                        for(JCheckBox cbP : listaCheckboxPiattaforma)
-                        {if(cbP.getText().equals(ed.getPiattaforma().getNome())){cbP.setSelected(true);}}
                     }
-
 
                 }
 
+
             }
-
-
-        }
-    });
+        });
     }
-
 
     private void inserimentoGioco() {
         inizializzaGraficaControllo();
@@ -417,7 +423,7 @@ public class HomeSviluppatore {
                 for (JCheckBox cbo : listaCheckboxPiattaforma) {
                     if (cbo.isSelected()) {
 
-                        listaPiattaforma.add(new PiattaformaDiGioco(cbo.getText(), "Generico", false));
+                        listaPiattaforma.add(controller.getPiattaformaDaNome(cbo.getText()));
                     }
                 }
 
@@ -430,20 +436,18 @@ public class HomeSviluppatore {
                 giocoSelezionato.setCategoria(categoriaEnum);
 
 
-                for (EdizioneGioco ed : new ArrayList<EdizioneGioco>( giocoSelezionato.getEdizioni()))
-                {giocoSelezionato.removeEdizione(ed);}
 
 
                 for (PiattaformaDiGioco newPiattaforma : listaPiattaforma) {
-                    EdizioneGioco edizioneMod = new EdizioneGioco(giocoSelezionato, newPiattaforma, (int) prezzo, dataLocale);
-                    giocoSelezionato.addEdizione(edizioneMod);
+                    if(!controller.getPiattaformeDaGioco(giocoSelezionato).contains(newPiattaforma)) {
+
+                        EdizioneGioco palle = new EdizioneGioco(giocoSelezionato, newPiattaforma, (int) prezzo, dataLocale);
+                        giocoSelezionato.addEdizione(palle);
+                        controller.addEdizioneAlDB(palle);
+                    }
                 }
 
-                for (Genere g : new ArrayList<Genere>( giocoSelezionato.getGeneri()))
-                    {giocoSelezionato.removeGenere(g);}
-
-                for(Genere g : listaGeneri)
-                    {giocoSelezionato.addGenere(g);}
+                controller.updateGeneriGioco(giocoSelezionato, listaGeneri);
 
                 JOptionPane.showMessageDialog(null, "Modifiche salvate con Successo!");
 
@@ -498,10 +502,11 @@ public class HomeSviluppatore {
         });
     }
 
+
     private void profilo(Sviluppatore sviluppatoreCorrente)
         {
             nomeSviluppatore.setText(controller.getNomeSviluppatore(sviluppatoreCorrente));
-            descrizioneArea.setText("wao siamo il team sega e ci facciamo tante seggi, fasmgneornsdfznfmgsz,xczgmfszxvzz");
+            descrizioneArea.setText(controller.getDescrizioneSviluppatore(sviluppatoreCorrente));
             descrizioneArea.setEditable(false);
             descrizioneArea.setLineWrap(true);
             descrizioneArea.setWrapStyleWord(true);
@@ -573,7 +578,10 @@ public class HomeSviluppatore {
 
                     }
                 });
+
+
                 finestraGestione.setVisible(true);
+                profilo(sviluppatoreCorrente);
 
 
                 {

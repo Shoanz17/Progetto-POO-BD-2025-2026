@@ -35,14 +35,6 @@ public class EdizioneGioco {
     }
 
     //metodi
-   // @Override
-    //public boolean equals(Object o) {
-    //    if(this == o) return true;
-       // if (o == null || getClass() != o.getClass()) return false;
-   //     EdizioneGioco that = (EdizioneGioco) o;
-
-    //    return id == that.id;
-    //}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,8 +42,8 @@ public class EdizioneGioco {
         EdizioneGioco that = (EdizioneGioco) o;
 
         // confrontiamo il gioco e la piattaforma anziché l'id
-        return java.util.Objects.equals(gioco, that.gioco) &&
-                java.util.Objects.equals(piattaforma, that.piattaforma);
+        return gioco.equals(that.gioco) &&
+                piattaforma.equals(that.piattaforma);
     }
 
     @Override

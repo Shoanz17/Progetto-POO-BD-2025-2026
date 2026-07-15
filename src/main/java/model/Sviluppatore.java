@@ -39,6 +39,8 @@ public class Sviluppatore extends Account{
         this.strike++;
     }
 
+
+
     public ArrayList<Gioco> getListaGiochi(){return listaGiochi;}
     public ArrayList<Utente> getSeguiti() {return seguiti;}
 

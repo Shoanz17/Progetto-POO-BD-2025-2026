@@ -77,6 +77,11 @@ public class Gioco {
         edizioni.add(edizione);
     }
 
+    public void setListaGeneri(ArrayList<Genere> generi) throws CampoNonValidoException {
+        if(generi == null || generi.isEmpty()) throw new CampoNonValidoException("Non esiste gioco senza generi");
+
+        this.generi = generi;
+    }
     //metodi per admin
     public void removeEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null) {
@@ -178,6 +183,7 @@ public class Gioco {
 
     @Override
     public String toString() {
-        return titolo;
+        return this.titolo;
     }
+
 }
