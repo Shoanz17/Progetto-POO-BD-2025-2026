@@ -506,6 +506,9 @@ public class Controller {
         for (EdizioneGioco giocoAcquistato : carrello.getListaGiochi()) {
             Fattura nuovaFattura = new Fattura(utenteLoggato, giocoAcquistato, giocoAcquistato.getPrezzo());
             utenteLoggato.addGioco(nuovaFattura);
+
+            giocoAcquistato.getGioco().getSviluppatore().addFondi(nuovaFattura.getPrezzoAcquisto());
+
             listaFatture.add(nuovaFattura);   // SOLO PER TEST
         }
 

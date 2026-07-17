@@ -47,7 +47,7 @@ public class Genere {
         if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
 
         if (!listaGiochi.contains(gioco))
-            throw new CampoNonValidoException("il gioco già appartiene a questo genere");
+            throw new CampoNonValidoException("il gioco già non appartiene a questo genere");
         this.listaGiochi.remove(gioco);
     }
 
