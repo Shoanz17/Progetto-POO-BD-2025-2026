@@ -7,10 +7,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -36,7 +33,7 @@ public class HomeSviluppatore {
     private JLabel aggPegi;
     private JButton aggModButton;
     private JComboBox aggCategoria;
-    private JList <Gioco>listaGiochiAggiunti;
+    private JList<Gioco> listaGiochiAggiunti;
     private JTextField textTitolo;
     private JLabel titolo;
     private JLabel genere;
@@ -66,6 +63,7 @@ public class HomeSviluppatore {
     private JPanel profilo;
     private JLabel fondiSvilup;
     private JTextArea textAreaGeneri;
+    private JButton aggiungiPromozioneButton;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -75,7 +73,6 @@ public class HomeSviluppatore {
     private DefaultListModel<Gioco> modelLibreria;
     ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
     private Controller controller;
-
 
 
     public HomeSviluppatore() {
@@ -95,6 +92,7 @@ public class HomeSviluppatore {
         gestProfilo(controller.getListaSviluppatoriLoggati().get(0));
         reset();
         rimuoviGioco();
+        aggiungiPromozione();
 
     }
 
@@ -102,15 +100,13 @@ public class HomeSviluppatore {
         JFrame frame = new JFrame("HomeSviluppatore");
         frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1100,650);
+        frame.setSize(1100, 650);
 //        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
 
     }
-
-
 
 
     private void popolaListe() {
@@ -138,20 +134,19 @@ public class HomeSviluppatore {
 
     }
 
-    private void filtraLista(String testoCercato,DefaultListModel<Gioco> modelloDestinazione)
-        {
-            modelloDestinazione.clear();
+    private void filtraLista(String testoCercato, DefaultListModel<Gioco> modelloDestinazione) {
+        modelloDestinazione.clear();
 
 
-            for(Gioco gioco: listaCompletaGiochi) {
-                String titolo = controller.getTitoloDaGioco(gioco).toLowerCase();
+        for (Gioco gioco : listaCompletaGiochi) {
+            String titolo = controller.getTitoloDaGioco(gioco).toLowerCase();
 
 
-                if (titolo.contains(testoCercato)) {
-                    modelloDestinazione.addElement(gioco);
-                }
+            if (titolo.contains(testoCercato)) {
+                modelloDestinazione.addElement(gioco);
             }
         }
+    }
 
 
     private void ricercaListaLib() {
@@ -159,23 +154,21 @@ public class HomeSviluppatore {
             public void keyReleased(KeyEvent e) {
 
                 String testoCercato = barraRicerca.getText().toLowerCase();
-                filtraLista(testoCercato,modelLibreria);
+                filtraLista(testoCercato, modelLibreria);
             }
         });
     }
 
-    private void ricercaPannello()
-    {
+    private void ricercaPannello() {
         ricercaPannello.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 String testoCercato = ricercaPannello.getText().toLowerCase();
-                filtraLista(testoCercato,modelPannelloControllo);
+                filtraLista(testoCercato, modelPannelloControllo);
             }
         });
 
     }
-
 
 
     private void selezioneListaLibreria() {
@@ -207,8 +200,7 @@ public class HomeSviluppatore {
         });
     }
 
-    private void graficaLibreriaGen()
-    {
+    private void graficaLibreriaGen() {
         textAreaGeneri.setText("Genere:");
         textAreaGeneri.setLineWrap(true);
         textAreaGeneri.setWrapStyleWord(true);
@@ -221,7 +213,7 @@ public class HomeSviluppatore {
     }
 
 
-    private void pannelloAggMod(){
+    private void pannelloAggMod() {
         listaGiochiAggiunti.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -229,50 +221,54 @@ public class HomeSviluppatore {
                     Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
 
 
-                    if(giocoSelezionato!= null)
-                    {
+                    if (giocoSelezionato != null) {
                         aggModButton.setText("Salva modifiche");
                         textTitolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         textPegi.setText(String.valueOf(controller.getPegiDaGioco(giocoSelezionato)));
                         aggCategoria.setSelectedItem(controller.getCategoriaDaGioco(giocoSelezionato));
 
 //
-                            textPrezzo.setText(String.valueOf(controller.getPrezzoPrimaEdizioneDaGioco(giocoSelezionato)));
-                            textDataRilascio.setText(controller.getDataRilascioPrimaEdizioneFormattata(giocoSelezionato));
+                        textPrezzo.setText(String.valueOf(controller.getPrezzoPrimaEdizioneDaGioco(giocoSelezionato)));
+                        textDataRilascio.setText(controller.getDataRilascioPrimaEdizioneFormattata(giocoSelezionato));
 
 
-                        for(JCheckBox cb : listaCheckboxGeneri) {cb.setSelected(false);}
+                        for (JCheckBox cb : listaCheckboxGeneri) {
+                            cb.setSelected(false);
+                        }
 
-                            for(JCheckBox cb : listaCheckboxGeneri ){
-                                for(Genere g : controller.getListaGeneriDaGioco(giocoSelezionato))
+                        for (JCheckBox cb : listaCheckboxGeneri) {
+                            for (Genere g : controller.getListaGeneriDaGioco(giocoSelezionato)) {
                                 {
-                                    {if(cb.getText().equals(g.toString()))
-                                        {cb.setSelected(true);}
+                                    if (cb.getText().equals(g.toString())) {
+                                        cb.setSelected(true);
                                     }
                                 }
                             }
+                        }
 
 
-                            for (JCheckBox cbP : listaCheckboxPiattaforma){cbP.setSelected(false); cbP.setEnabled(true);}
+                        for (JCheckBox cbP : listaCheckboxPiattaforma) {
+                            cbP.setSelected(false);
+                            cbP.setEnabled(true);
+                        }
 
-                            for(EdizioneGioco edizioneGioco : controller.getEdizioniDaGioco(giocoSelezionato)){
-                                for(JCheckBox cbP : listaCheckboxPiattaforma)
-                                {
-                                    if(cbP.getText().equals(controller.getPiattaformaDaEdizioneGioco(edizioneGioco).getNome()))
-                                        {   cbP.setSelected(true);
-                                            cbP.setEnabled(false);
-                                        }
-
+                        for (EdizioneGioco edizioneGioco : controller.getEdizioniDaGioco(giocoSelezionato)) {
+                            for (JCheckBox cbP : listaCheckboxPiattaforma) {
+                                if (cbP.getText().equals(controller.getPiattaformaDaEdizioneGioco(edizioneGioco).getNome())) {
+                                    cbP.setSelected(true);
+                                    cbP.setEnabled(false);
                                 }
+
                             }
-
-
                         }
 
 
                     }
 
+
                 }
+
+            }
 
         });
     }
@@ -288,21 +284,21 @@ public class HomeSviluppatore {
         aggCategoria.setModel(new DefaultComboBoxModel<>(controller.getCategorie().toArray()));
 
         textDataRilascio.setText("GG/MM/AAAA");
-        textDataRilascio.setForeground(java.awt.Color.GRAY);
-        textDataRilascio.addFocusListener(new java.awt.event.FocusAdapter() {
+        textDataRilascio.setForeground(Color.GRAY);
+        textDataRilascio.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusGained(java.awt.event.FocusEvent e) {
+            public void focusGained(FocusEvent e) {
                 if (textDataRilascio.getText().equals("GG/MM/AAAA")) {
                     textDataRilascio.setText("");
-                    textDataRilascio.setForeground(java.awt.Color.BLACK);
+                    textDataRilascio.setForeground(Color.BLACK);
                 }
             }
 
             @Override
-            public void focusLost(java.awt.event.FocusEvent e) {
+            public void focusLost(FocusEvent e) {
                 if (textDataRilascio.getText().trim().isEmpty()) {
                     textDataRilascio.setText("GG/MM/AAAA");
-                    textDataRilascio.setForeground(java.awt.Color.GRAY);
+                    textDataRilascio.setForeground(Color.GRAY);
                 }
             }
         });
@@ -316,22 +312,19 @@ public class HomeSviluppatore {
             generiPanel.add(cb);
         }
 
-        if (generiPanel.getParent() instanceof JViewport) {
-            JViewport viewport = (JViewport) generiPanel.getParent();
-            if (viewport.getParent() instanceof JScrollPane) {
-                JScrollPane scrollPane = (JScrollPane) viewport.getParent();
-
+        if (generiPanel.getParent() instanceof JViewport viewport) {
+            if (viewport.getParent() instanceof JScrollPane scrollPane) {
 
                 int larghezzaAttuale = scrollPane.getPreferredSize().width;
-                scrollPane.setPreferredSize(new java.awt.Dimension(larghezzaAttuale, 150));
-                scrollPane.setMaximumSize(new java.awt.Dimension(larghezzaAttuale, 150));
+                scrollPane.setPreferredSize(new Dimension(larghezzaAttuale, 150));
+                scrollPane.setMaximumSize(new Dimension(larghezzaAttuale, 150));
 
                 scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             }
         }
 
         int altezzaTotale = listaCheckboxGeneri.size() * 25;
-        generiPanel.setPreferredSize(new java.awt.Dimension(150, altezzaTotale));
+        generiPanel.setPreferredSize(new Dimension(150, altezzaTotale));
 
         generiPanel.revalidate();
         generiPanel.repaint();
@@ -345,22 +338,20 @@ public class HomeSviluppatore {
             piattaformaPanel.add(cb);
         }
 
-        if (piattaformaPanel.getParent() instanceof JViewport) {
-            JViewport viewport = (JViewport) piattaformaPanel.getParent();
-            if (viewport.getParent() instanceof JScrollPane) {
-                JScrollPane scrollPane = (JScrollPane) viewport.getParent();
+        if (piattaformaPanel.getParent() instanceof JViewport viewport) {
+            if (viewport.getParent() instanceof JScrollPane scrollPane) {
 
 
                 int larghezzaAttuale = scrollPane.getPreferredSize().width;
-                scrollPane.setPreferredSize(new java.awt.Dimension(larghezzaAttuale, 150));
-                scrollPane.setMaximumSize(new java.awt.Dimension(larghezzaAttuale, 150));
+                scrollPane.setPreferredSize(new Dimension(larghezzaAttuale, 150));
+                scrollPane.setMaximumSize(new Dimension(larghezzaAttuale, 150));
 
                 scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             }
         }
 
         int altezzaTotalePan = listaCheckboxPiattaforma.size() * 25;
-        piattaformaPanel.setPreferredSize(new java.awt.Dimension(150, altezzaTotalePan));
+        piattaformaPanel.setPreferredSize(new Dimension(150, altezzaTotalePan));
 
         piattaformaPanel.revalidate();
         piattaformaPanel.repaint();
@@ -370,7 +361,7 @@ public class HomeSviluppatore {
     private void configuraAzioneAggiungi() {
 
         aggModButton.addActionListener(e -> {
-        Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
+            Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
             String titolo = textTitolo.getText().trim();
             Categoria categoriaEnum = (Categoria) aggCategoria.getSelectedItem();
             String pegiStr = textPegi.getText().trim();
@@ -386,8 +377,6 @@ public class HomeSviluppatore {
             }
 
 
-
-
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 LocalDate dataLocale = LocalDate.parse(dataRilascio, formatter);
@@ -395,8 +384,7 @@ public class HomeSviluppatore {
                 double prezzo = Double.parseDouble(prezzoStr.replace(",", "."));
 
 
-                // conversioni dei tipi di dati
-                Sviluppatore sviluppatoreLoggato = controller.getListaSviluppatoriLoggati().get(0);
+                Sviluppatore sviluppatoreLoggato = controller.getListaSviluppatoriLoggati().getFirst();
 
 
                 ArrayList<Genere> listaGeneri = new ArrayList<>();
@@ -415,40 +403,29 @@ public class HomeSviluppatore {
                 }
 
 
-                if (listaPiattaforma.isEmpty()||listaGeneri.isEmpty())
-                {JOptionPane.showMessageDialog(null,"Attenzione: devi selezionare almeno un genere e una piattaforma!");return;}
+                if (listaPiattaforma.isEmpty() || listaGeneri.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Attenzione: devi selezionare almeno un genere e una piattaforma!");
+                    return;
+                }
 
-            if (giocoSelezionato!= null)
-            {
-               controller.modificaGiocoEsistente
-                       (giocoSelezionato,titolo,pegi,categoriaEnum,listaGeneri,listaPiattaforma,prezzo,dataLocale);
-
-
-//                for (PiattaformaDiGioco newPiattaforma : listaPiattaforma) {
-//                    if(!controller.getPiattaformeDaGioco(giocoSelezionato).contains(newPiattaforma)) {
-//
-//                        EdizioneGioco palle = new EdizioneGioco(giocoSelezionato, newPiattaforma, (int) prezzo, dataLocale);
-//                        giocoSelezionato.addEdizione(palle);
-//                        controller.addEdizioneAlDB(palle);
-//                    }
-//                }
-//
-//                controller.updateGeneriGioco(giocoSelezionato, listaGeneri);
-
-                JOptionPane.showMessageDialog(null, "Modifiche salvate con Successo!");
+                if (giocoSelezionato != null) {
+                    controller.modificaGiocoEsistente
+                            (giocoSelezionato, titolo, pegi, categoriaEnum, listaGeneri, listaPiattaforma, prezzo, dataLocale);
 
 
-            }else{
-
-                 Gioco nuovoGioco = controller.creaNuovoGioco
-                         (titolo,pegi,categoriaEnum,listaGeneri,listaPiattaforma,prezzo,dataLocale,sviluppatoreLoggato);
+                    JOptionPane.showMessageDialog(null, "Modifiche salvate con Successo!");
 
 
+                } else {
 
-                modelPannelloControllo.addElement(nuovoGioco);
-                modelLibreria.addElement(nuovoGioco);
-                listaCompletaGiochi.add(nuovoGioco);
-                JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
+                    Gioco nuovoGioco = controller.creaNuovoGioco
+                            (titolo, pegi, categoriaEnum, listaGeneri, listaPiattaforma, prezzo, dataLocale, sviluppatoreLoggato);
+
+
+                    modelPannelloControllo.addElement(nuovoGioco);
+                    modelLibreria.addElement(nuovoGioco);
+                    listaCompletaGiochi.add(nuovoGioco);
+                    JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
 
                 }
                 listaGiochiAggiunti.clearSelection();
@@ -458,18 +435,16 @@ public class HomeSviluppatore {
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Errore nei dati numerici!\nIl PEGI deve essere un intero.\nIl Prezzo deve essere un numero decimale.");
-            }
-            catch (CampoNonValidoException ex) {
+            } catch (CampoNonValidoException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
-            }
-             catch (DateTimeParseException ex) {
+            } catch (DateTimeParseException ex) {
                 JOptionPane.showMessageDialog(null, "Formato data non valido! Usa il formato GG/MM/AAAA.");
             }
         });
 
     }
 
-    private  void reset() {
+    private void reset() {
         reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -481,25 +456,25 @@ public class HomeSviluppatore {
         });
     }
 
-    private void rimuoviGioco(){rimuoviGiocoButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(null, "Stop killing games!");
-        }
-    });
+    private void rimuoviGioco() {
+        rimuoviGiocoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Stop killing games!");
+            }
+        });
     }
 
 
-    private void profilo(Sviluppatore sviluppatoreCorrente)
-        {
-            nomeSviluppatore.setText(controller.getNomeSviluppatore(sviluppatoreCorrente));
-            descrizioneArea.setText(controller.getDescrizioneSviluppatore(sviluppatoreCorrente));
-            descrizioneArea.setEditable(false);
-            descrizioneArea.setLineWrap(true);
-            descrizioneArea.setWrapStyleWord(true);
-            descrizioneArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            descrizioneArea.setFocusable(false);
-        }
+    private void profilo(Sviluppatore sviluppatoreCorrente) {
+        nomeSviluppatore.setText(controller.getNomeSviluppatore(sviluppatoreCorrente));
+        descrizioneArea.setText(controller.getDescrizioneSviluppatore(sviluppatoreCorrente));
+        descrizioneArea.setEditable(false);
+        descrizioneArea.setLineWrap(true);
+        descrizioneArea.setWrapStyleWord(true);
+        descrizioneArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        descrizioneArea.setFocusable(false);
+    }
 
 
     private void gestProfilo(Sviluppatore sviluppatoreCorrente) {
@@ -507,58 +482,54 @@ public class HomeSviluppatore {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog finestraGestione = new JDialog();
-//                JFrame finestraGestione = new JFrame("Modifica Profilo");
                 finestraGestione.setTitle("Modifica profilo");
                 finestraGestione.setModal(true);
-                finestraGestione.setSize(500,300);
-                finestraGestione.setLayout( new GridLayout(4,2));
+                finestraGestione.setSize(500, 300);
+                finestraGestione.setLayout(new GridLayout(4, 2));
                 finestraGestione.setLocationRelativeTo(null);
 
-                JTextField campoNome = new JTextField(controller.getNomeSviluppatore(sviluppatoreCorrente),15);
+                JTextField campoNome = new JTextField(controller.getNomeSviluppatore(sviluppatoreCorrente), 15);
                 JPanel pannelloNome = new JPanel(new GridBagLayout());
                 pannelloNome.add(campoNome);
-                finestraGestione.add(new JLabel("Nome:",SwingConstants.CENTER));
+                finestraGestione.add(new JLabel("Nome:", SwingConstants.CENTER));
                 finestraGestione.add(pannelloNome);
 
 
                 JPasswordField campoPass = new JPasswordField(15);
                 JPanel pannelloPass = new JPanel(new GridBagLayout());
                 pannelloPass.add(campoPass);
-                finestraGestione.add(new JLabel("Nuova password:",SwingConstants.CENTER));
+                finestraGestione.add(new JLabel("Nuova password:", SwingConstants.CENTER));
                 finestraGestione.add(pannelloPass);
 
 
-                JTextArea campoDescrizione = new JTextArea(controller.getDescrizioneSviluppatore(sviluppatoreCorrente),4,20);
-                JPanel pannelloDescrizione =  new JPanel();
+                JTextArea campoDescrizione = new JTextArea(controller.getDescrizioneSviluppatore(sviluppatoreCorrente), 4, 20);
+                JPanel pannelloDescrizione = new JPanel();
                 JScrollPane scrollDescrizione = new JScrollPane(campoDescrizione);
                 pannelloDescrizione.add(scrollDescrizione);
-                finestraGestione.add(new JLabel("Nuova descrizione:",SwingConstants.CENTER));
+                finestraGestione.add(new JLabel("Nuova descrizione:", SwingConstants.CENTER));
                 finestraGestione.add(pannelloDescrizione);
 
 
                 JPanel pannelloSalva = new JPanel(new GridBagLayout());
                 JButton pulsanteSalva = new JButton("Salva");
-                finestraGestione.add(new JLabel(" ",SwingConstants.CENTER));
+                finestraGestione.add(new JLabel(" ", SwingConstants.CENTER));
                 pannelloSalva.add(pulsanteSalva);
                 finestraGestione.add(pannelloSalva);
 
                 pulsanteSalva.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        try{
-//                            sviluppatoreCorrente.setNome(campoNome.getText());
-//                            sviluppatoreCorrente.setDescrizione(campoDescrizione.getText());
+                        try {
+
                             String nome = campoNome.getText();
                             String descrizione = campoDescrizione.getText();
                             String password = new String(campoPass.getPassword());
 
-                           controller.aggiornaProfiloSviluppatore(sviluppatoreCorrente,nome,descrizione,password);
+                            controller.aggiornaProfiloSviluppatore(sviluppatoreCorrente, nome, descrizione, password);
 
                             finestraGestione.dispose();
-                        }
-                        catch (CampoNonValidoException ex)
-                        {
-                            JOptionPane.showMessageDialog(null,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                        } catch (CampoNonValidoException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                         }
 
                     }
@@ -571,13 +542,44 @@ public class HomeSviluppatore {
         });
     }
 
+    private void aggiungiPromozione() {
+
+        aggiungiPromozioneButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed (ActionEvent e){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            JDialog panelPromozione = new JDialog();
+            panelPromozione.setTitle("Aggiungi promozione");
+            panelPromozione.setModal(true);
+            panelPromozione.setSize(500, 300);
+            panelPromozione.setLocationRelativeTo(null);
+            panelPromozione.setLayout(new GridLayout(4, 2));
+
+            JTextField pNome = new JTextField(15);
+            JPanel centrareNome = new JPanel(new GridBagLayout());
+            centrareNome.add(pNome);
+            panelPromozione.add(new JLabel("Nome:", SwingConstants.CENTER));
+            panelPromozione.add(centrareNome);
+
+//            JTextField dataInizio= new JTextField(DateTimeFormatter.,8);
+//            JPanel cenDatInizio = new JPanel(new GridBagLayout());
+//            cenDatInizio.add(dataInizio);
+//            panelPromozione.add(new JLabel("Data inizio:", SwingConstants.CENTER));
+//            panelPromozione.add(cenDatInizio);
+
+
+
+            panelPromozione.setVisible(true);
+        }
+    });
+}
     private void pulisciCampiInserimento() {
         // ripulisce i campi scritti in precedenza
         textTitolo.setText("");
         textPegi.setText("");
         textPrezzo.setText("");
         textDataRilascio.setText("GG/MM/AAAA");
-        textDataRilascio.setForeground(java.awt.Color.GRAY);
+        textDataRilascio.setForeground(Color.GRAY);
         aggCategoria.setSelectedIndex(0);
 
         for (JCheckBox campoVuoto : listaCheckboxGeneri) {

@@ -804,7 +804,14 @@ public class Controller {
 
         return nuovoGioco;
     }
+
+    public Promozione setNomePromozione(Promozione p,String nuovoNome)throws CampoNonValidoException {
+        p.setNome(nuovoNome);
+        return p;
+    }
 }
+
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
