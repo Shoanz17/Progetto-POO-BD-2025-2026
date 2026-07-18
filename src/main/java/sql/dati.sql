@@ -11,7 +11,7 @@ INSERT INTO account (nome, password) VALUES
 ('SquareEnix', 'KingdomNonHearts1!'),
 ('Konami', 'KojimaGod123#'),
 ('ATLUS', 'persona5CashCow!'),
-('SandFall Interactive', 'G0TY!!!'),
+('SandFall Interactive', 'G0TY!!!!'),
 ('FromSoftware', 'MiyazakiP0ison!'),
 ('NaughtyDog', 'CrashT0Ellie!'),
 ('CDProjektRed', 'Witch3rGeralt!'),
@@ -167,39 +167,9 @@ INSERT INTO promozione (nome, dataInizio, dataFine) VALUES
 ('Black Friday 2026', '2026-11-23', '2026-11-30');
 
 INSERT INTO gioco_in_promozione (idGioco, idPromozione, percentuale) VALUES
-(2, 1, 50), -- Ace Attorney scontato del 50% ai saldi invernali
-(4, 1, 10), -- Mario scontato del 10% ai saldi invernali
-(5, 3, 75); -- Metal Gear scontato del 75% nelle follie di metà settimana
-
-
-INSERT INTO edizione_gioco (idGioco, nomePiattaforma, prezzo, dataRilascio) VALUES
-(1, 'PC', 0, '2025-06-26'),
-(2, 'PC', 30, '2019-04-09'),
-(2, 'Nintendo Switch', 30, '2019-04-09'),
-(3, 'PC', 50, '2025-10-15'),
-(4, 'Nintendo Switch', 60, '2017-10-27'),
-(5, 'PC', 20, '2015-09-01'),
-(5, 'PlayStation 5', 25, '2015-09-01'),
-(3, 'PlayStation 5', 50, '2025-10-15'),
-(3, 'Xbox Series X', 50, '2025-10-15'),
-(6, 'PC', 60, '2022-02-25'),
-(6, 'PlayStation 5', 60, '2022-02-25'),
-(6, 'Xbox Series X', 60, '2022-02-25'),
-(7, 'PC', 70, '2022-09-02'),
-(7, 'PlayStation 5', 70, '2022-09-02'),
-(8, 'PC', 30, '2015-05-19'),
-(8, 'PlayStation 5', 30, '2015-05-19'),
-(8, 'Xbox Series X', 30, '2015-05-19'),
-(8, 'Nintendo Switch', 30, '2015-05-19'),
-(9, 'PC', 60, '2018-10-26'),
-(9, 'PlayStation 5', 60, '2018-10-26'),
-(9, 'Xbox Series X', 60, '2018-10-26'),
-(10, 'PC', 60, '2023-08-03'),
-(10, 'PlayStation 5', 60, '2023-08-03'),
-(10, 'Xbox Series X', 60, '2023-08-03'),
-(11, 'PC', 60, '2020-12-10'),
-(11, 'PlayStation 5', 60, '2020-12-10'),
-(11, 'Xbox Series X', 60, '2020-12-10');
+(2, 1, 50),
+(4, 1, 10),
+(5, 3, 75);
 
 INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
 ('Switch','Nintendo',true),
@@ -218,24 +188,80 @@ INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
 ('3DS','Nintendo',true),
 ('PC','Steam',false);
 
+INSERT INTO edizione_gioco (idGioco, nomePiattaforma, prezzo, dataRilascio) VALUES
+(1, 'PC', 0, '2025-06-26'),
+(2, 'PC', 30, '2019-04-09'),
+(2, 'Switch', 30, '2019-04-09'),
+(3, 'PC', 50, '2025-10-15'),
+(4, 'Switch', 60, '2017-10-27'),
+(5, 'PC', 20, '2015-09-01'),
+(5, 'PlayStation 5', 25, '2015-09-01'),
+(3, 'PlayStation 5', 50, '2025-10-15'),
+(3, 'Xbox Series X|S', 50, '2025-10-15'),
+(6, 'PC', 60, '2022-02-25'),
+(6, 'PlayStation 5', 60, '2022-02-25'),
+(6, 'Xbox Series X|S', 60, '2022-02-25'),
+(7, 'PC', 70, '2022-09-02'),
+(7, 'PlayStation 5', 70, '2022-09-02'),
+(8, 'PC', 30, '2015-05-19'),
+(8, 'PlayStation 5', 30, '2015-05-19'),
+(8, 'Xbox Series X|S', 30, '2015-05-19'),
+(8, 'Switch', 30, '2015-05-19'),
+(9, 'PC', 60, '2018-10-26'),
+(9, 'PlayStation 5', 60, '2018-10-26'),
+(9, 'Xbox Series X|S', 60, '2018-10-26'),
+(10, 'PC', 60, '2023-08-03'),
+(10, 'PlayStation 5', 60, '2023-08-03'),
+(10, 'Xbox Series X|S', 60, '2023-08-03'),
+(11, 'PC', 60, '2020-12-10'),
+(11, 'PlayStation 5', 60, '2020-12-10'),
+(11, 'Xbox Series X|S', 60, '2020-12-10');
+
+
 INSERT INTO seguiti(idutente, idsviluppatore) VALUES
 (16, 6),
 (17, 6),
 (19, 6),
-(9, 4),
-(11, 4),
-(10, 4),
-(13, 7),
-(14, 7),
-(15, 7),
+(16, 4),
+(18, 4),
+(17, 4),
+(20, 7),
+(21, 7),
+(22, 7),
 (21, 5),
 (24, 5),
 (26, 8),
 (20, 8),
 (18, 8),
-(9, 7);
+(16, 7);
 
+INSERT INTO fattura (idUtente, idEdizione, prezzoAcquisto, key, dataAcquisto) VALUES
+(16, 10, 60, '123e4567-e89b-12d3-a456-426614174001', '2022-03-01'),
+(17, 5, 60, '123e4567-e89b-12d3-a456-426614174002', '2018-12-25'),
+(23, 13, 70, '123e4567-e89b-12d3-a456-426614174003', '2022-10-10'),
+(24, 6, 20, '123e4567-e89b-12d3-a456-426614174004', '2016-01-15'),
+(26, 22, 60, '123e4567-e89b-12d3-a456-426614174005', '2023-09-01'),
+(28, 2, 30, '123e4567-e89b-12d3-a456-426614174006', '2020-05-20'),
+(33, 19, 60, '123e4567-e89b-12d3-a456-426614174007', '2019-11-05'),
+(18, 1, 0, '123e4567-e89b-12d3-a456-426614174008', '2025-07-01'),
+(20, 8, 50, '123e4567-e89b-12d3-a456-426614174009', '2025-11-01'),
+(30, 25, 60, '123e4567-e89b-12d3-a456-426614174010', '2021-01-10'),
+(31, 15, 30, '123e4567-e89b-12d3-a456-426614174011', '2016-06-01'),
+(19, 11, 60, '123e4567-e89b-12d3-a456-426614174012', '2022-04-12');
 
+    INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES
+(1, 95, 'Capolavoro assoluto, mi ha fatto esplorare per ore senza mai annoiarmi.', 45),
+(2, 100, 'Super Mario non delude mai, puro divertimento per tutte le eta.', 12),
+(3, 85, 'Ottimo porting per PC, una storia fantastica e straziante.', 8),
+(4, 90, 'Gameplay stealth semplicemente perfetto.', 30),
+(5, 98, 'GOTY senza alcun dubbio. Un gioco di ruolo immenso e profondo.', 150),
+(6, 80, 'Objection! Trama avvincente e casi intricati da risolvere.', 5),
+(7, 99, 'Il miglior gioco open world di sempre, un mondo vivo e pulsante.', 88),
+(8, 70, 'Buon titolo ma richiede un bel po di tempo per i potenziamenti.', 2),
+(9, 85, 'Grafica pazzesca e sistema di combattimento a turni molto interessante.', 14),
+(10, 75, 'Bello ma all uscita aveva troppi bug, ora e molto migliorato.', 40),
+(11, 95, 'Geralt di Rivia non sbaglia un colpo, e le espansioni sono dei capolavori.', 60),
+(12, 92, 'Difficile al punto giusto, ambientazione e direzione artistica incredibili.', 22);
 
 
 
