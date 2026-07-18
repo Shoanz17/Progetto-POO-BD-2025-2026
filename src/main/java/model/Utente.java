@@ -95,7 +95,7 @@ public class Utente extends Account {
     public void addGioco(Fattura gioco) throws CampoNonValidoException {
         //check di validità
         if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
-        if(this.giochiAcquistati.contains(gioco)) throw new CampoNonValidoException("Hai già comprato questa edizione");
+        if(this.giochiAcquistati.contains(gioco)) throw new CampoNonValidoException("Hai già comprato " + gioco.getGioco().getGioco().getTitolo() + " per" + gioco.getGioco().getPiattaforma().getNome());
 
         this.giochiAcquistati.add(gioco);
     }

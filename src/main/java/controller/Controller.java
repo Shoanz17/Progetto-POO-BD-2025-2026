@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -252,6 +253,7 @@ public class Controller {
     public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getDataRilascio();}
 
 
+
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         utenteLoggato.addAmico(utenteSelezionato);
     }
@@ -270,6 +272,8 @@ public class Controller {
         }
         return listaRecensioni;
     }
+
+    public Fattura getFatturaDaRecensione(Recensione r){return r.getFattura();}
 
     public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);
@@ -582,6 +586,9 @@ public class Controller {
         for (EdizioneGioco giocoAcquistato : carrello.getListaGiochi()) {
             Fattura nuovaFattura = new Fattura(utenteLoggato, giocoAcquistato, giocoAcquistato.getPrezzo());
             utenteLoggato.addGioco(nuovaFattura);
+
+            giocoAcquistato.getGioco().getSviluppatore().addFondi(nuovaFattura.getPrezzoAcquisto());
+
             listaFatture.add(nuovaFattura);   // SOLO PER TEST
         }
 
@@ -591,7 +598,6 @@ public class Controller {
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
-
 
     public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
         Utente utente = getUtenteById(idUtente);

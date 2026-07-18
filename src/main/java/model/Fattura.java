@@ -113,4 +113,9 @@ public class Fattura {
         this.gioco = gioco;
         this.prezzoAcquisto = prezzo;
     }
+
+    @Override
+    public String toString() {
+        return gioco.getGioco().getTitolo() +" ("+ gioco.getPiattaforma().getNome() + ")";
+    }
 }

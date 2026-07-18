@@ -54,4 +54,9 @@ public class PiattaformaDiGioco {
     public int hashCode() {
         return Objects.hashCode(nome);
     }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }
