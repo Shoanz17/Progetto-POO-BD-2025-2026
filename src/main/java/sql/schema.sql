@@ -91,4 +91,18 @@ CREATE TABLE gioco_in_promozione(
     CONSTRAINT fk_gioco_in_promozione_gioco FOREIGN KEY (idGioco) REFERENCES gioco (idGioco),
     CONSTRAINT fk_gioco_in_promozione_promozione FOREIGN KEY (idPromozione) REFERENCES promozione (idPromozione),
     CONSTRAINT chk_gioco_in_promozione_sconto CHECK ( percentuale >= 0 AND percentuale <= 100 )
-)
+);
+
+CREATE TABLE edizione_gioco(
+    idEdizione SERIAL PRIMARY KEY,
+    idGioco INT NOT NULL,
+    nomePiattaforma VARCHAR(20) NOT NULL,
+    prezzo INT NOT NULL,
+    dataRilascio DATE NOT NULL,
+
+    CONSTRAINT fk_edizione_gioco_gioco FOREIGN KEY (idGioco) REFERENCES gioco (idGioco),
+    CONSTRAINT fk_edizione_gioco_piattaforma FOREIGN KEY (nomePiattaforma) REFERENCES piattaforma (nome),
+    CONSTRAINT unq_edizione_gioco_gioco_piattaforma UNIQUE (idGioco, nomePiattaforma),
+    CONSTRAINT chk_edizione_gioco_prezzo CHECK ( prezzo >= 0 ),
+    CONSTRAINT chk_edizione_gioco_data CHECK ( dataRilascio >= '1952-01-01' )
+);
