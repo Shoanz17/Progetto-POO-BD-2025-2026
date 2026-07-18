@@ -843,6 +843,31 @@ public class Controller {
         //DAO
     }
 
+    public String getStringaPromozioniPerGioco(Gioco giocoScelto) {
+        String risultato = "";
+
+        for (Promozione promo : listaPromozioni) {
+
+            for (GiocoInPromozione sconto : promo.getGiochiInPromozione()) {
+
+                if (sconto.getGioco().equals(giocoScelto)) {
+
+                    if (!risultato.isEmpty()) {
+                        risultato += ", ";
+                    }
+
+                    risultato += promo.getNome() + " (-" + sconto.getPercentuale() + "%)";
+                }
+            }
+        }
+
+        if (risultato.isEmpty()) {
+            return "Nessuna promozione attiva";
+        }
+
+        return risultato;
+    }
+
 }
 
 

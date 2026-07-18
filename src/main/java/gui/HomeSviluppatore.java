@@ -102,7 +102,7 @@ public class HomeSviluppatore {
         JFrame frame = new JFrame("HomeSviluppatore");
         frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1100, 650);
+        frame.setSize(1150, 700);
 //        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -193,7 +193,7 @@ public class HomeSviluppatore {
                         textAreaGeneri.setText("Genere: " + controller.getGenereDaGioco(giocoSelezionato));
                         Piattaforma.setText("Piattaforma: " + controller.getStringPiattaformeDaGioco(giocoSelezionato));
                         pegi.setText("Pegi: " + controller.getPegiDaGioco(giocoSelezionato));
-                        promozioniAttive.setText(controller.);
+                        promozioniAttive.setText("Promozione: "+ controller.getStringaPromozioniPerGioco(giocoSelezionato));
 
                     }
 
