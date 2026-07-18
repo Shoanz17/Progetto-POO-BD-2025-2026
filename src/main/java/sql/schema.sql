@@ -46,3 +46,49 @@ CREATE TABLE amici(
     CONSTRAINT fk_amici_utente2 FOREIGN KEY (idAmico2) REFERENCES utente(idUtente),
     CONSTRAINT chk_amici_amici CHECK (idAmico1 < idAmico2)
 );
+
+CREATE TABLE gioco(
+    idGioco SERIAL PRIMARY KEY,
+    titolo VARCHAR(40) NOT NULL,
+    categoria VARCHAR(5) NOT NULL,
+    pegi INT NOT NULL,
+    idSviluppatore INT NOT NULL,
+
+    CONSTRAINT fk_gioco_sviluppatore FOREIGN KEY (idSviluppatore) REFERENCES sviluppatore(idSviluppatore),
+    CONSTRAINT chk_gioco_pegi CHECK ( pegi >= 3 AND pegi <= 18 ),
+    CONSTRAINT chk_gioco_categoria CHECK ( categoria IN ('INDIE', 'A', 'AA', 'AAA', 'AAAA'))
+);
+
+CREATE TABLE genere(
+    idGenere SERIAL PRIMARY KEY,
+    nome VARCHAR(24) UNIQUE NOT NULL
+);
+
+CREATE TABLE gioco_genere(
+    idGioco  INT,
+    idGenere INT,
+
+    PRIMARY KEY (idGioco, idGenere),
+    CONSTRAINT fk_gioco_genere_gioco FOREIGN KEY (idGioco) REFERENCES gioco (idGioco),
+    CONSTRAINT fk_gioco_genere_genere FOREIGN KEY (idGenere) REFERENCES genere (idGenere)
+);
+
+CREATE TABLE promozione(
+    idPromozione SERIAL PRIMARY KEY,
+    nome VARCHAR(32) UNIQUE NOT NULL,
+    dataInizio DATE NOT NULL,
+    dataFine DATE NOT NULL,
+
+    CONSTRAINT chk_promozione_data CHECK ( dataFine >= dataInizio)
+);
+
+CREATE TABLE gioco_in_promozione(
+    idGioco INT,
+    idPromozione INT,
+    percentuale INT NOT NULL,
+
+    PRIMARY KEY (idGioco, idPromozione),
+    CONSTRAINT fk_gioco_in_promozione_gioco FOREIGN KEY (idGioco) REFERENCES gioco (idGioco),
+    CONSTRAINT fk_gioco_in_promozione_promozione FOREIGN KEY (idPromozione) REFERENCES promozione (idPromozione),
+    CONSTRAINT chk_gioco_in_promozione_sconto CHECK ( percentuale >= 0 AND percentuale <= 100 )
+)
