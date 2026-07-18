@@ -76,3 +76,52 @@ INSERT INTO amici (idamico1, idamico2) VALUES
 (9, 21),
 (10, 23),
 (13, 20);
+
+INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
+('Switch','Nintendo',true),
+('Switch 2','Nintendo',true),
+('PlayStation 1','Sony',false),
+('PlayStation 2','Sony',false),
+('PlayStation 3','Sony',false),
+('PlayStation 4','Sony',false),
+('PlayStation 5','Sony',false),
+('PS Vita','Sony',True),
+('Xbox','Microsoft',false),
+('Xbox 360','Microsoft',false),
+('Xbox One','Microsoft',false),
+('Xbox Series X|S','Microsoft',false),
+('DS','Nintendo',true),
+('3DS','Nintendo',true),
+('PC','Steam',false);
+
+INSERT INTO seguiti(idutente, idsviluppatore) VALUES
+(16, 6),
+(17, 6),
+(19, 6),
+(9, 4),
+(11, 4),
+(10, 4),
+(13, 7),
+(14, 7),
+(15, 7),
+(21, 5),
+(24, 5),
+(26, 8),
+(20, 8),
+(18, 8),
+(9, 7);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
