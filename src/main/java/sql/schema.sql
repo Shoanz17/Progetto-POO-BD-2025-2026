@@ -93,6 +93,12 @@ CREATE TABLE gioco_in_promozione(
     CONSTRAINT chk_gioco_in_promozione_sconto CHECK ( percentuale >= 0 AND percentuale <= 100 )
 );
 
+CREATE TABLE piattaforma_di_gioco(
+    nome VARCHAR(20) PRIMARY KEY,
+    produttore VARCHAR(20) NOT NULL,
+    portatile BOOLEAN NOT NULL
+);
+
 CREATE TABLE edizione_gioco(
     idEdizione SERIAL PRIMARY KEY,
     idGioco INT NOT NULL,
@@ -101,8 +107,52 @@ CREATE TABLE edizione_gioco(
     dataRilascio DATE NOT NULL,
 
     CONSTRAINT fk_edizione_gioco_gioco FOREIGN KEY (idGioco) REFERENCES gioco (idGioco),
-    CONSTRAINT fk_edizione_gioco_piattaforma FOREIGN KEY (nomePiattaforma) REFERENCES piattaforma (nome),
+    CONSTRAINT fk_edizione_gioco_piattaforma FOREIGN KEY (nomePiattaforma) REFERENCES piattaforma_di_gioco (nome),
     CONSTRAINT unq_edizione_gioco_gioco_piattaforma UNIQUE (idGioco, nomePiattaforma),
     CONSTRAINT chk_edizione_gioco_prezzo CHECK ( prezzo >= 0 ),
     CONSTRAINT chk_edizione_gioco_data CHECK ( dataRilascio >= '1952-01-01' )
+);
+
+
+CREATE TABLE carrello(
+    idUtente INT,
+    idEdizione INT,
+
+    PRIMARY KEY (idUtente,idEdizione),
+    CONSTRAINT fk_carrello_utente FOREIGN KEY (idUtente) REFERENCES utente (idUtente),
+    CONSTRAINT fk_carrello_edizione_gioco FOREIGN KEY (idEdizione) REFERENCES edizione_gioco(idEdizione)
+);
+
+CREATE TABLE fattura(
+    idFattura SERIAL PRIMARY KEY,
+    idUtente INT NOT NULL,
+    idEdizione INT NOT NULL,
+    prezzoAcquisto INT NOT NULL,
+    key VARCHAR(36) UNIQUE NOT NULL,
+    dataAcquisto DATE DEFAULT CURRENT_DATE,
+
+    CONSTRAINT fk_fattura_utente FOREIGN KEY (idUtente) REFERENCES utente (idUtente),
+    CONSTRAINT fk_fattura_edizione_gioco FOREIGN KEY (idEdizione) REFERENCES edizione_gioco (idEdizione),
+    CONSTRAINT chk_fattura_prezzoAcquisto CHECK ( prezzoAcquisto >= 0 ),
+    CONSTRAINT chk_fattura_dataAcquisto CHECK ( dataAcquisto >= '1952-01-01' AND dataAcquisto <= CURRENT_DATE)
+);
+
+CREATE TABLE recensione(
+    idFattura INT PRIMARY KEY,
+    voto INT NOT NULL,
+    descrizione VARCHAR(500),
+    differenzaLike INT DEFAULT 0,
+
+    CONSTRAINT fk_recensione_fattura FOREIGN KEY (idFattura) REFERENCES fattura (idFattura),
+    CONSTRAINT chk_recensione_voto CHECK ( voto >= 0 AND voto <= 100 )
+    );
+
+CREATE TABLE seguiti(
+    idUtente INT,
+    idSviluppatore INT,
+
+    PRIMARY KEY (idUtente,idSviluppatore),
+    CONSTRAINT fk_seguiti_utente FOREIGN KEY (idUtente) REFERENCES utente (idUtente),
+    CONSTRAINT fk_seguiti_sviluppatore FOREIGN KEY (idSviluppatore) REFERENCES sviluppatore(idSviluppatore)
+
 );
