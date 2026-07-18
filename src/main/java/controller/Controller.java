@@ -14,6 +14,7 @@ public class Controller {
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
     private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
+    private ArrayList<Gioco> listaGiochi = new ArrayList<>();
     private ArrayList<Fattura> listaFatture = new ArrayList<>();
 
     private ArrayList<String> storicoLike = new ArrayList<>();
@@ -29,7 +30,11 @@ public class Controller {
 
     private void creaDatiFittizi() throws CampoNonValidoException {
         Utente utente = new Utente("Marco", "Password1!", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
-        Utente utente1 = new Utente("Marcoss", "Password1!weq", GenereEnum.Maschio, "marco@gmail.com", LocalDate.of(1999, 10, 12));
+        Utente utente1 = new Utente("Mario", "Password2!", GenereEnum.Maschio, "mario@gmail.com", LocalDate.of(2000, 2, 20));
+        Utente utente2 = new Utente("Serena", "Password3!", GenereEnum.Femmina, "aa@gmail.com", LocalDate.of(2006, 11, 30));
+        Utente utente3 = new Utente("Gustave", "Password4!", GenereEnum.Maschio, "bbbbb@gmail.com", LocalDate.of(1991, 1, 1));
+        Utente utente4 = new Utente("Makoto", "Password5!", GenereEnum.Maschio, "ccccccccc@gmail.com", LocalDate.of(1999, 10, 12));
+        Utente utente5 = new Utente("Dario", "Password6!", GenereEnum.Altro, "dario@gmail.com", LocalDate.of(1989, 5, 16));
 
         Sviluppatore sviluppatore = new Sviluppatore("Sega", "SegaTheBest100!!", "Noi facciamo i giochi migliori");
         Sviluppatore sviluppatore1 = new Sviluppatore("Nintendo", "NintendoTheBest100!!", "Noi facciamo i giochi peggiori");
@@ -38,6 +43,12 @@ public class Controller {
 
         listaAccountLoggati.add(utente);
         listaAccountLoggati.add(utente1);
+        listaAccountLoggati.add(utente2);
+        listaAccountLoggati.add(utente3);
+        listaAccountLoggati.add(utente4);
+        listaAccountLoggati.add(utente5);
+        utente1.setBannato(true);
+        utente3.setBannato(true);
         listaAccountLoggati.add(sviluppatore);
         listaAccountLoggati.add(sviluppatore1);
         listaAccountLoggati.add(admin);
@@ -57,12 +68,16 @@ public class Controller {
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
         listaEdizioniGiochi.add(edizioneGioco);
+        listaGiochi.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
 
         listaFatture.add(fattura1);
         sviluppatore1.addGioco(gioco);
     }
+
+    public String getNomeAccount(Account account) {return account.getNome();}
+    public String getNomeGenereEnum(GenereEnum genere){return genere.name();}
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException {
         Account.verificaFormatoNome(nome);
@@ -186,15 +201,24 @@ public class Controller {
         }
     }
 
+    public int getIdUtente(Utente u){return u.getId();}
     public int getNumeroGiochiAcquistatiUtente(Utente u){return u.getGiochiAcquistati().size();}
     public GenereEnum getGenereUtente(Utente u){return u.getGenere();}
     public String getNomeUtente(Utente u){return u.getNome();}
     public String getEmailUtente(Utente u){return u.getEmail();}
     public LocalDate getDataDiNascitaUtente(Utente u){return u.getDataNascita();}
     public int getSaldoUtente(Utente u){return u.getSaldo();}
+    public ArrayList<Fattura> getLibreriaUtente(Utente u){return u.getGiochiAcquistati();}
     public LocalDate getDataCreazioneAccountUtente(Utente u){return u.getDataCreazione();}
     public boolean isUtenteBannato(Utente u){return u.isBannato();}
-
+    public Utente getUtenteById(int idUtente){ //DA FARE COL DAO
+        for(Account utente : listaAccountLoggati){
+            if(utente.getId() == idUtente){
+                return (Utente) utente;
+            }
+        }
+        return null;
+    }
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
@@ -205,7 +229,19 @@ public class Controller {
     }
 
     public String getDescrizioneSviluppatore(Sviluppatore s){return s.getDescrizione();}
+    public ArrayList<EdizioneGioco> getListaEdizioniSviluppatore(Sviluppatore s) {
+        ArrayList<EdizioneGioco> lista = new ArrayList<>();
+        for(EdizioneGioco edizioneGioco : getEdizioniGiochi()){
+            if(getNomeSviluppatoreDaEdizioneGioco(edizioneGioco).equals(getNomeSviluppatore(s))) lista.add(edizioneGioco);
+        }
+        return lista;
+    }
     public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s){return s.getListaGiochi().size();}
+    public boolean isSviluppatoreBannato(Sviluppatore sviluppatore){return sviluppatore.isBannato();}
+    public void addStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {sviluppatore.addStrike();}
+    public void removeStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {sviluppatore.removeStrike();}
+    public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
+    public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
     public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getSviluppatore().getNome();}
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPrezzo();}
@@ -256,6 +292,50 @@ public class Controller {
         }
         return categorie;
     }
+
+    //metodi per prendere dati da un gioco
+    public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
+    public String getTitoloGioco(Gioco gioco) {return gioco.getTitolo();}
+    public Categoria getCategoriaGioco(Gioco gioco) {return gioco.getCategoria();}
+    public int getPegiGioco(Gioco gioco) {return gioco.getPegi();}
+    public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) {return gioco.getGeneri();}
+
+    //metodi per modificare un gioco
+    public void updateTitoloGioco(Gioco gioco, String titolo) throws CampoNonValidoException { gioco.setTitolo(titolo); }
+    public void updateCategoriaGioco(Gioco gioco, Categoria categoria) throws CampoNonValidoException { gioco.setCategoria(categoria); }
+    public void updatePegiGioco(Gioco gioco, int pegi) throws CampoNonValidoException { gioco.setPegi(pegi); }
+    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException { gioco.setListaGeneri(generi); }
+
+    //metodi per prendere dati dei generi
+    public String getNomeGenere(Genere genere) {return genere.getNome();}
+    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) { //DA FARE col DAO
+        ArrayList<Genere> listaGeneri = new ArrayList<>();
+
+        for(Genere genere : this.listaGeneri){
+            if(listaNomi.contains(genere.getNome()))
+                listaGeneri.add(genere);
+        }
+
+        return listaGeneri;
+    }
+
+    public void createGenere(String nome) throws CampoNonValidoException {
+        Genere genere = new Genere(nome);
+
+        listaGeneri.add(genere); //DA FARE modificare col dao e IMPORTANTE se il genere già esiste non aggiungerlo
+    }
+
+    //metodi per prendere dati da Piattaforma
+    public String getNomePiattaforma(PiattaformaDiGioco piattaformaDiGioco) { return piattaformaDiGioco.getNome(); }
+    public String getProduttorePiattaforma(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.getProduttore();}
+    public boolean isPortabile(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.isPortatile();}
+
+    public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
+        PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome, produttore, portabile);
+
+        listaPiattaformeDiGioco.add(piattaformaDiGioco);
+    }
+
     // metodi per prendere dati da una fattura
     public String getTitoloDaFattura(Fattura f) {return f.getGioco().getGioco().getTitolo();}
     public String getPiattaformaDaFattura(Fattura f) {return f.getGioco().getPiattaforma().getNome();}
@@ -278,7 +358,7 @@ public class Controller {
 
         fatturaSelezionata.setRecensione(nuovaRecensione);
 
-        //da salvare nel dao
+        //DA FARE salvare nel dao
     }
 
     public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() {
@@ -519,4 +599,11 @@ public class Controller {
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
 
+    public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
+        Utente utente = getUtenteById(idUtente);
+
+        if(utente == null) throw new CampoNonValidoException("Operazione non andata a buon fine");
+
+        utente.setBannato(!utente.isBannato()); //magari potrei lanciare un eccezione
+    }
 }
