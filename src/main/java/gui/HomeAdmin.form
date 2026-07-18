@@ -103,7 +103,9 @@
                 <children>
                   <component id="55bca" class="javax.swing.JTable" binding="tabellaGiochiUtenti">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
@@ -118,7 +120,9 @@
                 <children>
                   <component id="b7e2d" class="javax.swing.JTable" binding="tabellaUtenti">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
@@ -133,7 +137,9 @@
                 <children>
                   <component id="ff7b1" class="javax.swing.JTable" binding="tabellaRecensioniUtenti">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
@@ -263,7 +269,9 @@
                 <children>
                   <component id="5eef7" class="javax.swing.JTable" binding="tabellaGiochiSviluppatori">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
@@ -575,7 +583,9 @@
                 <children>
                   <component id="e09d5" class="javax.swing.JTable" binding="tabellaPiattaforme">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
@@ -619,7 +629,9 @@
                 <children>
                   <component id="d7e2d" class="javax.swing.JTable" binding="tabellaRecensioni">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
@@ -754,7 +766,9 @@
                 <children>
                   <component id="606ac" class="javax.swing.JTable" binding="tabellaPromozioni">
                     <constraints/>
-                    <properties/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
                   </component>
                 </children>
               </scrollpane>
