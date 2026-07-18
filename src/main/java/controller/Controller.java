@@ -14,7 +14,7 @@ public class Controller {
     private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
     private ArrayList<Fattura> listaFatture = new ArrayList<>();
-
+    private ArrayList<Promozione> listaPromozioni = new ArrayList<>();
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class Controller {
         Genere genere7 = new Genere(6, "Arcade");
 
         listaGeneri.add(genere1);
-        listaGeneri.add(genere2);
+//        listaGeneri.add(genere2);
         listaGeneri.add(genere3);
         listaGeneri.add(genere4);
         listaGeneri.add(genere5);
@@ -98,6 +98,8 @@ public class Controller {
         listaFatture.add(fattura1);
         sviluppatore1.addGioco(gioco);
         sviluppatore1.addGioco(gioco2);
+
+
     }
 
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException {
@@ -805,10 +807,42 @@ public class Controller {
         return nuovoGioco;
     }
 
-    public Promozione setNomePromozione(Promozione p,String nuovoNome)throws CampoNonValidoException {
-        p.setNome(nuovoNome);
-        return p;
+//    public Promozione setNomePromozione(Promozione p,String nuovoNome)throws CampoNonValidoException {
+//        p.setNome(nuovoNome);
+//        return p;
+//    }
+//
+//    public Promozione creaNuovaPromozione(String nome, LocalDate dataInizio, LocalDate dataFine) throws CampoNonValidoException {
+//
+//        Promozione nuovaPromozione = new Promozione(nome, dataInizio, dataFine);
+//        this.listaPromozioni.add(nuovaPromozione);
+//
+//        return nuovaPromozione;
+//    }
+
+    public void caricaPromozioniFittizie() {
+        try {
+            listaPromozioni.add(new Promozione("Natale 2026", LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 31)));
+            listaPromozioni.add(new Promozione("Sconti Estivi", LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 31)));
+            listaPromozioni.add(new Promozione("Gennaio 1st Week", LocalDate.of(2027, 1, 1), LocalDate.of(2027, 1, 7)));
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore nei dati fittizi");
+        }
     }
+
+    public ArrayList<Promozione> getListaPromozioni() {return listaPromozioni;}
+
+    public void partecipaAPromozione(Gioco gioco, Promozione promozione, int percentualeSconto) throws CampoNonValidoException {
+
+
+        GiocoInPromozione nuovoSconto = new GiocoInPromozione(percentualeSconto, gioco, promozione);
+
+
+        promozione.addGiocoInPromozione(nuovoSconto);
+
+        //DAO
+    }
+
 }
 
 

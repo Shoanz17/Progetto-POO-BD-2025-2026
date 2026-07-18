@@ -63,7 +63,8 @@ public class HomeSviluppatore {
     private JPanel profilo;
     private JLabel fondiSvilup;
     private JTextArea textAreaGeneri;
-    private JButton aggiungiPromozioneButton;
+    private JButton partecipaPromozione;
+    private JLabel promozioniAttive;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -80,6 +81,7 @@ public class HomeSviluppatore {
         Controller controller = new Controller();
         this.controller = controller;
 
+        controller.caricaPromozioniFittizie();
 
         popolaListe();
         ricercaListaLib();
@@ -92,7 +94,7 @@ public class HomeSviluppatore {
         gestProfilo(controller.getListaSviluppatoriLoggati().get(0));
         reset();
         rimuoviGioco();
-        aggiungiPromozione();
+        partecipaPromozione();
 
     }
 
@@ -191,6 +193,7 @@ public class HomeSviluppatore {
                         textAreaGeneri.setText("Genere: " + controller.getGenereDaGioco(giocoSelezionato));
                         Piattaforma.setText("Piattaforma: " + controller.getStringPiattaformeDaGioco(giocoSelezionato));
                         pegi.setText("Pegi: " + controller.getPegiDaGioco(giocoSelezionato));
+                        promozioniAttive.setText(controller.);
 
                     }
 
@@ -542,37 +545,74 @@ public class HomeSviluppatore {
         });
     }
 
-    private void aggiungiPromozione() {
 
-        aggiungiPromozioneButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed (ActionEvent e){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            JDialog panelPromozione = new JDialog();
-            panelPromozione.setTitle("Aggiungi promozione");
-            panelPromozione.setModal(true);
-            panelPromozione.setSize(500, 300);
-            panelPromozione.setLocationRelativeTo(null);
-            panelPromozione.setLayout(new GridLayout(4, 2));
+    private void partecipaPromozione() {
+        partecipaPromozione.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-            JTextField pNome = new JTextField(15);
-            JPanel centrareNome = new JPanel(new GridBagLayout());
-            centrareNome.add(pNome);
-            panelPromozione.add(new JLabel("Nome:", SwingConstants.CENTER));
-            panelPromozione.add(centrareNome);
+                Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
 
-//            JTextField dataInizio= new JTextField(DateTimeFormatter.,8);
-//            JPanel cenDatInizio = new JPanel(new GridBagLayout());
-//            cenDatInizio.add(dataInizio);
-//            panelPromozione.add(new JLabel("Data inizio:", SwingConstants.CENTER));
-//            panelPromozione.add(cenDatInizio);
+                if (giocoSelezionato == null) {
+                    JOptionPane.showMessageDialog(null, "Attenzione: seleziona prima un gioco dalla lista!");
+                    return;
+                }
+
+                JDialog dialogPartecipa = new JDialog();
+                dialogPartecipa.setTitle("Partecipa a Promozione");
+                dialogPartecipa.setModal(true);
+                dialogPartecipa.setSize(400, 200);
+                dialogPartecipa.setLocationRelativeTo(null);
+                dialogPartecipa.setLayout(new GridLayout(3, 2, 40, 40));
+
+                ArrayList<Promozione> promozioniEsistenti = controller.getListaPromozioni();
+                String[] nomiPromozioni = new String[promozioniEsistenti.size()];
+                for (int i = 0; i < promozioniEsistenti.size(); i++) {
+                    nomiPromozioni[i] = promozioniEsistenti.get(i).getNome();
+                }
+
+                JComboBox<String> comboPromozioni = new JComboBox<>(nomiPromozioni);
+                JTextField textSconto = new JTextField(5);
+
+                JButton btnAnnulla = new JButton("Annulla");
+                JButton btnConferma = new JButton("Conferma");
+
+                dialogPartecipa.add(new JLabel("Seleziona Promozione:", SwingConstants.CENTER));
+                dialogPartecipa.add(comboPromozioni);
+
+                dialogPartecipa.add(new JLabel("Sconto (%):", SwingConstants.CENTER));
+                dialogPartecipa.add(textSconto);
+
+                dialogPartecipa.add(btnAnnulla);
+                dialogPartecipa.add(btnConferma);
+
+                btnAnnulla.addActionListener(e2 -> dialogPartecipa.dispose());
+
+                btnConferma.addActionListener(e2 -> {
+                    try {
+                        int indiceScelto = comboPromozioni.getSelectedIndex();
+                        Promozione promoScelta = promozioniEsistenti.get(indiceScelto);
+
+                        int percentualeSconto = Integer.parseInt(textSconto.getText());
 
 
+                        controller.partecipaAPromozione(giocoSelezionato, promoScelta, percentualeSconto);
 
-            panelPromozione.setVisible(true);
-        }
-    });
-}
+                        JOptionPane.showMessageDialog(null, "Gioco inserito in promozione con successo!");
+                        dialogPartecipa.dispose();
+
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Inserisci un numero intero valido per lo sconto (es. 20)!");
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage());
+                    }
+                });
+
+                dialogPartecipa.setVisible(true);
+            }
+        });
+    }
+
     private void pulisciCampiInserimento() {
         // ripulisce i campi scritti in precedenza
         textTitolo.setText("");
