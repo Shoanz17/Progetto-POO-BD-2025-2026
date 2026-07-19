@@ -3,6 +3,10 @@ package model;
 
 import java.time.LocalDate;
 
+/**
+ * Classe astratta che rappresenta un account generico all'interno della piattaforma.
+ * Fornisce gli attributi e i metodi di base che poi verranno ereditati da Utente, Sviluppatore, Admin.
+ */
 
 public abstract class Account {
     // attributi in account:
@@ -11,15 +15,30 @@ public abstract class Account {
         private String password;
         private LocalDate dataCreazione;
 
-    //Creazione del costruttore
+    /**
+     * Costruttore utilizzato per la registrazione di un nuovo account tramite l'interfaccia.
+     * La data di creazione viene impostata in automatico nel momento preciso in cui si crea l'account.
+     *
+     * @param nome     Il nome utente.
+     * @param password La password utente.
+     * @throws CampoNonValidoException Se il nome o la password non rispettano i vincoli di sicurezza.
+     */
     public Account(String nome,String password) throws CampoNonValidoException
     {
         setNome(nome);
         setPassword(password);
-        this.dataCreazione = LocalDate.now();
-
+        this.dataCreazione = LocalDate.now(); //localdate.now mette esattamente la data in cui viene creato l'oggetto
     }
-    //costruttore per il DAO
+
+    /**
+     * Costruttore utilizzato esclusivamente dal DAO per costruire un account
+     * prendendo i dati che si trovano nel Database.
+     *
+     * @param nome          Il nome utente salvato nel DB.
+     * @param id            L'identificativo univoco del DB.
+     * @param password      La password salvata nel DB.
+     * @param dataCreazione La data di creazione storica registrata nel DB.
+     */
     public Account(String nome,int id,String password,LocalDate dataCreazione)
     {
         this.nome = nome;
@@ -29,14 +48,27 @@ public abstract class Account {
         //localdate mette esattamente la data in cui viene creato l'oggetto
     }
 
-    //metodi
+    /**
+     * Verifica che il formato del nome rispetti i vincoli e non sia composto da soli spazi vuoti.
+     * @param nome La stringa da validare.
+     * @throws CampoNonValidoException Se il nome è nullo, vuoto o troppo lungo.
+     */
     public static void verificaFormatoNome(String nome) throws CampoNonValidoException{
         if(nome == null || nome.length()>24)
             throw new CampoNonValidoException("il nome che hai scelto \""+ nome +"\" è troppo lungo");
+        //.trim serve a rimuovere gli spazi bianchi presenti all'inizio e alla fine di una stringa
+        //isEmpty verifica se l'elemento è vuoto
         if(nome.trim().isEmpty())
             throw new CampoNonValidoException("il nome che hai scelto è vuoto ");
     }
 
+    /**
+     * Verifica che la password rispetti i criteri di sicurezza:
+     * lunghezza tra 8 e 32 caratteri, almeno una maiuscola, un numero e un carattere speciale.
+     *
+     * @param password La password da validare.
+     * @throws CampoNonValidoException Se la password non rispetta i criteri di sicurezza.
+     */
     public static void verificaFormatoPassword(String password) throws CampoNonValidoException{
         boolean haMaiuscola = false;
         boolean haNumero = false;
@@ -60,8 +92,13 @@ public abstract class Account {
                 ("La password deve contenere almeno una maiuscola," +  " un numero e un carattere speciale.");}
     }
 
-    //get e set
     public String getNome() {return nome;}
+
+    /**
+     * *Imposta un nuovo nome utente se il formato è giusto.
+     * @param nome Il nuovo nome da impostare.
+     * @throws CampoNonValidoException Se il formato non è valido.
+     */
     public void setNome(String nome) throws CampoNonValidoException
     {
         verificaFormatoNome(nome);
@@ -73,6 +110,13 @@ public abstract class Account {
     public String getPassword() {
         return password;
     }
+
+    /**
+     * Imposta una nuova password se rispetta i criteri di sicurezza.
+     *
+     * @param password La nuova password da impostare.
+     * @throws CampoNonValidoException Se i criteri di sicurezza non sono soddisfatti.
+     */
     public void setPassword(String password) throws CampoNonValidoException {
         verificaFormatoPassword(password);
         this.password = password;
@@ -80,6 +124,13 @@ public abstract class Account {
 
     public LocalDate getDataCreazione() {return dataCreazione;}
 
+    /**
+     * Determina se due account sono considerati uguali basandosi esclusivamente
+     * sul loro identificativo (ID) del Database.
+     *
+     * @param oggetto L'oggetto da confrontare con l'account corrente.
+     * @return true se gli ID coincidono.
+     */
     @Override
     public boolean equals(Object oggetto)
     {

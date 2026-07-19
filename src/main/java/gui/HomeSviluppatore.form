@@ -117,7 +117,7 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <font size="18" style="1"/>
+                      <font size="48" style="1"/>
                       <text value="Titolo:"/>
                     </properties>
                   </component>
