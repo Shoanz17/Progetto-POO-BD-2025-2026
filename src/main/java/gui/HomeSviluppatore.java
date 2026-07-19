@@ -65,6 +65,9 @@ public class HomeSviluppatore {
     private JTextArea textAreaGeneri;
     private JButton partecipaPromozione;
     private JLabel promozioniAttive;
+    private JTextArea areaRecensioni;
+    private JPanel informazioniGioco;
+    private JButton pulsanteLogout;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -95,6 +98,11 @@ public class HomeSviluppatore {
         reset();
         rimuoviGioco();
         partecipaPromozione();
+        gestioneLogout();
+
+
+//        listaTitoli.clearSelection();
+//        informazioniGioco.setVisible(false);
 
     }
 
@@ -102,7 +110,7 @@ public class HomeSviluppatore {
         JFrame frame = new JFrame("HomeSviluppatore");
         frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1150, 700);
+        frame.setSize(1155, 700);
 //        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -186,18 +194,21 @@ public class HomeSviluppatore {
                     Gioco giocoSelezionato = listaTitoli.getSelectedValue();
 
                     if (giocoSelezionato != null) {
-
+//                        informazioniGioco.setVisible(true);
                         // 3. aggiorniamo le Label con le stringhe complete
-                        Titolo.setText("Titolo: " + controller.getTitoloDaGioco(giocoSelezionato));
+                        Titolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         lblCategoria.setText("Categoria: " + controller.getCategoriaDaGioco(giocoSelezionato));
                         textAreaGeneri.setText("Genere: " + controller.getGenereDaGioco(giocoSelezionato));
                         Piattaforma.setText("Piattaforma: " + controller.getStringPiattaformeDaGioco(giocoSelezionato));
                         pegi.setText("Pegi: " + controller.getPegiDaGioco(giocoSelezionato));
                         promozioniAttive.setText("Promozione: "+ controller.getStringaPromozioniPerGioco(giocoSelezionato));
+                        areaRecensioni.setText(controller.getStringaRecensioniPerGioco(giocoSelezionato));
+                        areaRecensioni.setCaretPosition(0);
+
 
                     }
 
-
+//                    else {informazioniGioco.setVisible(false);}
                 }
             }
         });
@@ -211,6 +222,14 @@ public class HomeSviluppatore {
         textAreaGeneri.setOpaque(false);
         textAreaGeneri.setFont(Titolo.getFont());
         textAreaGeneri.setFocusable(false);
+
+
+//        areaRecensioni.setFont(Titolo.getFont());
+        areaRecensioni.setEditable(false);
+//        areaRecensioni.setLineWrap(true);
+//        areaRecensioni.setWrapStyleWord(true);
+        areaRecensioni.setOpaque(true);
+        areaRecensioni.setFocusable(false);
 
 
     }
@@ -609,6 +628,31 @@ public class HomeSviluppatore {
                 });
 
                 dialogPartecipa.setVisible(true);
+            }
+        });
+    }
+
+    private void gestioneLogout() {
+        pulsanteLogout.addActionListener(e -> {
+            // Mostra un popup di conferma (opzionale ma molto carino per l'utente)
+            int conferma = JOptionPane.showConfirmDialog(
+                    null,
+                    "Sei sicuro di voler effettuare il logout?",
+                    "Conferma Logout",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (conferma == JOptionPane.YES_OPTION) {
+                // 1. Trova e chiude definitivamente la finestra della HomeSviluppatore
+                // Sostituisci "homeSviluppatore" col nome del tuo JPanel principale se diverso
+                JFrame frameCorrente = (JFrame) SwingUtilities.getWindowAncestor(homeSviluppatore);
+                if (frameCorrente != null) {
+                    frameCorrente.dispose();
+                }
+
+                // 2. Apre una nuova finestra di Login pulita
+                new Accedi();
             }
         });
     }

@@ -19,6 +19,7 @@ public class Controller {
     private ArrayList<String> storicoDislike = new ArrayList<>();
 
     private ArrayList<Gioco> listaGioco = new ArrayList<>();
+    private ArrayList<Recensione> listaRecensioni = new ArrayList<>();
 
     public Controller() {
         try {
@@ -64,6 +65,7 @@ public class Controller {
         Gioco gioco2 = new Gioco("amongus", Categoria.AA, 12, sviluppatore1, listaGeneri);
 
 
+
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco("Switch", "Nintendo", true);
         PiattaformaDiGioco piattaformaDiGioco2 = new PiattaformaDiGioco("PS5", "Sony", false);
         PiattaformaDiGioco piattaformaDiGioco3 = new PiattaformaDiGioco("PC", "None", false);
@@ -94,8 +96,20 @@ public class Controller {
 
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
+        Fattura fattura2 = new Fattura(utente1,edizioneGioco,21);
+
+        Recensione recensione = new Recensione(70,"wao ha prooprio un bel design",111,fattura1);
+        Recensione recensione2 = new Recensione(100,"hell no da provare incredibilmente incredibile mi sto cagando sotto",111,fattura2);
+
+
 
         listaFatture.add(fattura1);
+        listaFatture.add(fattura2);
+
+
+        listaRecensioni.add(recensione);
+        listaRecensioni.add(recensione2);
+
         sviluppatore1.addGioco(gioco);
         sviluppatore1.addGioco(gioco2);
 
@@ -807,18 +821,6 @@ public class Controller {
         return nuovoGioco;
     }
 
-//    public Promozione setNomePromozione(Promozione p,String nuovoNome)throws CampoNonValidoException {
-//        p.setNome(nuovoNome);
-//        return p;
-//    }
-//
-//    public Promozione creaNuovaPromozione(String nome, LocalDate dataInizio, LocalDate dataFine) throws CampoNonValidoException {
-//
-//        Promozione nuovaPromozione = new Promozione(nome, dataInizio, dataFine);
-//        this.listaPromozioni.add(nuovaPromozione);
-//
-//        return nuovaPromozione;
-//    }
 
     public void caricaPromozioniFittizie() {
         try {
@@ -863,6 +865,29 @@ public class Controller {
 
         if (risultato.isEmpty()) {
             return "Nessuna promozione attiva";
+        }
+
+        return risultato;
+    }
+
+    public String getStringaRecensioniPerGioco(Gioco giocoScelto) {
+
+        String risultato = "";
+
+        for (Recensione recensione : listaRecensioni) {
+
+            if (recensione.getFattura().getGioco().getGioco().getTitolo().equals(giocoScelto.getTitolo())) {
+
+                risultato += recensione + "\n";
+                risultato += "Voto: " + recensione.getVoto() + "/100";
+                risultato += "  (Utilità: " + recensione.getDifferenzaLike() + ")\n";
+                risultato += "\"" + recensione.getDescrizione() + "\"\n";
+                risultato += "--------------------------------------------------\n\n";
+            }
+        }
+
+        if (risultato.isEmpty()) {
+            return "Ancora nessuna recensione per questo titolo.";
         }
 
         return risultato;

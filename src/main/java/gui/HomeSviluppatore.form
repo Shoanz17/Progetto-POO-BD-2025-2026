@@ -102,7 +102,7 @@
                   </component>
                 </children>
               </scrollpane>
-              <grid id="d9267" layout-manager="GridLayoutManager" row-count="8" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="d9267" binding="informazioniGioco" layout-manager="GridLayoutManager" row-count="9" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="3" column="2" row-span="14" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -134,7 +134,7 @@
                   </component>
                   <component id="11e6c" class="javax.swing.JLabel" binding="pegi">
                     <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                      <grid row="3" column="0" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="400" height="100"/>
                       </grid>
                     </constraints>
@@ -145,7 +145,7 @@
                   </component>
                   <component id="3eca1" class="javax.swing.JLabel" binding="Piattaforma">
                     <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                      <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="400" height="100"/>
                       </grid>
                     </constraints>
@@ -156,12 +156,12 @@
                   </component>
                   <vspacer id="94a55">
                     <constraints>
-                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </vspacer>
                   <vspacer id="f475a">
                     <constraints>
-                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </vspacer>
                   <component id="35d3a" class="javax.swing.JLabel" binding="guadagnoTotale">
@@ -205,6 +205,28 @@
                       <text value="Promozioni:"/>
                     </properties>
                   </component>
+                  <scrollpane id="db308">
+                    <constraints>
+                      <grid row="4" column="2" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="ab8c6" class="javax.swing.JTextArea" binding="areaRecensioni">
+                        <constraints/>
+                        <properties/>
+                      </component>
+                    </children>
+                  </scrollpane>
+                  <component id="492ec" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="18" style="1"/>
+                      <text value="Recensioni:"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
               <vspacer id="dd398">
@@ -239,7 +261,7 @@
               </component>
             </children>
           </grid>
-          <grid id="153f4" binding="pannelloDiControllo" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="153f4" binding="pannelloDiControllo" layout-manager="GridLayoutManager" row-count="2" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Pannello di controllo"/>
@@ -249,12 +271,12 @@
             <children>
               <tabbedpane id="492ff" binding="finestrePannello">
                 <constraints>
-                  <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="4" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="2" col-span="4" vsize-policy="3" hsize-policy="4" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <grid id="133cc" binding="profilo" layout-manager="GridLayoutManager" row-count="8" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="133cc" binding="profilo" layout-manager="GridLayoutManager" row-count="5" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <tabbedpane title="Profilo"/>
@@ -264,39 +286,35 @@
                     <children>
                       <component id="13ed0" class="javax.swing.JLabel" binding="nomeSviluppatore">
                         <constraints>
-                          <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                          <grid row="0" column="0" row-span="1" col-span="7" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <font size="18" style="1"/>
+                          <font size="72" style="1"/>
                           <text value="[Nome]"/>
                         </properties>
                       </component>
-                      <hspacer id="db1f3">
+                      <component id="e33a0" class="javax.swing.JButton" binding="gestioneProfilo">
                         <constraints>
-                          <grid row="1" column="1" row-span="2" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                      </hspacer>
-                      <component id="e2fb5" class="javax.swing.JLabel" binding="strike">
-                        <constraints>
-                          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="10" fill="0" indent="11" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <font size="18" style="1"/>
-                          <text value="Strike:[]"/>
+                          <foreground color="-16000760"/>
+                          <hideActionText value="false"/>
+                          <text value="Gestione profilo"/>
                         </properties>
                       </component>
-                      <component id="fafa2" class="javax.swing.JLabel" binding="fondiSvilup">
+                      <component id="7fc6" class="javax.swing.JButton" binding="pulsanteLogout">
                         <constraints>
-                          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                          <grid row="4" column="2" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <font size="18" style="1"/>
-                          <text value="Fondi:[]"/>
+                          <foreground color="-1966070"/>
+                          <text value="Logout"/>
                         </properties>
                       </component>
                       <component id="b85bb" class="javax.swing.JLabel" binding="descrizioneSviluppatore">
                         <constraints>
-                          <grid row="2" column="0" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                          <grid row="1" column="0" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
                           <font size="18" style="1"/>
@@ -305,29 +323,46 @@
                       </component>
                       <component id="88ac2" class="javax.swing.JTextArea" binding="descrizioneArea">
                         <constraints>
-                          <grid row="3" column="1" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="10" fill="0" indent="0" use-parent-layout="false">
+                          <grid row="1" column="1" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="300" height="150"/>
                           </grid>
                         </constraints>
                         <properties/>
                       </component>
+                      <component id="fafa2" class="javax.swing.JLabel" binding="fondiSvilup">
+                        <constraints>
+                          <grid row="1" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font size="18" style="1"/>
+                          <text value="Fondi:[]"/>
+                        </properties>
+                      </component>
                       <component id="ef80e" class="javax.swing.JLabel" binding="seguitiSvilup">
                         <constraints>
-                          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                          <grid row="3" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
                           <font size="18" style="1"/>
                           <text value="Seguiti:[]"/>
                         </properties>
                       </component>
-                      <component id="e33a0" class="javax.swing.JButton" binding="gestioneProfilo">
+                      <component id="e2fb5" class="javax.swing.JLabel" binding="strike">
                         <constraints>
-                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="9" fill="0" indent="80" use-parent-layout="false"/>
+                          <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <foreground color="-16000760"/>
-                          <hideActionText value="false"/>
-                          <text value="Gestione profilo"/>
+                          <font size="18" style="1"/>
+                          <text value="Strike:[]"/>
+                        </properties>
+                      </component>
+                      <component id="29cdc" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font size="18" style="1"/>
+                          <text value="Strike:[]"/>
                         </properties>
                       </component>
                     </children>
