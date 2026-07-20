@@ -29,6 +29,7 @@ public class Controller {
     private RecensioneDAO recensioneDAO;
     private GiocoDAO giocoDAO;
     private EdizioneGiocoDAO edizioneGiocoDAO;
+    private GenereDAO genereDAO;
 
     public Controller() {
         try {
@@ -340,7 +341,7 @@ public class Controller {
         }
     }
     public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
-    public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
+    public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException { addStrikeSviluppatore(gioco.getSviluppatore()); }
     public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getSviluppatore().getNome();}
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPrezzo();}
@@ -393,8 +394,14 @@ public class Controller {
         //Da eliminare dal database
     }
 
-    public ArrayList<Genere> getGeneri() {
-        return listaGeneri;
+    public ArrayList<Genere> getGeneri() throws CampoNonValidoException {
+        try {
+
+            return genereDAO.getListaGeneri();
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public ArrayList<Categoria> getCategorie() {
@@ -408,16 +415,68 @@ public class Controller {
 
     //metodi per prendere dati da un gioco
     public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
+    public ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws CampoNonValidoException {
+        try {
+
+            return giocoDAO.getGiochiFiltrati(testoRicerca);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
     public String getTitoloGioco(Gioco gioco) {return gioco.getTitolo();}
     public Categoria getCategoriaGioco(Gioco gioco) {return gioco.getCategoria();}
     public int getPegiGioco(Gioco gioco) {return gioco.getPegi();}
-    public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) {return gioco.getGeneri();}
+    public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) throws CampoNonValidoException{
+        try{
+
+            return genereDAO.getListaGeneriDaGioco(gioco);
+
+        } catch (SQLException e){
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
 
     //metodi per modificare un gioco
-    public void updateTitoloGioco(Gioco gioco, String titolo) throws CampoNonValidoException { gioco.setTitolo(titolo); }
-    public void updateCategoriaGioco(Gioco gioco, Categoria categoria) throws CampoNonValidoException { gioco.setCategoria(categoria); }
-    public void updatePegiGioco(Gioco gioco, int pegi) throws CampoNonValidoException { gioco.setPegi(pegi); }
-    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException { gioco.setListaGeneri(generi); }
+    public void updateTitoloGioco(Gioco gioco, String titolo) throws CampoNonValidoException {
+        try {
+
+            giocoDAO.updateTitolo(gioco.getId(), titolo);
+            gioco.setTitolo(titolo);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+    public void updateCategoriaGioco(Gioco gioco, Categoria categoria) throws CampoNonValidoException {
+        try {
+
+            giocoDAO.updateCategoriaGioco(gioco.getId(), categoria.name());
+            gioco.setCategoria(categoria);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+    public void updatePegiGioco(Gioco gioco, int pegi) throws CampoNonValidoException {
+        try{
+
+            giocoDAO.updatePegiGioco(gioco.getId(), pegi);
+            gioco.setPegi(pegi);
+
+        } catch (SQLException e){
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException {
+        try {
+
+            giocoDAO.updateGeneriGioco(gioco.getId(), generi);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
 
     //metodi per prendere dati dei generi
     public String getNomeGenere(Genere genere) {return genere.getNome();}

@@ -456,8 +456,27 @@ public class HomeAdmin {
     //PANNELLO GIOCHI
 
     private void configuraPannelloGiochi(){
+        inizializzaCheckBoxGeneri();
         filtraGiochi();
         svuotaDatiGioco();
+    }
+
+    private void inizializzaCheckBoxGeneri(){
+        pannelloGeneriGioco.removeAll();
+        pannelloGeneriGioco.setLayout(new BoxLayout(pannelloGeneriGioco, BoxLayout.Y_AXIS));
+
+        try {
+            for(Genere genere : controller.getGeneri()){
+                JCheckBox checkBox = new JCheckBox(controller.getNomeGenere(genere));
+                checkBox.setSelected(false);
+                pannelloGeneriGioco.add(checkBox);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
+        }
+
+        pannelloGeneriGioco.revalidate();
+        pannelloGeneriGioco.repaint();
     }
 
     private void filtraGiochi(){
@@ -465,14 +484,14 @@ public class HomeAdmin {
 
         DefaultListModel<Gioco> modelloGiochi = new DefaultListModel<>();
 
-        if(testoRicerca.isEmpty()) modelloGiochi.addAll(controller.getListaGiochi()); //se non ho niente da filtrare passo tutto
-        else {
-            for(Gioco gioco : controller.getListaGiochi()){
-                if(controller.getTitoloGioco(gioco).toLowerCase().contains(testoRicerca))
+        try {
+            ArrayList<Gioco> lista = controller.getGiochiFiltrati(testoRicerca);
 
-                    modelloGiochi.addElement(gioco);
+            for (Gioco gioco : lista) {
+                modelloGiochi.addElement(gioco);
             }
-
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         listaGiochi.setModel(modelloGiochi);
@@ -502,27 +521,26 @@ public class HomeAdmin {
     }
 
     private void popolaListaGeneriGioco(Gioco gioco){
-        //svuota lista
-        pannelloGeneriGioco.removeAll();
+        try {
+            ArrayList<Genere> generiGioco = controller.getGeneriDaGioco(gioco);
 
-        //imposta layout in verticale
-        pannelloGeneriGioco.setLayout(new BoxLayout(pannelloGeneriGioco, BoxLayout.Y_AXIS));
+            ArrayList<String> nomiGeneriGioco = new ArrayList<>();
+            for(Genere genere : generiGioco) {
+                nomiGeneriGioco.add(controller.getNomeGenere(genere));
+            }
 
-        ArrayList<Genere> generiGioco = controller.getGeneriDaGioco(gioco);
+            for (Component componente : pannelloGeneriGioco.getComponents()) {
 
-        for(Genere genere : controller.getGeneri()){
-            JCheckBox checkBox = new JCheckBox(controller.getNomeGenere(genere));
+                if (componente instanceof JCheckBox) {
+                    JCheckBox casella = (JCheckBox) componente;
 
-            //spunto la checkBox se il gioco ha quel genere
-            if(generiGioco.contains(genere))
-                checkBox.setSelected(true);
-
-            pannelloGeneriGioco.add(checkBox);
+                    if (nomiGeneriGioco.contains(casella.getText()))
+                        casella.setSelected(true);
+                }
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
-
-        //aggiorna grandezza della lista
-        pannelloGeneriGioco.revalidate();
-        pannelloGeneriGioco.repaint();
     }
 
     private void svuotaDatiGioco(){
