@@ -67,6 +67,12 @@ public class Gioco {
         generi.add(genere);
     }
 
+    public void setListaGeneri(ArrayList<Genere> generi) throws CampoNonValidoException {
+        if(generi == null || generi.isEmpty()) throw new CampoNonValidoException("Non esiste gioco senza generi");
+
+        this.generi = generi;
+    }
+
     public void addEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null) {
             throw new CampoNonValidoException("Edizione di gioco non disponibile");

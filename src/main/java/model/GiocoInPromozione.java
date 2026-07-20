@@ -3,14 +3,13 @@ package model;
 import java.util.Objects;
 
 public class GiocoInPromozione {
-    private int id;
     private int percentuale;
 
     //relazioni
     private Gioco gioco;
     private Promozione promozione;
 
-    //costruttore normale
+    //costruttore normale e per DAO
     public GiocoInPromozione(int percentuale,Gioco gioco, Promozione promozione) throws CampoNonValidoException {
 
         if(gioco == null){
@@ -22,22 +21,6 @@ public class GiocoInPromozione {
 
         this.gioco = gioco;
         setPercentuale(percentuale);
-        this.promozione = promozione;
-    }
-
-    //costruttore per DAO
-    public GiocoInPromozione(int id, int percentuale,Gioco gioco, Promozione promozione) throws CampoNonValidoException {
-
-        if(gioco == null){
-            throw new CampoNonValidoException("Gioco non esistente");
-        }
-        if(promozione == null){
-            throw new CampoNonValidoException("Promozione non esistente");
-        }
-
-        this.id = id;
-        this.gioco = gioco;
-        this.percentuale = percentuale;
         this.promozione = promozione;
     }
 
@@ -53,18 +36,16 @@ public class GiocoInPromozione {
     public int getPercentuale() {return percentuale;}
     public Promozione getPromozione() {return promozione;}
     public Gioco getGioco() {return gioco;}
-    public int getId() {return id;}
 
     @Override
     public boolean equals(Object o) {
-        if(this == o)return true;
         if (o == null || getClass() != o.getClass()) return false;
         GiocoInPromozione that = (GiocoInPromozione) o;
-        return id == that.id;
+        return gioco.equals(that.gioco) && promozione.equals(that.promozione);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(gioco, promozione);
     }
 }

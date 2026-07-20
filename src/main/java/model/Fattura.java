@@ -43,7 +43,10 @@ public class Fattura {
         this.prezzoAcquisto = prezzo;
     }
 
-    public void setRecensione(Recensione recensione) {
+    public void setRecensione(Recensione recensione) throws CampoNonValidoException {
+        if (recensione == null){
+            throw new CampoNonValidoException("La recensione non esiste");
+        }
         this.recensione = recensione;
     }
     //metodi

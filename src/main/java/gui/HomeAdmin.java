@@ -1,69 +1,846 @@
 package gui;
 
 import controller.Controller;
-import model.Admin;
+import model.*;
+import model.Recensione;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class HomeAdmin {
     private JPanel adminPanel;
-    private JTabbedPane tabbedPane1;
-    private JButton logoutButton;
-    private JTextField textField1;
-    private JList list2;
-    private JList list3;
-    private JButton aggiungiPiattaformaButton;
-    private JTextArea textArea1;
-    private JCheckBox bannatiCheckBox;
-    private JButton aggiungiGenereButton;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JButton bannaSbannaButton;
-    private JButton rimborsaButton;
-    private JTextField textField4;
-    private JCheckBox checkBox1;
-    private JTextField textField5;
-    private JTextField textField6;
-    private JTextField textField7;
-    private JTextField textField8;
-    private JTextField textField9;
-    private JButton rimuoviRecensioneButton;
-    private JTable table1;
-    private JButton aggiungiPromozioneButton;
-    private JTextField textField10;
-    private JButton ordinaPerDataButton;
-    private JTextField textField11;
-    private JCheckBox bannatoCheckBox;
-    private JButton aggiungiStrikeButton;
-    private JList list7;
-    private JTable table2;
-    private JButton rimuoviStrikeButton;
-    private JList table3;
-    private JButton aggiungiButton;
-    private JButton rimuoviButton;
-    private JButton modificaTitoloButton;
-    private JButton modificaCategoriaButton;
-    private JButton modificaPegiButton;
-    private JButton bannaSviluppatoreButton;
-    private JTextArea textArea2;
-    private JTextField textField12;
-    private JTextArea textArea3;
-    private JButton rimuoviRecensioneButton1;
-    private JTable table4;
-    private JTable table5;
-    private JTable table6;
-    private JTable table7;
+    private JTabbedPane tabbedPane;
+    private JButton pulsanteLogout;
+    private JTextField ricercaUtenti;
+    private JList listaGeneri;
+    private JButton pulsanteAggiungiPiattaforma;
+    private JTextArea descrizioneRecensioneUtenti;
+    private JCheckBox checkBoxBannatiUtenti;
+    private JButton pulsanteAggiungiGenere;
+    private JTextField campoNomeGenere;
+    private JTextField ricercaGeneri;
+    private JButton pulsanteBannaUtenteUtenti;
+    private JButton pulsanteRimborsa;
+    private JTextField ricercaPiattaforme;
+    private JCheckBox checkBoxPortabilita;
+    private JTextField campoNomePiattaforma;
+    private JTextField campoProduttore;
+    private JTextField campoNomePromozione;
+    private JTextField campoDataInizio;
+    private JTextField campoDataFine;
+    private JButton pulsanteRimuoviRecensioneUtenti;
+    private JTable tabellaUtenti;
+    private JButton pulsanteAggiungiPromozione;
+    private JTextField ricercaPromozioni;
+    private JButton pulsanteOrdinaPerData;
+    private JTextField ricercaSviluppatori;
+    private JCheckBox checkBoxBannatiSviluppatori;
+    private JButton pulsanteAggiungiStrike;
+    private JList listaSviluppatori;
+    private JTable tabellaGiochiSviluppatori;
+    private JButton pulsanteRimuoviStrike;
+    private JList listaGiochi;
+    private JButton pulsanteConfermaGeneri;
+    private JButton pulsanteModificaTitolo;
+    private JButton pulsanteModificaCategoria;
+    private JButton pulsanteModificaPegi;
+    private JButton pulsanteAggiungiStrikeGiochi;
+    private JTextArea descrizioneSviluppatori;
+    private JTextField ricercaRecensioni;
+    private JTextArea descrizioneRecensioneRecensioni;
+    private JButton pulsanteRimuoviRecensioneRecensioni;
+    private JTable tabellaRecensioni;
+    private JTable tabellaGiochiUtenti;
+    private JTable tabellaPromozioni;
+    private JTable tabellaPiattaforme;
+    private JPanel utenti;
+    private JPanel sviluppatori;
+    private JPanel giochi;
+    private JPanel generi;
+    private JPanel piattaforme;
+    private JPanel recensioni;
+    private JPanel promozioni;
+    private JTable tabellaRecensioniUtenti;
+    private JButton pulsanteBannaUtenteRecensioni;
+    private JTextField ricercaGiochi;
+    private JLabel titoloGioco;
+    private JLabel categoriaGioco;
+    private JLabel pegiGioco;
+    private JLabel nomeGenere;
+    private JLabel nomePIattaforma;
+    private JLabel produttorePiattaforma;
+    private JLabel portabilitaPiattaforma;
+    private JLabel nomePromozione;
+    private JLabel dataInizioPromozione;
+    private JLabel dataFinePromozione;
+    private JLabel nStrike;
+    private JPanel pannelloGeneriGioco;
+    private JScrollPane scrollPaneGeneri;
 
     private JFrame adminFrame;
+    private Controller controller;
+    private Admin admin;
+
+    //DA FARE: ActionListener di Rimborsa e Rimuovi recensione nel tab Utenti
+    //Action Listener del tabbed pane per caricare solo la tab che clicco e non tutto subito
+    //Attento alla grandezza della lista generi
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
+        if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
+        if(admin == null) throw new IllegalArgumentException("Admin passato inesistente");
+        this.controller = controller;
+        this.admin = admin;
+
+        configuraInterfaccia();
+
+        //Utenti
+        associaListenerCheckBoxBannatiUtenti();
+        associaListenerRicercaUtenti();
+        associaListenerTabellaUtenti();
+        associaListenerPulsanteBannaUtenteUtenti();
+
+        //Sviluppatori
+        associaListenerListaSviluppatori();
+        associaListenerRicercaSviluppatori();
+        associaListenerCheckBoxBannatiSviluppatori();
+        associaListenerAggiungiStrike();
+        associaListenerRimuoviStrike();
+
+        //Giochi
+        associaListenerListaGiochi();
+        associaListenerRicercaGiochi();
+        associaListenerAggiungiStrikeDaGioco();
+        associaListenerModificaTitolo();
+        associaListenerModificaCategoria();
+        associaListenerModificaPegi();
+        associaListenerPulsanteConfermaGeneri();
+
+        //Generi
+        associaListenerRicercaGeneri();
+        associaListenerPulsanteAggiungiGenere();
+
+        //Piattaforme
+        associaListenerRicercaPiattaforme();
+        associaListenerAggiungiPiattaforma();
+
+        //Recensioni
+        associaListenerRicercaRecensioni();
+
+        associaListenerPulsanteLogout(accediGUI);
+
+        mostraForm();
+    }
+
+    private void configuraInterfaccia(){
         adminFrame = new JFrame("HomeAdmin");
         adminFrame.setContentPane(adminPanel);
         adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         adminFrame.setMinimumSize(new Dimension(900, 600));
+
+        configuraPannelloUtenti();
+        configuraPannelloSviluppatori();
+        configuraPannelloGiochi();
+        configuraPannelloGeneri();
+        configuraPannelloPiattaforme();
+        configuraPannelloRecensioni();
+
+    }
+
+    private void configuraPannelloUtenti(){
+        String[] colonneUtenti = {"ID", "Nickname", "Email", "Data di Nascita", "Saldo"};
+        configuraTabella(colonneUtenti, tabellaUtenti);
+        filtraUtenti(); //riempio la tabella senza filtri
+
+        String[] colonneRecensioni = {"Voto", "Differenza Like"};
+        configuraTabella(colonneRecensioni, tabellaRecensioniUtenti);
+
+        String[] colonneGiochi = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforma", "Prezzo"};
+        configuraTabella(colonneGiochi, tabellaGiochiUtenti);
+
+    }
+
+    private void configuraTabella(String[] colonne, JTable tabella) {
+
+        DefaultTableModel modelloIniziale = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; //rende la tabella non editabile all'utente
+            }
+        };
+
+        //assegniamo il modello vuoto alla tabella
+        tabella.setModel(modelloIniziale);
+    }
+
+    private void filtraUtenti() {
+        String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
+
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        //filtro in base alla checkBox e alla barra di ricerca
+        boolean flag = checkBoxBannatiUtenti.isSelected();
+        for(Utente utente : controller.getListaUtentiLoggati()){
+            if(utente.isBannato() == flag && controller.getNomeUtente(utente).toLowerCase().contains(testoRicerca)){
+                Object[] riga = {
+                        controller.getIdUtente(utente),
+                        controller.getNomeUtente(utente),
+                        controller.getEmailUtente(utente),
+                        controller.getDataDiNascitaUtente(utente),
+                        controller.getSaldoUtente(utente)
+                };
+                righe.add(riga);
+            }
+        }
+
+        aggiornaContenutoTabella(tabellaUtenti, righe);
+    }
+
+    private void associaListenerCheckBoxBannatiUtenti(){
+        checkBoxBannatiUtenti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //implementato così perché volevo provare e vedere come funziona l'operatore ternario
+                String testo = (checkBoxBannatiUtenti.isSelected()) ? "Sbanna" : "Banna";
+                pulsanteBannaUtenteUtenti.setText(testo);
+                filtraUtenti();
+            }
+        });
+    }
+
+    private void associaListenerRicercaUtenti(){
+        ricercaUtenti.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraUtenti();
+            }
+        });
+    }
+
+    private void associaListenerTabellaUtenti(){
+        tabellaUtenti.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int rigaSelezionata = tabellaUtenti.getSelectedRow();
+
+                if (rigaSelezionata != -1) {
+                    int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
+                    Utente utente = controller.getUtenteById(selezione);
+                    riempiTabellaGiochiUtente(utente);
+                    riempiTabellaRecensioniUtente(utente);
+                }
+            }
+        });
+    }
+
+    private void riempiTabellaGiochiUtente(Utente utente){
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(Fattura gioco : controller.getLibreriaUtente(utente)){
+            Object[] riga = {
+                    controller.getTitoloDaFattura(gioco),
+                    controller.getCategoriaDaFattura(gioco),
+                    controller.getPegiDaFattura(gioco),
+                    controller.getGeneriDaFattura(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                    controller.getPiattaformaDaFattura(gioco),
+                    controller.getPrezzoAcquistoDaFattura(gioco)
+            };
+            righe.add(riga);
+        }
+        aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
+    }
+
+    private void riempiTabellaRecensioniUtente(Utente utente){
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(model.Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE dao
+            Object[] riga = {
+                    controller.getVotoRecensione(recensione),
+                    controller.getDifferenzaLikeRecensione(recensione)
+            };
+            righe.add(riga);
+        }
+        aggiornaContenutoTabella(tabellaRecensioniUtenti, righe);
+    }
+
+    private void associaListenerPulsanteBannaUtenteUtenti(){
+        pulsanteBannaUtenteUtenti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaUtenti.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame,"Sicuro di voler " + pulsanteBannaUtenteUtenti.getText().toLowerCase() + "re l'utente " + tabellaUtenti.getValueAt(rigaSelezionata, 1) + "?",
+                            "Ban", JOptionPane.YES_NO_OPTION);
+
+                    if(risposta == JOptionPane.YES_OPTION) {
+                        try {
+
+                            controller.invertiStatoBan((int) tabellaUtenti.getValueAt(rigaSelezionata, 0)); //passa id dell'utente selezionato e banna o sbanna
+                            filtraUtenti();
+
+                        } catch (CampoNonValidoException ex) {
+
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                        }
+                    }
+
+                } else JOptionPane.showMessageDialog(adminFrame, "Nessun utente selezionato", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    //PANNELLO SVILUPPATORI
+
+    private void configuraPannelloSviluppatori(){
+        filtraSviluppatori(); //riempio lista sviluppatori
+
+        String[] colonneSviluppatori = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforme"};
+        configuraTabella(colonneSviluppatori, tabellaGiochiSviluppatori);
+    }
+
+    private void associaListenerListaSviluppatori(){
+        listaSviluppatori.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting()){ //serve a evitare che la funzione parta 2 volte (click e rilascio)
+
+                    Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                    if(sviluppatoreSelezionato != null){
+                        descrizioneSviluppatori.setText(controller.getDescrizioneSviluppatore(sviluppatoreSelezionato));
+                        aggiornaStrike(sviluppatoreSelezionato);
+
+                        riempiTabellaGiochiSviluppatore(sviluppatoreSelezionato);
+
+                    } else
+                        descrizioneSviluppatori.setText("");
+                }
+            }
+        });
+    }
+
+    private void riempiTabellaGiochiSviluppatore(Sviluppatore sviluppatore){
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(EdizioneGioco gioco : controller.getListaEdizioniSviluppatore(sviluppatore)){
+            Object[] riga = {
+                    controller.getTitoloDaEdizioneGioco(gioco),
+                    controller.getCategoriaDaEdizioneGioco(gioco),
+                    controller.getPegiDaEdizioneGioco(gioco),
+                    controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                    controller.getPiattaformaDaEdizioneGioco(gioco)
+            };
+            righe.add(riga);
+        }
+        aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
+    }
+
+    private void associaListenerRicercaSviluppatori(){
+        ricercaSviluppatori.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraSviluppatori();
+            }
+        });
+    }
+
+    private void associaListenerCheckBoxBannatiSviluppatori(){
+        checkBoxBannatiSviluppatori.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filtraSviluppatori();
+            }
+        });
+    }
+
+    private void filtraSviluppatori() {
+        String testoRicerca = ricercaSviluppatori.getText().toLowerCase().trim();
+
+        DefaultListModel<Sviluppatore> modelloSviluppatori = new DefaultListModel<>();
+
+        //filtro in base alla checkBox e alla barra di ricerca
+        boolean flag = checkBoxBannatiSviluppatori.isSelected();
+        for(Sviluppatore sviluppatore : controller.getListaSviluppatoriLoggati()){
+            if(controller.isSviluppatoreBannato(sviluppatore) == flag && controller.getNomeSviluppatore(sviluppatore).toLowerCase().contains(testoRicerca))
+
+                modelloSviluppatori.addElement(sviluppatore);
+        }
+
+        listaSviluppatori.setModel(modelloSviluppatori);
+    }
+
+    private void associaListenerAggiungiStrike(){
+        pulsanteAggiungiStrike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                if(sviluppatoreSelezionato != null){
+                    try {
+
+                        controller.addStrikeSviluppatore(sviluppatoreSelezionato);
+                        aggiornaStrike(sviluppatoreSelezionato);
+                        filtraSviluppatori();
+
+                    } catch (CampoNonValidoException ex) {
+
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+            }
+        });
+    }
+
+    private void associaListenerRimuoviStrike(){
+        pulsanteRimuoviStrike.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
+
+                if(sviluppatoreSelezionato != null){
+                    try {
+
+                        controller.removeStrikeSviluppatore(sviluppatoreSelezionato);
+                        aggiornaStrike(sviluppatoreSelezionato);
+                        filtraSviluppatori();
+
+                    } catch (CampoNonValidoException ex) {
+
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+            }
+        });
+    }
+
+    private void aggiornaStrike(Sviluppatore sviluppatore){
+        nStrike.setText("Strike: " + controller.getStrikeSviluppatore(sviluppatore));
+    }
+
+    //PANNELLO GIOCHI
+
+    private void configuraPannelloGiochi(){
+        filtraGiochi();
+        svuotaDatiGioco();
+    }
+
+    private void filtraGiochi(){
+        String testoRicerca = ricercaGiochi.getText().toLowerCase().trim();
+
+        DefaultListModel<Gioco> modelloGiochi = new DefaultListModel<>();
+
+        if(testoRicerca.isEmpty()) modelloGiochi.addAll(controller.getListaGiochi()); //se non ho niente da filtrare passo tutto
+        else {
+            for(Gioco gioco : controller.getListaGiochi()){
+                if(controller.getTitoloGioco(gioco).toLowerCase().contains(testoRicerca))
+
+                    modelloGiochi.addElement(gioco);
+            }
+
+        }
+
+        listaGiochi.setModel(modelloGiochi);
+
+    }
+
+    private void associaListenerListaGiochi(){
+        listaGiochi.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting()){ //serve a evitare che la funzione parta 2 volte (click e rilascio)
+
+                    Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
+
+                    if(giocoSelezionato != null){
+
+                        titoloGioco.setText(controller.getTitoloGioco(giocoSelezionato));
+                        categoriaGioco.setText(String.valueOf(controller.getCategoriaGioco(giocoSelezionato)));
+                        pegiGioco.setText(String.valueOf(controller.getPegiGioco(giocoSelezionato)));
+                        popolaListaGeneriGioco(giocoSelezionato);
+
+                    } else
+                        svuotaDatiGioco();
+                }
+            }
+        });
+    }
+
+    private void popolaListaGeneriGioco(Gioco gioco){
+        //svuota lista
+        pannelloGeneriGioco.removeAll();
+
+        //imposta layout in verticale
+        pannelloGeneriGioco.setLayout(new BoxLayout(pannelloGeneriGioco, BoxLayout.Y_AXIS));
+
+        ArrayList<Genere> generiGioco = controller.getGeneriDaGioco(gioco);
+
+        for(Genere genere : controller.getGeneri()){
+            JCheckBox checkBox = new JCheckBox(controller.getNomeGenere(genere));
+
+            //spunto la checkBox se il gioco ha quel genere
+            if(generiGioco.contains(genere))
+                checkBox.setSelected(true);
+
+            pannelloGeneriGioco.add(checkBox);
+        }
+
+        //aggiorna grandezza della lista
+        pannelloGeneriGioco.revalidate();
+        pannelloGeneriGioco.repaint();
+    }
+
+    private void svuotaDatiGioco(){
+        titoloGioco.setText("");
+        categoriaGioco.setText("");
+        pegiGioco.setText("");
+
+        //svuoto la lista generi
+        for (Component componente : pannelloGeneriGioco.getComponents()) {
+
+            // Verifichiamo che il componente sia una CheckBox
+            if (componente instanceof JCheckBox) {
+                JCheckBox casella = (JCheckBox) componente;
+
+                // Togliamo la spunta
+                casella.setSelected(false);
+            }
+        }
+    }
+
+    private void associaListenerRicercaGiochi(){
+        ricercaGiochi.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraGiochi();
+            }
+        });
+    }
+
+    private void associaListenerAggiungiStrikeDaGioco(){
+        pulsanteAggiungiStrikeGiochi.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
+
+                if(giocoSelezionato != null){
+                    try {
+
+                        controller.addStrikeSviluppatoreDaGioco(giocoSelezionato);
+
+                    } catch (CampoNonValidoException ex) {
+
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+            }
+        });
+    }
+
+    private void associaListenerModificaTitolo(){
+        pulsanteModificaTitolo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
+
+                if(giocoSelezionato != null){
+                    String nuovoTitolo = JOptionPane.showInputDialog(adminFrame,
+                            "Inserisci il nuovo titolo del gioco:",
+                            "Modifica Titolo",
+                            JOptionPane.PLAIN_MESSAGE);
+
+                    if(nuovoTitolo != null && !nuovoTitolo.trim().isEmpty()){
+                        try {
+
+                            controller.updateTitoloGioco(giocoSelezionato, nuovoTitolo);
+                            titoloGioco.setText(nuovoTitolo);
+                            filtraGiochi();
+
+                        } catch (CampoNonValidoException ex) {
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                        }
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+            }
+        });
+    }
+
+    private void associaListenerModificaCategoria() {
+        pulsanteModificaCategoria.addActionListener(e -> {
+
+            Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
+
+            if(giocoSelezionato != null){
+
+                Categoria[] arrayCategorie = controller.getCategorie().toArray(new Categoria[0]);
+
+                JComboBox<Categoria> comboCategoria = new JComboBox<>(arrayCategorie);
+
+                int risposta = JOptionPane.showConfirmDialog(adminFrame,
+                        comboCategoria,
+                        "Seleziona la nuova categoria",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (risposta == JOptionPane.OK_OPTION) {
+
+                    Categoria nuovaCategoria = (Categoria) comboCategoria.getSelectedItem();
+
+                    try {
+
+                        controller.updateCategoriaGioco(giocoSelezionato, nuovaCategoria);
+                        categoriaGioco.setText(nuovaCategoria.name());
+
+                    } catch (CampoNonValidoException ex) {
+
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                    }
+                }
+            } else
+                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+        });
+    }
+
+    private void associaListenerModificaPegi() {
+        pulsanteModificaPegi.addActionListener(e -> {
+
+            Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
+
+            if(giocoSelezionato != null){
+
+                SpinnerNumberModel modelloSpinner = new SpinnerNumberModel(controller.getPegiGioco(giocoSelezionato), 3, 18, 1);
+                JSpinner spinnerPegi = new JSpinner(modelloSpinner);
+
+                int risposta = JOptionPane.showConfirmDialog(adminFrame,
+                        spinnerPegi, //passo lo spinner
+                        "Imposta il nuovo limite PEGI",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (risposta == JOptionPane.OK_OPTION) {
+                    int nuovoPegi = (int) spinnerPegi.getValue();
+
+                    try{
+
+                        controller.updatePegiGioco(giocoSelezionato, nuovoPegi);
+                        pegiGioco.setText(String.valueOf(nuovoPegi));
+
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                    }
+                }
+            } else
+                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+        });
+    }
+
+    private void associaListenerPulsanteConfermaGeneri() {
+        pulsanteConfermaGeneri.addActionListener(e -> {
+
+            Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
+
+            if (giocoSelezionato == null) {
+                JOptionPane.showMessageDialog(adminFrame, "Seleziona un gioco dalla lista prima di confermare le modifiche!");
+                return; //interrompe l'esecuzione del metodo
+            }
+
+            ArrayList<String> nomiGeneriSpuntati = new ArrayList<>();
+
+            for (Component componente : pannelloGeneriGioco.getComponents()) {
+
+                if (componente instanceof JCheckBox) {
+                    JCheckBox casella = (JCheckBox) componente;
+
+                    if (casella.isSelected()) {
+                        nomiGeneriSpuntati.add(casella.getText());
+                    }
+                }
+            }
+
+            try {
+
+                controller.updateGeneriGioco(giocoSelezionato, controller.getGeneriDaListaNomi(nomiGeneriSpuntati));
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+            }
+        });
+    }
+
+    //PANNELLO GENERI
+
+    private void configuraPannelloGeneri(){
+        filtraGeneri();
+        campoNomeGenere.setText("");
+    }
+
+    private void associaListenerRicercaGeneri(){
+        ricercaGeneri.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraGeneri();
+            }
+        });
+    }
+
+    private void filtraGeneri(){
+        String testoRicerca = ricercaGeneri.getText().toLowerCase().trim();
+
+        DefaultListModel<Genere> modelloGeneri = new DefaultListModel<>();
+
+        if(testoRicerca.isEmpty()) modelloGeneri.addAll(controller.getGeneri()); //se non ho niente da filtrare passo tutto
+        else {
+            for(Genere genere : controller.getGeneri()){
+                if(controller.getNomeGenere(genere).toLowerCase().contains(testoRicerca))
+
+                    modelloGeneri.addElement(genere);
+            }
+
+        }
+
+        listaGeneri.setModel(modelloGeneri);
+    }
+
+    private void associaListenerPulsanteAggiungiGenere(){
+        pulsanteAggiungiGenere.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    controller.createGenere(campoNomeGenere.getText());
+                    filtraGeneri();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                }
+            }
+        });
+    }
+
+    //PANNELLO PIATTAFORME
+    private void configuraPannelloPiattaforme(){
+        String[] colonnePiattaforme = {"Nome", "Produttore", "Portabilità"};
+        configuraTabella(colonnePiattaforme, tabellaPiattaforme);
+        filtraPiattaforme();
+
+        //DA FARE valutare se fare o no questo metodo per essere user friendly
+        svuotaDatiPiattaforma();
+    }
+
+    private void filtraPiattaforme(){
+        String testoRicerca = ricercaPiattaforme.getText().toLowerCase().trim();
+
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        for(PiattaformaDiGioco piattaforma : controller.getPiattaformeDiGioco()){
+            //per ottimizzare il codice evitando che faccia tanti contains inutilmente se il testo è vuoto
+            if(testoRicerca.isEmpty() || controller.getNomePiattaforma(piattaforma).toLowerCase().contains(testoRicerca)){
+                Object[] riga = {
+                        controller.getNomePiattaforma(piattaforma),
+                        controller.getProduttorePiattaforma(piattaforma),
+                        controller.isPortabile(piattaforma)
+                };
+                righe.add(riga);
+            }
+        }
+
+        aggiornaContenutoTabella(tabellaPiattaforme, righe);
+    }
+
+    private void svuotaDatiPiattaforma(){
+        campoNomePiattaforma.setText("");
+        campoProduttore.setText("");
+        checkBoxPortabilita.setSelected(false);
+    }
+
+    private void associaListenerRicercaPiattaforme(){
+        ricercaPiattaforme.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraPiattaforme();
+            }
+        });
+    }
+
+    private void associaListenerAggiungiPiattaforma(){
+        pulsanteAggiungiPiattaforma.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    controller.createPiattaforma(campoNomePiattaforma.getText(), campoProduttore.getText(), checkBoxPortabilita.isSelected());
+                    filtraPiattaforme();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                }
+            }
+        });
+    }
+
+    //PANNELLO RECENSIONI
+    private void configuraPannelloRecensioni(){
+        descrizioneRecensioneRecensioni.setText("");
+        String[] colonneRecensioni = {"Autore", "Voto", "DifferenzaLike"};
+        configuraTabella(colonneRecensioni, tabellaRecensioni);
+        //filtraRecensioni(); DA FARE con dao
+    }
+
+//    private void filtraRecensioni(){
+//        String testoRicerca = ricercaRecensioni.getText().toLowerCase().trim();
+//
+//        ArrayList<Object[]> righe = new ArrayList<>();
+//
+//        for(Recensione recensione : controller.recension)
+//    }
+
+    private void associaListenerRicercaRecensioni(){
+        ricercaRecensioni.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                //filtraRecensioni();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteLogout(JFrame accediGUI){
+        pulsanteLogout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                accediGUI.setVisible(true);
+                adminFrame.dispose();
+            }
+        });
+    }
+
+    private void aggiornaContenutoTabella(JTable tabella, ArrayList<Object[]> righe){
+        //prendiamo il modello già esistente della tabella facendo il cast
+        DefaultTableModel model = (DefaultTableModel) tabella.getModel();
+
+        //cancella tutte le righe vecchie mantenendo intatte le colonne
+        model.setRowCount(0);
+
+        for(Object[] riga : righe) model.addRow(riga);
+    }
+
+    private void mostraForm(){
         adminFrame.pack();
         adminFrame.setLocationRelativeTo(null);
         adminFrame.setVisible(true);
     }
+
 }

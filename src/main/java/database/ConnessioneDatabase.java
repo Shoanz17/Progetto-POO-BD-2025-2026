@@ -1,0 +1,56 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class ConnessioneDatabase {
+
+    private static ConnessioneDatabase instance;
+
+    public Connection connection = null;
+
+    // CREDENZIALI DATABASE ANTONIO
+    private String nome = "postgres";
+    private String password = "2143";
+    private String url = "jdbc:postgresql://localhost:28481/postgres";
+    private String driver = "org.postgresql.Driver";
+
+    private ConnessioneDatabase() throws SQLException {
+        try {
+            Class.forName(driver);
+            connection = DriverManager.getConnection(url, nome, password);
+            System.out.println("Connessione al DB avvenuta con successo!");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Database Connection Creation Failed: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public static ConnessioneDatabase getInstance() throws SQLException {
+        if (instance == null) {
+            instance = new ConnessioneDatabase();
+        } else if (instance.connection.isClosed()) {
+            instance = new ConnessioneDatabase();
+        }
+        return instance;
+    }
+
+    public int eseguiUpdate(String query, Object... parametri) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            // Inserisce i parametri al posto dei punti interrogativi
+            for (int i = 0; i < parametri.length; i++) {
+                pstmt.setObject(i + 1, parametri[i]);
+            }
+
+            // Esegue la query e restituisce il numero di righe modificate
+            return pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Errore nell'esecuzione dell'update: " + e.getMessage());
+            return -1;
+        }
+    }
+}

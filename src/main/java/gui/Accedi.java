@@ -57,7 +57,7 @@ public class Accedi {
                     accountLoggato = controller.accedi(nome, password);
 
                     if(accountLoggato instanceof Utente){
-                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + accountLoggato.getNome(), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
 
                         //apri form utente
                         HomeUtente homeUtente = new HomeUtente(controller, accediFrame, (Utente) accountLoggato);
@@ -67,11 +67,11 @@ public class Accedi {
                         passwordTextBox.setText("");
                     }
                     else if(accountLoggato instanceof Sviluppatore){
-                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + accountLoggato.getNome(), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
                         //apri form sviluppatore
                     }
                     else if(accountLoggato instanceof Admin){
-                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + accountLoggato.getNome(), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
 
                         //apri form admin
                         HomeAdmin homeAdmin = new HomeAdmin(controller, accediFrame, (Admin) accountLoggato);

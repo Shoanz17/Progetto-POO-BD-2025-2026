@@ -54,7 +54,7 @@ public class Registrati {
         DefaultComboBoxModel<String> modelGenere = new DefaultComboBoxModel<>();
 
         for (GenereEnum genere : GenereEnum.values()) {
-            modelGenere.addElement(genere.name());
+            modelGenere.addElement(controller.getNomeGenereEnum(genere));
         }
         //collego il modello alla combobox
         genereComboBox.setModel(modelGenere);
