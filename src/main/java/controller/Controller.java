@@ -546,6 +546,13 @@ public class Controller {
         }
 
         utenteLoggato.getCarrello().addEdizione(edizioneGiocoSelezionata);
+
+        try {
+            utenteDAO.inserisciCarrello(utenteLoggato.getId(),edizioneGiocoSelezionata.getId());
+        } catch (SQLException e) {
+            utenteLoggato.getCarrello().removeEdizione(edizioneGiocoSelezionata);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public ArrayList<Recensione> getRecensioniEdizioneGioco(EdizioneGioco edizioneGioco){
@@ -618,6 +625,13 @@ public class Controller {
             throw new CampoNonValidoException("Il carrello è già vuoto!");
         }
         utenteLoggato.getCarrello().removeEdizione(edizioneGioco);
+
+        try {
+            utenteDAO.eliminaCarrello(utenteLoggato.getId(),edizioneGioco.getId());
+        } catch (SQLException e) {
+            utenteLoggato.getCarrello().addEdizione(edizioneGioco);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
@@ -644,6 +658,12 @@ public class Controller {
         }
 
         utenteLoggato.getCarrello().svuotaCarrello();
+
+        try {
+            utenteDAO.svuotaCarrello(utenteLoggato.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
 //    Da fare con DAO

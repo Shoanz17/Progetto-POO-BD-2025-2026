@@ -13,7 +13,7 @@ public interface UtenteDAO {
     void inserisciSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
     void eliminaSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
 
-    void inserisciCarrello(int idUtente, int idEdizione);
-    void eliminaCarrello(int idUtente, int idEdizione);
-    void svuotaCarrello(int idUtente);
+    void inserisciCarrello(int idUtente, int idEdizione) throws SQLException;
+    void eliminaCarrello(int idUtente, int idEdizione) throws SQLException;
+    void svuotaCarrello(int idUtente) throws SQLException;
 }
