@@ -1,8 +1,9 @@
 package controller;
 
+import dao.UtenteDAO;
 import model.*;
 
-import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -16,6 +17,7 @@ public class Controller {
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
     private ArrayList<Gioco> listaGiochi = new ArrayList<>();
     private ArrayList<Fattura> listaFatture = new ArrayList<>();
+    private UtenteDAO utenteDAO;
 
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
@@ -157,7 +159,15 @@ public class Controller {
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
+
         utenteLoggato.aggiungiSaldo(saldo);
+
+        try {
+            utenteDAO.aggiungiSaldo(utenteLoggato.getId(), saldo);
+        } catch (SQLException e) {
+            utenteLoggato.rimuoviSaldo(saldo);
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, String saldoTesto) throws CampoNonValidoException {
@@ -169,8 +179,12 @@ public class Controller {
             int saldo = Integer.parseInt(saldoTesto.trim());
             utenteLoggato.aggiungiSaldo(saldo);
 
+            utenteDAO.aggiungiSaldo(utenteLoggato.getId(),saldo);
+
         } catch (NumberFormatException e) {
             throw new CampoNonValidoException("Inserire un numero");
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
@@ -198,6 +212,14 @@ public class Controller {
             utenteLoggato.setDataNascita(dataNascita);
         } catch (DateTimeParseException e) {
             throw new CampoNonValidoException("La data inserita non esiste o non è nel formato dd/MM/yyyy");
+        }
+    }
+
+    public void salvaModificheProfilo(Utente utenteLoggato) throws CampoNonValidoException {
+        try {
+            utenteDAO.aggiornaProfiloUtente(utenteLoggato);
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
