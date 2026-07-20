@@ -1,8 +1,13 @@
 package controller;
 
+import dao.AccountDAO;
+import dao.AdminDAO;
+import dao.SviluppatoreDAO;
+import dao.UtenteDAO;
 import model.*;
 
 import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,6 +24,11 @@ public class Controller {
 
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
+
+    private AccountDAO accountDAO;
+    private UtenteDAO utenteDAO;
+    private SviluppatoreDAO sviluppatoreDAO;
+    private AdminDAO adminDAO;
 
     public Controller() {
         try {
@@ -109,14 +119,23 @@ public class Controller {
         //finalmente creo l'oggetto
         Utente utente = new Utente(nome, password, genereVero, email, dataNascitaVera);
 
-        //aggiungo l'utente al DB
-        listaAccountLoggati.add(utente);
+        //DA FARE completare con implementazione
+        try {
+            utenteDAO.registraUtente(utente);
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException {
         Sviluppatore sviluppatore = new Sviluppatore(nome, password, descrizione);
 
-        listaAccountLoggati.add(sviluppatore);
+        //DA FARE completare con implementazione
+        try {
+            sviluppatoreDAO.registraSviluppatore(sviluppatore);
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     //controllare anche se quando ci si registra l'account già esiste
@@ -124,12 +143,18 @@ public class Controller {
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
 
-        for (Account account : listaAccountLoggati) {
-            if (account.getNome().equals(nome) && account.getPassword().equals(password)) return account;
+        try {
+            Account accountTrovato = accountDAO.accedi(nome, password);
+
+            if (accountTrovato == null) {
+                throw new CampoNonValidoException("Nome o password errate");
+            }
+
+            return accountTrovato;
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
-
-        throw new CampoNonValidoException("Nome o password errate");
-
     }
 
     public ArrayList<Utente> getListaUtentiLoggati() {
