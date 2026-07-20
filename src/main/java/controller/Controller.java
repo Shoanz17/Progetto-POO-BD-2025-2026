@@ -3,7 +3,6 @@ package controller;
 import dao.*;
 import model.*;
 
-import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +27,7 @@ public class Controller {
     private AdminDAO adminDAO;
     private FatturaDAO fatturaDAO;
     private RecensioneDAO recensioneDAO;
+    private GiocoDAO giocoDAO;
 
     public Controller() {
         try {
@@ -76,12 +76,9 @@ public class Controller {
         EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaformaDiGioco, 60, LocalDate.of(2015, 10, 12));
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
-        listaEdizioniGiochi.add(edizioneGioco);
         listaGiochi.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
-
-        listaFatture.add(fattura1);
         sviluppatore1.addGioco(gioco);
     }
 
@@ -191,7 +188,15 @@ public class Controller {
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
+
         utenteLoggato.aggiungiSaldo(saldo);
+
+        try {
+            utenteDAO.aggiungiSaldo(utenteLoggato.getId(), saldo);
+        } catch (SQLException e) {
+            utenteLoggato.rimuoviSaldo(saldo);
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, String saldoTesto) throws CampoNonValidoException {
@@ -203,8 +208,12 @@ public class Controller {
             int saldo = Integer.parseInt(saldoTesto.trim());
             utenteLoggato.aggiungiSaldo(saldo);
 
+            utenteDAO.aggiungiSaldo(utenteLoggato.getId(),saldo);
+
         } catch (NumberFormatException e) {
             throw new CampoNonValidoException("Inserire un numero");
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
@@ -232,6 +241,14 @@ public class Controller {
             utenteLoggato.setDataNascita(dataNascita);
         } catch (DateTimeParseException e) {
             throw new CampoNonValidoException("La data inserita non esiste o non è nel formato dd/MM/yyyy");
+        }
+    }
+
+    public void salvaModificheProfilo(Utente utenteLoggato) throws CampoNonValidoException {
+        try {
+            utenteDAO.aggiornaProfiloUtente(utenteLoggato);
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
@@ -269,10 +286,24 @@ public class Controller {
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
+
+        try {
+            utenteDAO.inserisciSviluppatoreSeguito(utenteloggato.getId(),sviluppatoreSelezionato.getId());
+        } catch (SQLException e) {
+            utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public void rimuoviSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
+
+        try {
+            utenteDAO.eliminaSviluppatoreSeguito(utenteloggato.getId(),sviluppatoreSelezionato.getId());
+        } catch (SQLException e) {
+            utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public String getDescrizioneSviluppatore(Sviluppatore s){return s.getDescrizione();}
@@ -303,10 +334,25 @@ public class Controller {
 
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         utenteLoggato.addAmico(utenteSelezionato);
+
+        try {
+            utenteDAO.inserisciAmico(utenteLoggato.getId(),utenteSelezionato.getId());
+        } catch (SQLException e) {
+            utenteLoggato.removeAmico(utenteSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public void rimuoviAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         utenteLoggato.removeAmico(utenteSelezionato);
+
+        try {
+            utenteDAO.eliminaAmico(utenteLoggato.getId(),utenteSelezionato.getId());
+        } catch (SQLException e) {
+            utenteLoggato.addAmico(utenteSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
+
     }
 
     public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) throws CampoNonValidoException{
@@ -412,6 +458,14 @@ public class Controller {
     }
 
     public ArrayList<EdizioneGioco> getEdizioniGiochi() {
+
+        ArrayList<EdizioneGioco> listaEdizioniGiochi;
+        try {
+            listaEdizioniGiochi = giocoDAO.getCatalogoCompleto();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
+
         return listaEdizioniGiochi;
     }
 
@@ -425,6 +479,13 @@ public class Controller {
     }
 
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) {
+
+        ArrayList<EdizioneGioco> listaEdizioniGiochi;
+        try {
+            listaEdizioniGiochi = giocoDAO.getCatalogoCompleto();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
 
         ArrayList<EdizioneGioco> listaFiltrata = new ArrayList<>();
 
@@ -452,10 +513,17 @@ public class Controller {
     }
 
     public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereFiltro, Categoria categoriaFiltro, String pegiFiltro, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) {
+        ArrayList<Fattura> libreriaUtente;
+
+        try {
+            libreriaUtente = fatturaDAO.getLibreriaUtente();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
 
         ArrayList<Fattura> listaFiltrata = new ArrayList<>();
 
-        for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
+        for (Fattura f : libreriaUtente) {
             Gioco giocoBase = getGiocoDaFattura(f); //fatto solo per non scrivere sempre get gioco get gioco
 
             if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
@@ -541,10 +609,25 @@ public class Controller {
         }
 
         utenteLoggato.getCarrello().addEdizione(edizioneGiocoSelezionata);
+
+        try {
+            utenteDAO.inserisciCarrello(utenteLoggato.getId(),edizioneGiocoSelezionata.getId());
+        } catch (SQLException e) {
+            utenteLoggato.getCarrello().removeEdizione(edizioneGiocoSelezionata);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public ArrayList<Recensione> getRecensioniEdizioneGioco(EdizioneGioco edizioneGioco){
         ArrayList<Recensione> listaRecensioniGioco = new ArrayList<>();
+
+        ArrayList<Fattura> listaFatture;
+        try {
+            listaFatture = fatturaDAO.getListaFatture();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
+
         for (Fattura f : listaFatture){
             if(f.getGioco().equals(edizioneGioco) && f.getRecensione() != null) {
                 listaRecensioniGioco.add(f.getRecensione());
@@ -613,6 +696,13 @@ public class Controller {
             throw new CampoNonValidoException("Il carrello è già vuoto!");
         }
         utenteLoggato.getCarrello().removeEdizione(edizioneGioco);
+
+        try {
+            utenteDAO.eliminaCarrello(utenteLoggato.getId(),edizioneGioco.getId());
+        } catch (SQLException e) {
+            utenteLoggato.getCarrello().addEdizione(edizioneGioco);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
@@ -635,10 +725,16 @@ public class Controller {
 
             giocoAcquistato.getGioco().getSviluppatore().addFondi(nuovaFattura.getPrezzoAcquisto());
 
-            listaFatture.add(nuovaFattura);   // SOLO PER TEST
+            //listaFatture.add(nuovaFattura);   // SOLO PER TEST
         }
 
         utenteLoggato.getCarrello().svuotaCarrello();
+
+        try {
+            utenteDAO.svuotaCarrello(utenteLoggato.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
 //    Da fare con DAO
