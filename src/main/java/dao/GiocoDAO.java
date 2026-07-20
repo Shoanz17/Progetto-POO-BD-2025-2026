@@ -1,10 +1,10 @@
 package dao;
 
-import model.EdizioneGioco;
+import model.Gioco;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface GiocoDAO {
-    ArrayList<EdizioneGioco> getCatalogoCompleto() throws SQLException;
-
+    ArrayList<Gioco> getListaGiochi() throws SQLException;
 }

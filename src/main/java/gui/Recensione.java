@@ -48,7 +48,9 @@ public class Recensione {
                 }
                 if (risposta == JOptionPane.YES_OPTION) {
                     try {
-                        controller.rilasciaRecensione((Integer) spinnerVoto.getValue(), textAreaDescrizione.getText(), fatturaSelezionata);
+                        if (controller.getRecensioneDaFattura(fatturaSelezionata) == null) {
+                            controller.rilasciaRecensione((Integer) spinnerVoto.getValue(), textAreaDescrizione.getText(), fatturaSelezionata);
+                        } else controller.aggiornaRecensione((Integer) spinnerVoto.getValue(), textAreaDescrizione.getText(), fatturaSelezionata);
 
                         JOptionPane.showMessageDialog(recensioneFrame, "Recensione rilasciata correttamente!", "Successo", JOptionPane.INFORMATION_MESSAGE);
                         recensioneFrame.dispose();

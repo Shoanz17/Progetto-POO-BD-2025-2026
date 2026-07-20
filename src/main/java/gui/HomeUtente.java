@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class HomeUtente {
@@ -242,12 +243,21 @@ public class HomeUtente {
                     genereCatalogo.setText("Generi: " + controller.getGeneriDaEdizioneGioco(edizioneGiocoSelezionata));
                     pegiCatalogo.setText("Pegi: " + controller.getPegiDaEdizioneGioco(edizioneGiocoSelezionata));
                     categoriaCatalogo.setText("Categoria: " + controller.getCategoriaDaEdizioneGioco(edizioneGiocoSelezionata));
-                    testoMediaVoti.setText("Media voti: " + controller.getMediaVotiEdizioneGioco(edizioneGiocoSelezionata));
+                    try {
+                        testoMediaVoti.setText("Media voti: " + controller.getMediaVotiEdizioneGioco(edizioneGiocoSelezionata));
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame,"Operazione Fallita");
+                    }
                     dataDiRilascioCatalogo.setText("Data di rilascio: " + controller.getDataDiRilascioDaEdizioneGioco(edizioneGiocoSelezionata));
 
                     pulsanteAggiungiAlCarrello.setEnabled(true);
 
-                    ArrayList<model.Recensione> listaRecensioniGiocoSelezionato = controller.getRecensioniEdizioneGioco(edizioneGiocoSelezionata);
+                    ArrayList<model.Recensione> listaRecensioniGiocoSelezionato = null;
+                    try {
+                        listaRecensioniGiocoSelezionato = controller.getRecensioniEdizioneGioco(edizioneGiocoSelezionata);
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage());
+                    }
                     DefaultListModel<model.Recensione> modelloListaRecensioni = new DefaultListModel<>();
                     modelloListaRecensioni.addAll(listaRecensioniGiocoSelezionato);
                     listaRecensioniCatalogo.setModel(modelloListaRecensioni);
@@ -722,7 +732,11 @@ public class HomeUtente {
 
                 if (utenteSelezionato != null) {
                     testoGiochiAcquistatiUtenteSelezionato.setText("Numero giochi acquistati: " + String.valueOf(controller.getNumeroGiochiAcquistatiUtente(utenteSelezionato)));
-                    testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
+                    try {
+                        testoNumeroRecensioniUtenteSelezionato.setText("Numero recensioni rilasciate: " + String.valueOf(controller.getNumeroRecensioniUtente(utenteSelezionato)));
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage());
+                    }
                     testoGenereUtenteSelezionato.setText("Genere: " + String.valueOf(controller.getGenereUtente(utenteSelezionato)));
                     if (controller.isUtenteBannato(utenteSelezionato)){
                         testoBannatoUtente.setText("Bannato: Si");
@@ -747,7 +761,12 @@ public class HomeUtente {
 
         boolean checkBoxAmiciFiltro = checkBoxAmici.isSelected();
 
-        ArrayList<Utente> listaFiltrata = controller.getUtentiFiltrati(checkBoxAmiciFiltro, testoRicerca, utenteLoggato);
+        ArrayList<Utente> listaFiltrata = null;
+        try {
+            listaFiltrata = controller.getUtentiFiltrati(checkBoxAmiciFiltro, testoRicerca, utenteLoggato);
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
         for (Utente u : listaFiltrata) {
             modelloFiltrato.addElement(u);
         }
@@ -932,7 +951,12 @@ public class HomeUtente {
         boolean inPromozione = checkBoxInPromozione.isSelected();
         boolean traSeguiti = checkBoXSviluppatori.isSelected();
 
-        ArrayList<EdizioneGioco> risultati = controller.getCatalogoFiltrato(testoRicerca, prezzoSelezionato, genereScelto, categoriaScelta, pegiScelto, inPromozione, traSeguiti, utenteLoggato, statoDataRilascio);
+        ArrayList<EdizioneGioco> risultati = null;
+        try {
+            risultati = controller.getCatalogoFiltrato(testoRicerca, prezzoSelezionato, genereScelto, categoriaScelta, pegiScelto, inPromozione, traSeguiti, utenteLoggato, statoDataRilascio);
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         DefaultListModel<EdizioneGioco> modelloFiltrato = new DefaultListModel<>();
         for (EdizioneGioco e : risultati) {
@@ -1008,7 +1032,12 @@ public class HomeUtente {
             pegiScelto = String.valueOf(pegiFiltro.getSelectedItem());
         }
 
-        ArrayList<Fattura> listaFiltrata = controller.getLibreriaFiltrata(testoRicerca, utenteLoggato, genereScelto, categoriaScelta, pegiScelto, statoDataRilascio, statoPrezzoFiltro, statoDataAcquisto);
+        ArrayList<Fattura> listaFiltrata = null;
+        try {
+            listaFiltrata = controller.getLibreriaFiltrata(testoRicerca, utenteLoggato, genereScelto, categoriaScelta, pegiScelto, statoDataRilascio, statoPrezzoFiltro, statoDataAcquisto);
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         for (Fattura f : listaFiltrata) {
             modelloFiltrato.addElement(f);
@@ -1025,7 +1054,11 @@ public class HomeUtente {
         testoDataCreazioneAccount.setText("Data di creazione dell'account:" + String.valueOf(controller.getDataCreazioneAccountUtente(utenteLoggato)));
         testoBannato.setVisible(controller.isUtenteBannato(utenteLoggato));
         testoNumeroGiochiAcquistati.setText("Numero giochi acquistati: " + String.valueOf(controller.getNumeroGiochiAcquistatiUtente(utenteLoggato)));
-        testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+        try {
+            testoNumeroRecensioniRilasciate.setText("Numero recensioni rilasciate:" + String.valueOf(controller.getNumeroRecensioniUtente(utenteLoggato)));
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         filtraUtenti(); //Filtro campo vuoto quindi stampa tutti
         filtraSviluppatori(); //stessa cosa di sopra
@@ -1063,7 +1096,12 @@ public class HomeUtente {
 
         if (controller.getCarrelloUtente(utenteLoggato) != null) {
 
-            ArrayList<EdizioneGioco> giochiNelCarrello = controller.getGiochiCarrello(utenteLoggato);
+            ArrayList<EdizioneGioco> giochiNelCarrello = null;
+            try {
+                giochiNelCarrello = controller.getGiochiCarrello(utenteLoggato);
+            } catch (CampoNonValidoException e) {
+                JOptionPane.showMessageDialog(homeUtenteFrame, e.getMessage());
+            }
 
             for (EdizioneGioco ed : giochiNelCarrello) {
                 Object[] riga = {

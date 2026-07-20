@@ -12,11 +12,14 @@ public interface UtenteDAO {
 
     Utente getUtenteById(int idUtente) throws SQLException;
 
+    ArrayList<Utente> getListaUtenti() throws SQLException;
     void aggiornaProfiloUtente(Utente utente) throws SQLException;
     void aggiungiSaldo(int idUtente, int importoDaAggiungere) throws SQLException;
 
     void inserisciAmico(int idUtente, int idAmico) throws SQLException;
     void eliminaAmico(int idUtente, int idAmico) throws SQLException;
+    ArrayList<Utente> getListaAmici(int idUtente) throws SQLException;
+
     void inserisciSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
     void eliminaSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
 
