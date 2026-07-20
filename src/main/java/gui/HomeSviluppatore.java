@@ -220,7 +220,7 @@ public class HomeSviluppatore {
         textAreaGeneri.setWrapStyleWord(true);
         textAreaGeneri.setEditable(false);
         textAreaGeneri.setOpaque(false);
-        textAreaGeneri.setFont(Titolo.getFont());
+        textAreaGeneri.setFont(categoria.getFont());
         textAreaGeneri.setFocusable(false);
 
 

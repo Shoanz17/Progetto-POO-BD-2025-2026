@@ -1,8 +1,13 @@
 package controller;
 
+import dao.GenereDao;
+import dao.GiocoDao;
+import dao.PiattaformaDao;
+import dao.SviluppatoreDao;
 import model.*;
 
 import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,9 +24,14 @@ public class Controller {
     private ArrayList<Promozione> listaPromozioni = new ArrayList<>();
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
-
-
     private ArrayList<Recensione> listaRecensioni = new ArrayList<>();
+
+    private SviluppatoreDao sviluppatoreDao;
+    private GiocoDao giocoDao;
+    private GenereDao genereDao;
+    private PiattaformaDao piattaformaDao;
+
+
 
     public Controller() {
         try {
@@ -747,40 +757,71 @@ public class Controller {
         if (nuovaPassword != null && !nuovaPassword.isEmpty()) {
             sviluppatore.setPassword(nuovaPassword);
         }
+
+        try {
+            sviluppatoreDao.aggiornaProfilo(sviluppatore);
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita!");
+        }
+
     }
 
     public void modificaGiocoEsistente
             (Gioco gioco, String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
-             ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio) throws CampoNonValidoException {
+                                       ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio) throws CampoNonValidoException {
+
         gioco.setTitolo(titolo);
         gioco.setPegi(pegi);
         gioco.setCategoria(categoria);
 
+        try {
+            giocoDao.aggiornaGioco(gioco);
+            genereDao.collegaGeneriAGioco(gioco.getId(), generi);
 
-        for (PiattaformaDiGioco p : piattaforme) {
-            if (!getPiattaformeDaGioco(gioco).contains(p)) {
-                EdizioneGioco nuovaEdizione = new EdizioneGioco(gioco, p, (int) prezzo, dataRilascio);
-                gioco.addEdizione(nuovaEdizione);
-                addEdizioneAlDB(nuovaEdizione);
+            for (PiattaformaDiGioco p : piattaforme) {
+
+                if (!getPiattaformeDaGioco(gioco).contains(p)) {
+
+                    EdizioneGioco nuovaEdizione = new EdizioneGioco(gioco, p, (int) prezzo, dataRilascio);
+                    gioco.addEdizione(nuovaEdizione);
+
+                    giocoDao.inserisciEdizione(nuovaEdizione, gioco.getId());
+                }
             }
-        }
 
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita! Impossibile salvare le modifiche al gioco nel database.");
+        }
 
         updateGeneriGioco(gioco, generi);
     }
 
-    public Gioco creaNuovoGioco
-            (String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
-             ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio, Sviluppatore autore) throws CampoNonValidoException {
-        Gioco nuovoGioco = new Gioco(titolo, categoria, pegi, autore, generi);
+public Gioco creaNuovoGioco
+        (String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
+                            ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio, Sviluppatore autore) throws CampoNonValidoException {
+
+    Gioco nuovoGioco = new Gioco(titolo, categoria, pegi, autore, generi);
+
+
+    try {
+        int idGiocoGenerato = giocoDao.inserisciGioco(nuovoGioco);
+
+        genereDao.collegaGeneriAGioco(idGiocoGenerato, generi);
 
         for (PiattaformaDiGioco p : piattaforme) {
             EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, p, (int) prezzo, dataRilascio);
             nuovoGioco.addEdizione(nuovaEdizione);
+
+
+            giocoDao.inserisciEdizione(nuovaEdizione, idGiocoGenerato);
         }
 
-        return nuovoGioco;
+    } catch (SQLException e) {
+        throw new CampoNonValidoException("Operazione fallita! Impossibile salvare il gioco o le sue edizioni nel database.");
     }
+
+    return nuovoGioco;
+}
 
 
     public void caricaPromozioniFittizie() {
@@ -860,6 +901,24 @@ public class Controller {
         if(utente == null) throw new CampoNonValidoException("Operazione non andata a buon fine");
 
         utente.setBannato(!utente.isBannato()); //magari potrei lanciare un eccezione
+    }
+
+    public int getUnitaVenduteDaGioco(Gioco gioco) throws CampoNonValidoException {
+        // Chiama il DAO passandogli il titolo del gioco
+        try {
+            return giocoDao.getUnitaVendutePerGioco(gioco.getTitolo());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operzione fallita!");
+        }
+    }
+
+    public int getGuadagnoTotaleDaGioco(Gioco gioco) throws CampoNonValidoException{
+        // Chiama il DAO passandogli il titolo del gioco
+        try {
+            return giocoDao.getGuadagnoTotalePerGioco(gioco.getTitolo());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operzione fallita!");
+        }
     }
 }
 
