@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class HomeAdmin {
@@ -180,13 +181,15 @@ public class HomeAdmin {
 
     private void filtraUtenti() {
         String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
+        boolean flag = checkBoxBannatiUtenti.isSelected();
 
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        //filtro in base alla checkBox e alla barra di ricerca
-        boolean flag = checkBoxBannatiUtenti.isSelected();
-        for(Utente utente : controller.getListaUtentiLoggati()){
-            if(utente.isBannato() == flag && controller.getNomeUtente(utente).toLowerCase().contains(testoRicerca)){
+        try{
+
+            ArrayList<Utente> utentiFiltrati = controller.getUtentiFiltratiAdmin(testoRicerca, flag);
+
+            for(Utente utente : utentiFiltrati){
                 Object[] riga = {
                         controller.getIdUtente(utente),
                         controller.getNomeUtente(utente),
@@ -196,6 +199,8 @@ public class HomeAdmin {
                 };
                 righe.add(riga);
             }
+        } catch (CampoNonValidoException e){
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         aggiornaContenutoTabella(tabellaUtenti, righe);
@@ -228,11 +233,16 @@ public class HomeAdmin {
             public void mouseClicked(MouseEvent e) {
                 int rigaSelezionata = tabellaUtenti.getSelectedRow();
 
-                if (rigaSelezionata != -1) {
-                    int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
-                    Utente utente = controller.getUtenteById(selezione);
-                    riempiTabellaGiochiUtente(utente);
-                    riempiTabellaRecensioniUtente(utente);
+                try{
+                    if (rigaSelezionata != -1) {
+                        int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
+                        Utente utente = controller.getUtenteById(selezione);
+                        riempiTabellaGiochiUtente(utente);
+                        riempiTabellaRecensioniUtente(utente);
+                    }
+
+                } catch (CampoNonValidoException ex){
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
                 }
             }
         });
@@ -241,30 +251,40 @@ public class HomeAdmin {
     private void riempiTabellaGiochiUtente(Utente utente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(Fattura gioco : controller.getLibreriaUtente(utente)){
-            Object[] riga = {
-                    controller.getTitoloDaFattura(gioco),
-                    controller.getCategoriaDaFattura(gioco),
-                    controller.getPegiDaFattura(gioco),
-                    controller.getGeneriDaFattura(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
-                    controller.getPiattaformaDaFattura(gioco),
-                    controller.getPrezzoAcquistoDaFattura(gioco)
-            };
-            righe.add(riga);
+        try {
+            for(Fattura gioco : controller.getLibreriaUtente(utente)){
+                Object[] riga = {
+                        controller.getTitoloDaFattura(gioco),
+                        controller.getCategoriaDaFattura(gioco),
+                        controller.getPegiDaFattura(gioco),
+                        controller.getGeneriDaFattura(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                        controller.getPiattaformaDaFattura(gioco),
+                        controller.getPrezzoAcquistoDaFattura(gioco)
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            throw new RuntimeException(e);
         }
+
         aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
     }
 
     private void riempiTabellaRecensioniUtente(Utente utente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(model.Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE dao
-            Object[] riga = {
-                    controller.getVotoRecensione(recensione),
-                    controller.getDifferenzaLikeRecensione(recensione)
-            };
-            righe.add(riga);
+        try {
+            for(Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE implementazione
+                Object[] riga = {
+                        controller.getVotoRecensione(recensione),
+                        controller.getDifferenzaLikeRecensione(recensione)
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            throw new RuntimeException(e);
         }
+
         aggiornaContenutoTabella(tabellaRecensioniUtenti, righe);
     }
 

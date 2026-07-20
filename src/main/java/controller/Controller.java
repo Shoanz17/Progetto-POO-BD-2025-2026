@@ -1,9 +1,6 @@
 package controller;
 
-import dao.AccountDAO;
-import dao.AdminDAO;
-import dao.SviluppatoreDAO;
-import dao.UtenteDAO;
+import dao.*;
 import model.*;
 
 import java.lang.reflect.Array;
@@ -29,6 +26,8 @@ public class Controller {
     private UtenteDAO utenteDAO;
     private SviluppatoreDAO sviluppatoreDAO;
     private AdminDAO adminDAO;
+    private FatturaDAO fatturaDAO;
+    private RecensioneDAO recensioneDAO;
 
     public Controller() {
         try {
@@ -167,6 +166,16 @@ public class Controller {
         return listaUtentiLoggati;
     }
 
+    public ArrayList<Utente> getUtentiFiltratiAdmin(String testoRicerca, boolean statoBan) throws CampoNonValidoException{
+        try{
+
+            return utenteDAO.getUtentiFiltratiAdmin(testoRicerca, statoBan);
+
+        } catch (SQLException e){
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+
     public ArrayList<Sviluppatore> getListaSviluppatoriLoggati() {
         ArrayList<Sviluppatore> listaSviluppatoriLoggati = new ArrayList<>();
         for (Account u : listaAccountLoggati) {
@@ -233,16 +242,29 @@ public class Controller {
     public String getEmailUtente(Utente u){return u.getEmail();}
     public LocalDate getDataDiNascitaUtente(Utente u){return u.getDataNascita();}
     public int getSaldoUtente(Utente u){return u.getSaldo();}
-    public ArrayList<Fattura> getLibreriaUtente(Utente u){return u.getGiochiAcquistati();}
+    public ArrayList<Fattura> getLibreriaUtente(Utente utente) throws CampoNonValidoException{
+        try {
+            return fatturaDAO.getLibreriaUtente(utente.getId());
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Errore di connessione: impossibile caricare la libreria dei giochi.");
+        }
+    }
     public LocalDate getDataCreazioneAccountUtente(Utente u){return u.getDataCreazione();}
     public boolean isUtenteBannato(Utente u){return u.isBannato();}
-    public Utente getUtenteById(int idUtente){ //DA FARE COL DAO
-        for(Account utente : listaAccountLoggati){
-            if(utente.getId() == idUtente){
-                return (Utente) utente;
+    public Utente getUtenteById(int idUtente) throws CampoNonValidoException{ //DA FARE con implementazione
+        try {
+            Utente utenteTrovato = utenteDAO.getUtenteById(idUtente);
+
+            if (utenteTrovato == null) {
+                throw new CampoNonValidoException("Nessun utente trovato con questo ID");
             }
+
+            return utenteTrovato;
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
-        return null;
     }
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
@@ -287,15 +309,14 @@ public class Controller {
         utenteLoggato.removeAmico(utenteSelezionato);
     }
 
-    public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) {
-        ArrayList<Recensione> listaRecensioni = new ArrayList<>();
+    public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) throws CampoNonValidoException{
+        try {
 
-        for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
-            if (f.getRecensione() != null) {
-                listaRecensioni.add(f.getRecensione());
-            }
+            return recensioneDAO.getListaRecensioniUtente(utenteLoggato.getId());
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Errore di connessione: impossibile caricare le recensioni dell'utente.");
         }
-        return listaRecensioni;
     }
 
     public Fattura getFatturaDaRecensione(Recensione r){return r.getFattura();}
