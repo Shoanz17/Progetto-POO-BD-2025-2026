@@ -2,6 +2,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ConnessioneDatabase {
@@ -34,5 +35,22 @@ public class ConnessioneDatabase {
             instance = new ConnessioneDatabase();
         }
         return instance;
+    }
+
+    public int eseguiUpdate(String query, Object... parametri) {
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            // Inserisce i parametri al posto dei punti interrogativi
+            for (int i = 0; i < parametri.length; i++) {
+                pstmt.setObject(i + 1, parametri[i]);
+            }
+
+            // Esegue la query e restituisce il numero di righe modificate
+            return pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Errore nell'esecuzione dell'update: " + e.getMessage());
+            return -1;
+        }
     }
 }
