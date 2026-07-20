@@ -1,5 +1,7 @@
 package controller;
 
+import dao.FatturaDAO;
+import dao.GiocoDAO;
 import dao.UtenteDAO;
 import model.*;
 
@@ -14,10 +16,13 @@ public class Controller {
     private ArrayList<Account> listaAccountLoggati = new ArrayList<>();
     private ArrayList<Genere> listaGeneri = new ArrayList<>();
     private ArrayList<PiattaformaDiGioco> listaPiattaformeDiGioco = new ArrayList<>();
-    private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
     private ArrayList<Gioco> listaGiochi = new ArrayList<>();
-    private ArrayList<Fattura> listaFatture = new ArrayList<>();
     private UtenteDAO utenteDAO;
+    private GiocoDAO giocoDAO;
+    private FatturaDAO fatturaDAO;
+
+    private ArrayList<Fattura> listaFatture = new ArrayList<>();
+    private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
 
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
@@ -25,7 +30,9 @@ public class Controller {
     public Controller() {
         try {
             creaDatiFittizi();
-        } catch (CampoNonValidoException e) {
+            listaFatture = fatturaDAO.getListaFatture();
+            listaEdizioniGiochi = giocoDAO.getCatalogoCompleto();
+        } catch (CampoNonValidoException | SQLException e) {
             e.getMessage();
         }
     }
