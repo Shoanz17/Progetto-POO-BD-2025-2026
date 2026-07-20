@@ -10,10 +10,10 @@ public interface UtenteDAO {
 
     void inserisciAmico(int idUtente, int idAmico) throws SQLException;
     void eliminaAmico(int idUtente, int idAmico) throws SQLException;
-    void insertSviluppatoreSeguito(int idUtente, int idSviluppatore);
-    void deleteSviluppatoreSeguito(int idUtente, int idSviluppatore);
+    void inserisciSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
+    void eliminaSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
 
-    void insertCarrello(int idUtente, int idEdizione);
-    void deleteCarrello(int idUtente, int idEdizione);
+    void inserisciCarrello(int idUtente, int idEdizione);
+    void eliminaCarrello(int idUtente, int idEdizione);
     void svuotaCarrello(int idUtente);
 }

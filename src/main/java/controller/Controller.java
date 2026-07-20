@@ -244,10 +244,24 @@ public class Controller {
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
+
+        try {
+            utenteDAO.inserisciSviluppatoreSeguito(utenteloggato.getId(),sviluppatoreSelezionato.getId());
+        } catch (SQLException e) {
+            utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public void rimuoviSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
+
+        try {
+            utenteDAO.eliminaSviluppatoreSeguito(utenteloggato.getId(),sviluppatoreSelezionato.getId());
+        } catch (SQLException e) {
+            utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
     public String getDescrizioneSviluppatore(Sviluppatore s){return s.getDescrizione();}
