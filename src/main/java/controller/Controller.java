@@ -21,18 +21,13 @@ public class Controller {
     private GiocoDAO giocoDAO;
     private FatturaDAO fatturaDAO;
 
-    private ArrayList<Fattura> listaFatture = new ArrayList<>();
-    private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
-
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
 
     public Controller() {
         try {
             creaDatiFittizi();
-            listaFatture = fatturaDAO.getListaFatture();
-            listaEdizioniGiochi = giocoDAO.getCatalogoCompleto();
-        } catch (CampoNonValidoException | SQLException e) {
+        } catch (CampoNonValidoException e) {
             e.getMessage();
         }
     }
@@ -76,12 +71,9 @@ public class Controller {
         EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaformaDiGioco, 60, LocalDate.of(2015, 10, 12));
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
-        listaEdizioniGiochi.add(edizioneGioco);
         listaGiochi.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
-
-        listaFatture.add(fattura1);
         sviluppatore1.addGioco(gioco);
     }
 
@@ -424,6 +416,14 @@ public class Controller {
     }
 
     public ArrayList<EdizioneGioco> getEdizioniGiochi() {
+
+        ArrayList<EdizioneGioco> listaEdizioniGiochi;
+        try {
+            listaEdizioniGiochi = giocoDAO.getCatalogoCompleto();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
+
         return listaEdizioniGiochi;
     }
 
@@ -437,6 +437,13 @@ public class Controller {
     }
 
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) {
+
+        ArrayList<EdizioneGioco> listaEdizioniGiochi;
+        try {
+            listaEdizioniGiochi = giocoDAO.getCatalogoCompleto();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
 
         ArrayList<EdizioneGioco> listaFiltrata = new ArrayList<>();
 
@@ -464,10 +471,17 @@ public class Controller {
     }
 
     public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereFiltro, Categoria categoriaFiltro, String pegiFiltro, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) {
+        ArrayList<Fattura> libreriaUtente;
+
+        try {
+            libreriaUtente = fatturaDAO.getLibreriaUtente();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
 
         ArrayList<Fattura> listaFiltrata = new ArrayList<>();
 
-        for (Fattura f : utenteLoggato.getGiochiAcquistati()) {
+        for (Fattura f : libreriaUtente) {
             Gioco giocoBase = getGiocoDaFattura(f); //fatto solo per non scrivere sempre get gioco get gioco
 
             if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
@@ -564,6 +578,14 @@ public class Controller {
 
     public ArrayList<Recensione> getRecensioniEdizioneGioco(EdizioneGioco edizioneGioco){
         ArrayList<Recensione> listaRecensioniGioco = new ArrayList<>();
+
+        ArrayList<Fattura> listaFatture;
+        try {
+            listaFatture = fatturaDAO.getListaFatture();
+        } catch (SQLException e) {
+            throw new RuntimeException("Operazione Fallita");
+        }
+
         for (Fattura f : listaFatture){
             if(f.getGioco().equals(edizioneGioco) && f.getRecensione() != null) {
                 listaRecensioniGioco.add(f.getRecensione());
@@ -661,7 +683,7 @@ public class Controller {
 
             giocoAcquistato.getGioco().getSviluppatore().addFondi(nuovaFattura.getPrezzoAcquisto());
 
-            listaFatture.add(nuovaFattura);   // SOLO PER TEST
+            //listaFatture.add(nuovaFattura);   // SOLO PER TEST
         }
 
         utenteLoggato.getCarrello().svuotaCarrello();
