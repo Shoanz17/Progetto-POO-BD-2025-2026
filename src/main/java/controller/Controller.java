@@ -11,9 +11,6 @@ import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 
 public class Controller {
-    private ArrayList<String> storicoLike = new ArrayList<>();
-    private ArrayList<String> storicoDislike = new ArrayList<>();
-
     private AccountDAO accountDAO;
     private UtenteDAO utenteDAO;
     private SviluppatoreDAO sviluppatoreDAO;
@@ -690,36 +687,23 @@ public class Controller {
     public int getDifferenzaLikeRecensione(Recensione recensione){return recensione.getDifferenzaLike();}
 
     public void mettiLikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
+        recensione.addLike();
 
-        String ricevutaVoto = utenteLoggato.getId() + "_" + recensione.getFattura().getKey();
-
-        if (storicoLike.contains(ricevutaVoto)) {
-            throw new CampoNonValidoException("Hai giá messo Like!");
-        }
-
-        if (storicoDislike.contains(ricevutaVoto)) {
-            storicoDislike.remove(ricevutaVoto);
-            recensione.addLike();
-        } else {
-            storicoLike.add(ricevutaVoto);
-            recensione.addLike();
+        try {
+            recensioneDAO.aggiornaDifferenzaLike(recensione.getFattura().getId(), recensione.getDifferenzaLike());
+        } catch (SQLException e) {
+            recensione.addDislike();
+            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
     public void mettiDislikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
-
-        String ricevutaVoto = utenteLoggato.getId() + "_" + recensione.getFattura().getKey();
-
-        if (storicoDislike.contains(ricevutaVoto)) {
-            throw new CampoNonValidoException("Hai già messo Dislike! Review bombing?");
-        }
-
-        if (storicoLike.contains(ricevutaVoto)) {
-            storicoLike.remove(ricevutaVoto);
-            recensione.addDislike();
-        } else {
-            storicoDislike.add(ricevutaVoto);
-            recensione.addDislike();
+        recensione.addDislike();
+        try {
+            recensioneDAO.aggiornaDifferenzaLike(recensione.getFattura().getId(), recensione.getDifferenzaLike());
+        } catch (SQLException e) {
+            recensione.addLike();
+            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
@@ -780,7 +764,6 @@ public class Controller {
 
             try {
                 fatturaDAO.inserisciFattura(nuovaFattura);
-                sviluppatoreDAO.aggiornaFondi(giocoAcquistato.getGioco().getSviluppatore().getId());
             } catch (SQLException e) {
                 throw new CampoNonValidoException("Operazione Fallita");
             }
@@ -805,7 +788,7 @@ public class Controller {
             utenteDAO.invertiStatoBan(idUtente);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 }

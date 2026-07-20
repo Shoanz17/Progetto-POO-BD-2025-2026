@@ -393,6 +393,9 @@ public class HomeUtente {
 
                     pulsanteLike.setEnabled(true);
                     pulsanteDislike.setEnabled(true);
+
+                    pulsanteLike.setVisible(true);
+                    pulsanteDislike.setVisible(true);
                 }
 
             }
@@ -404,11 +407,14 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.mettiLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(),utenteLoggato);
-                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+                    controller.mettiLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(), utenteLoggato);
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage());
                 }
+                valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+
+                pulsanteLike.setVisible(false);
+                pulsanteDislike.setVisible(true);
             }
         });
     }
@@ -418,11 +424,14 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.mettiDislikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(),utenteLoggato);
-                    valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+                    controller.mettiDislikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue(), utenteLoggato);
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage(),"Errore",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage());
                 }
+                valutazioneRecensioneCatalogo.setText("Differenza Like: " + controller.getDifferenzaLikeRecensione((model.Recensione) listaRecensioniCatalogo.getSelectedValue()));
+
+                pulsanteDislike.setVisible(false);
+                pulsanteLike.setVisible(true);
             }
         });
     }
@@ -898,7 +907,11 @@ public class HomeUtente {
     private void configuraComboBoxGenereCatalogo() {
         DefaultComboBoxModel<Genere> modelGenere = new DefaultComboBoxModel<>();
 
-        modelGenere.addAll(controller.getGeneri());
+        try {
+            modelGenere.addAll(controller.getGeneri());
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         genereFiltroCatalogo.setModel(modelGenere);
         genereFiltroCatalogo.setSelectedIndex(-1);
@@ -992,7 +1005,11 @@ public class HomeUtente {
     private void configuraComboBoxGenere() {
         DefaultComboBoxModel<Genere> modelGenere = new DefaultComboBoxModel<>();
 
-        modelGenere.addAll(controller.getGeneri());
+        try {
+            modelGenere.addAll(controller.getGeneri());
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         genereFiltro.setModel(modelGenere);
         genereFiltro.setSelectedIndex(-1);
