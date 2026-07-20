@@ -28,6 +28,7 @@ public class Controller {
     private FatturaDAO fatturaDAO;
     private RecensioneDAO recensioneDAO;
     private GiocoDAO giocoDAO;
+    private EdizioneGiocoDAO edizioneGiocoDAO;
 
     public Controller() {
         try {
@@ -173,18 +174,18 @@ public class Controller {
         }
     }
 
-    public ArrayList<Sviluppatore> getListaSviluppatoriLoggati() {
-        ArrayList<Sviluppatore> listaSviluppatoriLoggati = new ArrayList<>();
-        for (Account u : listaAccountLoggati) {
-            if (u instanceof Sviluppatore) {
-                listaSviluppatoriLoggati.add((Sviluppatore) u);
-            }
+    public ArrayList<Sviluppatore> getListaSviluppatoriFiltrati(String testoRicerca) throws CampoNonValidoException{
+        try {
+
+            return sviluppatoreDAO.getListaSviluppatoriFiltrati(testoRicerca);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
-        return listaSviluppatoriLoggati;
     }
 
-    public int getNumeroRecensioniUtente(Utente utenteLoggato) {
-        return getListaRecensioniUtente(utenteLoggato).size();
+    public int getNumeroRecensioniUtente(Utente utenteLoggato) throws CampoNonValidoException {
+        return getListaRecensioniUtente(utenteLoggato.getId()).size();
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
@@ -259,9 +260,9 @@ public class Controller {
     public String getEmailUtente(Utente u){return u.getEmail();}
     public LocalDate getDataDiNascitaUtente(Utente u){return u.getDataNascita();}
     public int getSaldoUtente(Utente u){return u.getSaldo();}
-    public ArrayList<Fattura> getLibreriaUtente(Utente utente) throws CampoNonValidoException{
+    public ArrayList<Fattura> getLibreriaUtente(int idUtente) throws CampoNonValidoException{
         try {
-            return fatturaDAO.getLibreriaUtente(utente.getId());
+            return fatturaDAO.getLibreriaUtente(idUtente);
 
         } catch (SQLException e) {
             throw new CampoNonValidoException("Errore di connessione: impossibile caricare la libreria dei giochi.");
@@ -307,17 +308,37 @@ public class Controller {
     }
 
     public String getDescrizioneSviluppatore(Sviluppatore s){return s.getDescrizione();}
-    public ArrayList<EdizioneGioco> getListaEdizioniSviluppatore(Sviluppatore s) {
-        ArrayList<EdizioneGioco> lista = new ArrayList<>();
-        for(EdizioneGioco edizioneGioco : getEdizioniGiochi()){
-            if(getNomeSviluppatoreDaEdizioneGioco(edizioneGioco).equals(getNomeSviluppatore(s))) lista.add(edizioneGioco);
+    public ArrayList<EdizioneGioco> getListaEdizioniSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException{
+        try{
+
+            return edizioneGiocoDAO.getListaEdizioniSviluppatore(sviluppatore.getId());
+
+        } catch (SQLException e){
+            throw new CampoNonValidoException("Operazione fallita");
         }
-        return lista;
     }
     public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s){return s.getListaGiochi().size();}
     public boolean isSviluppatoreBannato(Sviluppatore sviluppatore){return sviluppatore.isBannato();}
-    public void addStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {sviluppatore.addStrike();}
-    public void removeStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {sviluppatore.removeStrike();}
+    public void addStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
+        sviluppatore.addStrike();
+
+        try {
+            sviluppatoreDAO.aggiungiStrike(sviluppatore.getId());
+        } catch (SQLException e) {
+            sviluppatore.removeStrike();
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+    public void removeStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
+        sviluppatore.removeStrike();
+
+        try{
+            sviluppatoreDAO.rimuoviStrike(sviluppatore.getId());
+        } catch (SQLException e){
+            sviluppatore.addStrike();
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
     public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
     public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
     public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
@@ -355,10 +376,10 @@ public class Controller {
 
     }
 
-    public ArrayList<Recensione> getListaRecensioniUtente(Utente utenteLoggato) throws CampoNonValidoException{
+    public ArrayList<Recensione> getListaRecensioniUtente(int idUtente) throws CampoNonValidoException{
         try {
 
-            return recensioneDAO.getListaRecensioniUtente(utenteLoggato.getId());
+            return recensioneDAO.getListaRecensioniUtente(idUtente);
 
         } catch (SQLException e) {
             throw new CampoNonValidoException("Errore di connessione: impossibile caricare le recensioni dell'utente.");
@@ -516,7 +537,7 @@ public class Controller {
         ArrayList<Fattura> libreriaUtente;
 
         try {
-            libreriaUtente = fatturaDAO.getLibreriaUtente();
+            libreriaUtente = fatturaDAO.getLibreriaUtente(utenteLoggato.getId());
         } catch (SQLException e) {
             throw new RuntimeException("Operazione Fallita");
         }
@@ -742,10 +763,12 @@ public class Controller {
 //    }
 
     public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
-        Utente utente = getUtenteById(idUtente);
+        try {
 
-        if(utente == null) throw new CampoNonValidoException("Operazione non andata a buon fine");
+            utenteDAO.invertiStatoBan(idUtente);
 
-        utente.setBannato(!utente.isBannato()); //magari potrei lanciare un eccezione
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -58,7 +58,7 @@ public class VisualizzaRecensioni {
             }
         };
 
-        for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato)) {
+        for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato.getId())) {
             Fattura f = controller.getFatturaDaRecensione(r);
 
             Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};

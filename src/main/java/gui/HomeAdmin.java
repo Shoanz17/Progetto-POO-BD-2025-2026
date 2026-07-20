@@ -233,26 +233,22 @@ public class HomeAdmin {
             public void mouseClicked(MouseEvent e) {
                 int rigaSelezionata = tabellaUtenti.getSelectedRow();
 
-                try{
-                    if (rigaSelezionata != -1) {
-                        int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
-                        Utente utente = controller.getUtenteById(selezione);
-                        riempiTabellaGiochiUtente(utente);
-                        riempiTabellaRecensioniUtente(utente);
-                    }
-
-                } catch (CampoNonValidoException ex){
-                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                if (rigaSelezionata != -1) {
+                    int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
+                    //Utente utente = controller.getUtenteById(selezione);
+                    riempiTabellaGiochiUtente(selezione);
+                    riempiTabellaRecensioniUtente(selezione);
                 }
+
             }
         });
     }
 
-    private void riempiTabellaGiochiUtente(Utente utente){
+    private void riempiTabellaGiochiUtente(int idUtente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
         try {
-            for(Fattura gioco : controller.getLibreriaUtente(utente)){
+            for(Fattura gioco : controller.getLibreriaUtente(idUtente)){
                 Object[] riga = {
                         controller.getTitoloDaFattura(gioco),
                         controller.getCategoriaDaFattura(gioco),
@@ -264,17 +260,17 @@ public class HomeAdmin {
                 righe.add(riga);
             }
         } catch (CampoNonValidoException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
     }
 
-    private void riempiTabellaRecensioniUtente(Utente utente){
+    private void riempiTabellaRecensioniUtente(int idUtente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
         try {
-            for(Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE implementazione
+            for(Recensione recensione : controller.getListaRecensioniUtente(idUtente)){ //DA FARE implementazione
                 Object[] riga = {
                         controller.getVotoRecensione(recensione),
                         controller.getDifferenzaLikeRecensione(recensione)
@@ -282,7 +278,7 @@ public class HomeAdmin {
                 righe.add(riga);
             }
         } catch (CampoNonValidoException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         aggiornaContenutoTabella(tabellaRecensioniUtenti, righe);
@@ -349,16 +345,21 @@ public class HomeAdmin {
     private void riempiTabellaGiochiSviluppatore(Sviluppatore sviluppatore){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(EdizioneGioco gioco : controller.getListaEdizioniSviluppatore(sviluppatore)){
-            Object[] riga = {
-                    controller.getTitoloDaEdizioneGioco(gioco),
-                    controller.getCategoriaDaEdizioneGioco(gioco),
-                    controller.getPegiDaEdizioneGioco(gioco),
-                    controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
-                    controller.getPiattaformaDaEdizioneGioco(gioco)
-            };
-            righe.add(riga);
+        try {
+            for(EdizioneGioco gioco : controller.getListaEdizioniSviluppatore(sviluppatore)){
+                Object[] riga = {
+                        controller.getTitoloDaEdizioneGioco(gioco),
+                        controller.getCategoriaDaEdizioneGioco(gioco),
+                        controller.getPegiDaEdizioneGioco(gioco),
+                        controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                        controller.getPiattaformaDaEdizioneGioco(gioco)
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
+
         aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
     }
 
@@ -387,13 +388,17 @@ public class HomeAdmin {
 
         //filtro in base alla checkBox e alla barra di ricerca
         boolean flag = checkBoxBannatiSviluppatori.isSelected();
-        for(Sviluppatore sviluppatore : controller.getListaSviluppatoriLoggati()){
-            if(controller.isSviluppatoreBannato(sviluppatore) == flag && controller.getNomeSviluppatore(sviluppatore).toLowerCase().contains(testoRicerca))
-
-                modelloSviluppatori.addElement(sviluppatore);
+        try {
+            for(Sviluppatore sviluppatore : controller.getListaSviluppatoriFiltrati(testoRicerca)){
+                if(controller.isSviluppatoreBannato(sviluppatore) == flag)
+                    modelloSviluppatori.addElement(sviluppatore);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         listaSviluppatori.setModel(modelloSviluppatori);
+
     }
 
     private void associaListenerAggiungiStrike(){

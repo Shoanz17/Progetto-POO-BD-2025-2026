@@ -12,6 +12,8 @@ public interface UtenteDAO {
 
     Utente getUtenteById(int idUtente) throws SQLException;
 
+    void invertiStatoBan(int idUtente) throws SQLException;
+
     void aggiornaProfiloUtente(Utente utente) throws SQLException;
     void aggiungiSaldo(int idUtente, int importoDaAggiungere) throws SQLException;
 
