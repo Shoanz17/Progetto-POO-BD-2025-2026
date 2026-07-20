@@ -16,9 +16,12 @@ public class Controller {
     private ArrayList<EdizioneGioco> listaEdizioniGiochi = new ArrayList<>();
     private ArrayList<Gioco> listaGiochi = new ArrayList<>();
     private ArrayList<Fattura> listaFatture = new ArrayList<>();
-
+    private ArrayList<Promozione> listaPromozioni = new ArrayList<>();
     private ArrayList<String> storicoLike = new ArrayList<>();
     private ArrayList<String> storicoDislike = new ArrayList<>();
+
+
+    private ArrayList<Recensione> listaRecensioni = new ArrayList<>();
 
     public Controller() {
         try {
@@ -56,24 +59,72 @@ public class Controller {
         Genere genere1 = new Genere(0, "Azione");
         Genere genere2 = new Genere(1, "Sopravvivenza");
         Genere genere3 = new Genere(2, "JRPG");
+        Genere genere4 = new Genere(3, "Rpg");
+        Genere genere5 = new Genere(4, "Fortnite");
+        Genere genere6 = new Genere(5, "SparaTutto");
+        Genere genere7 = new Genere(6, "Arcade");
 
         listaGeneri.add(genere1);
         listaGeneri.add(genere2);
         listaGeneri.add(genere3);
+        listaGeneri.add(genere4);
+        listaGeneri.add(genere5);
+        listaGeneri.add(genere6);
+        listaGeneri.add(genere7);
 
 
         Gioco gioco = new Gioco("The Witcher 3", Categoria.AAA, 18, sviluppatore1, listaGeneri);
+        Gioco gioco2 = new Gioco("amongus", Categoria.AA, 12, sviluppatore1, listaGeneri);
+
+
+
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco("Switch", "Nintendo", true);
-        EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaformaDiGioco, 60, LocalDate.of(2015, 10, 12));
+        PiattaformaDiGioco piattaformaDiGioco2 = new PiattaformaDiGioco("PS5", "Sony", false);
+        PiattaformaDiGioco piattaformaDiGioco3 = new PiattaformaDiGioco("PC", "None", false);
+        PiattaformaDiGioco piattaformaDiGioco4 = new PiattaformaDiGioco("PS4", "Sony", false);
+        PiattaformaDiGioco piattaformaDiGioco5 = new PiattaformaDiGioco("Xbox", "Microsoft", false);
+        PiattaformaDiGioco piattaformaDiGioco6 = new PiattaformaDiGioco("Xbox360", "Microsoft", false);
 
         listaPiattaformeDiGioco.add(piattaformaDiGioco);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco2);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco3);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco4);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco5);
+        listaPiattaformeDiGioco.add(piattaformaDiGioco6);
+
+
+        EdizioneGioco edizioneGioco = new EdizioneGioco(gioco, piattaformaDiGioco, 60, LocalDate.of(2015, 10, 12));
+        EdizioneGioco edizioneGioco2 = new EdizioneGioco(gioco2, piattaformaDiGioco3, 8, LocalDate.of(2015, 11, 19));
+
+        gioco.addEdizione(edizioneGioco);
+        gioco2.addEdizione(edizioneGioco2);
+
+        //listaPiattaformeDiGioco.add(piattaformaDiGioco);
         listaEdizioniGiochi.add(edizioneGioco);
+        listaEdizioniGiochi.add(edizioneGioco2);
+
+
         listaGiochi.add(gioco);
 
         Fattura fattura1 = new Fattura(utente, edizioneGioco, 50);
+        Fattura fattura2 = new Fattura(utente1,edizioneGioco,21);
+
+        Recensione recensione = new Recensione(70,"wao ha prooprio un bel design",111,fattura1);
+        Recensione recensione2 = new Recensione(100,"hell no da provare incredibilmente incredibile mi sto cagando sotto",111,fattura2);
+
+
 
         listaFatture.add(fattura1);
+        listaFatture.add(fattura2);
+
+
+        listaRecensioni.add(recensione);
+        listaRecensioni.add(recensione2);
+
         sviluppatore1.addGioco(gioco);
+        sviluppatore1.addGioco(gioco2);
+
+
     }
 
     public String getNomeAccount(Account account) {return account.getNome();}
@@ -152,6 +203,26 @@ public class Controller {
         return listaSviluppatoriLoggati;
     }
 
+    public ArrayList<PiattaformaDiGioco> getPiattaformeDaGioco(Gioco gioco) {
+        ArrayList<PiattaformaDiGioco> listaPiattaforme = new ArrayList<>();
+        for (EdizioneGioco ed : gioco.getEdizioni()) {
+            listaPiattaforme.add(ed.getPiattaforma());
+        }
+
+
+        return listaPiattaforme;
+    }
+
+    public PiattaformaDiGioco getPiattaformaDaNome(String nome) {
+        for (PiattaformaDiGioco p : listaPiattaformeDiGioco) {
+            if (p.getNome().equals(nome)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+
     public int getNumeroRecensioniUtente(Utente utenteLoggato) {
         return getListaRecensioniUtente(utenteLoggato).size();
     }
@@ -220,6 +291,8 @@ public class Controller {
         return null;
     }
 
+    public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
+
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
     }
@@ -280,6 +353,21 @@ public class Controller {
         //Da eliminare dal database
     }
 
+    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) { //DA FARE col DAO
+        ArrayList<Genere> listaGeneri = new ArrayList<>();
+
+        for (Genere genere : this.listaGeneri) {
+            if (listaNomi.contains(genere.getNome()))
+                listaGeneri.add(genere);
+        }
+
+        return listaGeneri;
+    }
+
+    public void addEdizioneAlDB(EdizioneGioco ed) {
+        listaEdizioniGiochi.add(ed);
+    }
+
     public ArrayList<Genere> getGeneri() {
         return listaGeneri;
     }
@@ -294,7 +382,7 @@ public class Controller {
     }
 
     //metodi per prendere dati da un gioco
-    public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
+//    public ArrayList<Gioco> getListaGiochi() {return listaGiochi;}
     public String getTitoloGioco(Gioco gioco) {return gioco.getTitolo();}
     public Categoria getCategoriaGioco(Gioco gioco) {return gioco.getCategoria();}
     public int getPegiGioco(Gioco gioco) {return gioco.getPegi();}
@@ -304,21 +392,10 @@ public class Controller {
     public void updateTitoloGioco(Gioco gioco, String titolo) throws CampoNonValidoException { gioco.setTitolo(titolo); }
     public void updateCategoriaGioco(Gioco gioco, Categoria categoria) throws CampoNonValidoException { gioco.setCategoria(categoria); }
     public void updatePegiGioco(Gioco gioco, int pegi) throws CampoNonValidoException { gioco.setPegi(pegi); }
-    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException { gioco.setListaGeneri(generi); }
+//    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException { gioco.setListaGeneri(generi); }
 
     //metodi per prendere dati dei generi
     public String getNomeGenere(Genere genere) {return genere.getNome();}
-    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) { //DA FARE col DAO
-        ArrayList<Genere> listaGeneri = new ArrayList<>();
-
-        for(Genere genere : this.listaGeneri){
-            if(listaNomi.contains(genere.getNome()))
-                listaGeneri.add(genere);
-        }
-
-        return listaGeneri;
-    }
-
     public void createGenere(String nome) throws CampoNonValidoException {
         Genere genere = new Genere(nome);
 
@@ -358,7 +435,7 @@ public class Controller {
 
         fatturaSelezionata.setRecensione(nuovaRecensione);
 
-        //DA FARE salvare nel dao
+        //da salvare nel dao
     }
 
     public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() {
@@ -376,6 +453,11 @@ public class Controller {
             }
         }
         return false;
+    }
+
+
+    public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException {
+        gioco.setListaGeneri(generi);
     }
 
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) {
@@ -595,9 +677,182 @@ public class Controller {
         utenteLoggato.getCarrello().svuotaCarrello();
     }
 
-//    Da fare con DAO
-//    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
-//    }
+// metodi per la homeSviluppatore CV
+
+    public String getGenereDaGioco(Gioco gioco) {
+        String generiUniti = "";
+        for (Genere g : gioco.getGeneri()) {
+
+            if (!generiUniti.isEmpty()) {
+                generiUniti += ",";
+            }
+            generiUniti += g.toString();
+        }
+        return generiUniti;
+    }
+
+    public String getStringPiattaformeDaGioco(Gioco gioco) {
+        String piattaformeUnite = "";
+        for (EdizioneGioco ed : gioco.getEdizioni()) {
+            if (!piattaformeUnite.isEmpty()) {
+                piattaformeUnite += ",";
+            }
+
+            piattaformeUnite += ed.getPiattaforma().getNome();
+
+        }
+        return piattaformeUnite;
+    }
+
+
+    public String getPrezzoPrimaEdizioneDaGioco(Gioco gioco) {
+        if (!gioco.getEdizioni().isEmpty()) return String.valueOf(gioco.getEdizioni().get(0).getPrezzo());
+        return "";
+    }
+
+    public String getDataRilascioPrimaEdizioneFormattata(Gioco gioco) {
+        if (!gioco.getEdizioni().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return gioco.getEdizioni().get(0).getDataRilascio().format(formatter);
+        }
+        return "";
+    }
+
+    public String getTitoloDaGioco(Gioco gioco) {
+        return gioco.getTitolo();
+    }
+
+    public Categoria getCategoriaDaGioco(Gioco gioco) {
+        return gioco.getCategoria();
+    }
+
+    public int getPegiDaGioco(Gioco gioco) {
+        return gioco.getPegi();
+    }
+
+    public ArrayList<Genere> getListaGeneriDaGioco(Gioco gioco) {
+        return gioco.getGeneri();
+    }
+
+    public ArrayList<EdizioneGioco> getEdizioniDaGioco(Gioco gioco) {
+        return gioco.getEdizioni();
+    }
+
+    public void aggiornaProfiloSviluppatore
+            (Sviluppatore sviluppatore, String nuovoNome, String nuovaDescrizione, String nuovaPassword) throws CampoNonValidoException {
+        sviluppatore.setNome(nuovoNome);
+        sviluppatore.setDescrizione(nuovaDescrizione);
+
+
+        if (nuovaPassword != null && !nuovaPassword.isEmpty()) {
+            sviluppatore.setPassword(nuovaPassword);
+        }
+    }
+
+    public void modificaGiocoEsistente
+            (Gioco gioco, String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
+             ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio) throws CampoNonValidoException {
+        gioco.setTitolo(titolo);
+        gioco.setPegi(pegi);
+        gioco.setCategoria(categoria);
+
+
+        for (PiattaformaDiGioco p : piattaforme) {
+            if (!getPiattaformeDaGioco(gioco).contains(p)) {
+                EdizioneGioco nuovaEdizione = new EdizioneGioco(gioco, p, (int) prezzo, dataRilascio);
+                gioco.addEdizione(nuovaEdizione);
+                addEdizioneAlDB(nuovaEdizione);
+            }
+        }
+
+
+        updateGeneriGioco(gioco, generi);
+    }
+
+    public Gioco creaNuovoGioco
+            (String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
+             ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio, Sviluppatore autore) throws CampoNonValidoException {
+        Gioco nuovoGioco = new Gioco(titolo, categoria, pegi, autore, generi);
+
+        for (PiattaformaDiGioco p : piattaforme) {
+            EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, p, (int) prezzo, dataRilascio);
+            nuovoGioco.addEdizione(nuovaEdizione);
+        }
+
+        return nuovoGioco;
+    }
+
+
+    public void caricaPromozioniFittizie() {
+        try {
+            listaPromozioni.add(new Promozione("Natale 2026", LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 31)));
+            listaPromozioni.add(new Promozione("Sconti Estivi", LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 31)));
+            listaPromozioni.add(new Promozione("Gennaio 1st Week", LocalDate.of(2027, 1, 1), LocalDate.of(2027, 1, 7)));
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore nei dati fittizi");
+        }
+    }
+
+    public ArrayList<Promozione> getListaPromozioni() {return listaPromozioni;}
+
+    public void partecipaAPromozione(Gioco gioco, Promozione promozione, int percentualeSconto) throws CampoNonValidoException {
+
+
+        GiocoInPromozione nuovoSconto = new GiocoInPromozione(percentualeSconto, gioco, promozione);
+
+
+        promozione.addGiocoInPromozione(nuovoSconto);
+
+        //DAO
+    }
+
+    public String getStringaPromozioniPerGioco(Gioco giocoScelto) {
+        String risultato = "";
+
+        for (Promozione promo : listaPromozioni) {
+
+            for (GiocoInPromozione sconto : promo.getGiochiInPromozione()) {
+
+                if (sconto.getGioco().equals(giocoScelto)) {
+
+                    if (!risultato.isEmpty()) {
+                        risultato += ", ";
+                    }
+
+                    risultato += promo.getNome() + " (-" + sconto.getPercentuale() + "%)";
+                }
+            }
+        }
+
+        if (risultato.isEmpty()) {
+            return "Nessuna promozione attiva";
+        }
+
+        return risultato;
+    }
+
+    public String getStringaRecensioniPerGioco(Gioco giocoScelto) {
+
+        String risultato = "";
+
+        for (Recensione recensione : listaRecensioni) {
+
+            if (recensione.getFattura().getGioco().getGioco().getTitolo().equals(giocoScelto.getTitolo())) {
+
+                risultato += recensione + "\n";
+                risultato += "Voto: " + recensione.getVoto() + "/100";
+                risultato += "  (Utilità: " + recensione.getDifferenzaLike() + ")\n";
+                risultato += "\"" + recensione.getDescrizione() + "\"\n";
+                risultato += "--------------------------------------------------\n\n";
+            }
+        }
+
+        if (risultato.isEmpty()) {
+            return "Ancora nessuna recensione per questo titolo.";
+        }
+
+        return risultato;
+    }
 
     public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
         Utente utente = getUtenteById(idUtente);
@@ -607,3 +862,9 @@ public class Controller {
         utente.setBannato(!utente.isBannato()); //magari potrei lanciare un eccezione
     }
 }
+
+
+//    Da fare con DAO
+//    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
+//    }
+

@@ -153,4 +153,8 @@ public class Utente extends Account {
         this.bannato = bannato;
         this.carrello = null; //il carrello qui non va messo perché è il controller a inserirlo poi
     }
+
+    public void set() {
+
+    }
 }
