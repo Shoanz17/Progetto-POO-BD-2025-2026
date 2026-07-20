@@ -8,8 +8,8 @@ public interface UtenteDAO {
     void aggiornaProfiloUtente(Utente utente) throws SQLException;
     void aggiungiSaldo(int idUtente, int importoDaAggiungere) throws SQLException;
 
-    void insertAmico(int idUtente, int idAmico);
-    void deleteAmico(int idUtente, int idAmico);
+    void inserisciAmico(int idUtente, int idAmico) throws SQLException;
+    void eliminaAmico(int idUtente, int idAmico) throws SQLException;
     void insertSviluppatoreSeguito(int idUtente, int idSviluppatore);
     void deleteSviluppatoreSeguito(int idUtente, int idSviluppatore);
 
