@@ -50,6 +50,7 @@ public class VisualizzaRecensioni {
 
     private void configuraInterfacciaRecensioni() {
         String[] colonne = {"Edizione Gioco", "Piattaforma", "Voto", "Differenza Like"};
+        acquistiUtenteConRecensione = new ArrayList<>();
 
         DefaultTableModel modelloRecensioni = new DefaultTableModel(colonne, 0) {
             @Override
@@ -58,11 +59,16 @@ public class VisualizzaRecensioni {
             }
         };
 
-        for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato.getId())) {
-            Fattura f = controller.getFatturaDaRecensione(r);
+        try {
+            for (Recensione r : controller.getListaRecensioniUtente(controller.getIdUtente(utenteLoggato))) {
+                Fattura f = controller.getFatturaDaRecensione(r);
 
-            Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
-            modelloRecensioni.addRow(riga);
+                Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
+                modelloRecensioni.addRow(riga);
+                acquistiUtenteConRecensione.add(f);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(visualizzaRecensioniFrame,e.getMessage());
         }
         tabellaRecensioni.setModel(modelloRecensioni);
     }

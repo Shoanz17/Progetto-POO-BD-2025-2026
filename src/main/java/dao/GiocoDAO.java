@@ -16,4 +16,5 @@ public interface GiocoDAO {
     void updateCategoriaGioco(int idGioco, String nomeCategoria) throws SQLException;
     void updatePegiGioco(int idGioco, int pegi) throws SQLException;
     void updateGeneriGioco(int idGioco, ArrayList<Genere> nuoviGeneri) throws SQLException;
+    ArrayList<Gioco> getListaGiochi() throws SQLException;
 }
