@@ -145,7 +145,7 @@ CREATE TABLE recensione(
 
     CONSTRAINT fk_recensione_fattura FOREIGN KEY (idFattura) REFERENCES fattura (idFattura),
     CONSTRAINT chk_recensione_voto CHECK ( voto >= 0 AND voto <= 100 )
-    );
+);
 
 CREATE TABLE seguiti(
     idUtente INT,
@@ -154,5 +154,87 @@ CREATE TABLE seguiti(
     PRIMARY KEY (idUtente,idSviluppatore),
     CONSTRAINT fk_seguiti_utente FOREIGN KEY (idUtente) REFERENCES utente (idUtente),
     CONSTRAINT fk_seguiti_sviluppatore FOREIGN KEY (idSviluppatore) REFERENCES sviluppatore(idSviluppatore)
-
 );
+
+
+
+
+-- TRIGGERS
+-- Funzione per evitare promozioni su giochi gratis
+CREATE OR REPLACE FUNCTION check_gioco_gratuito()
+    RETURNS TRIGGER AS $$
+BEGIN
+    -- Controlliamo nella tabella EDIZIONE_GIOCO se esiste almeno un'edizione a pagamento per questo gioco
+    IF NOT EXISTS (
+        SELECT 1
+        FROM EDIZIONE_GIOCO
+        WHERE idGioco = NEW.idGioco AND prezzo > 0
+    ) THEN
+        -- Se non troviamo nessuna edizione con prezzo > 0, blocchiamo l'operazione
+        RAISE EXCEPTION 'Il gioco con ID % è gratis in tutte le sue edizioni e non può avere sconti.', NEW.idGioco;
+    END IF;
+
+    -- se non è gratis inserisci
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_check_gioco_gratuito
+    BEFORE INSERT OR UPDATE ON GIOCO_IN_PROMOZIONE
+    FOR EACH ROW
+EXECUTE FUNCTION check_gioco_gratuito();
+
+-- Funzione per evitare acquisti se il saldo è insufficiente
+CREATE OR REPLACE FUNCTION verifica_saldo_utente()
+    RETURNS TRIGGER AS $$
+DECLARE
+    saldo_attuale INT;
+BEGIN
+    -- Recupero il saldo dell'utente
+    SELECT saldo INTO saldo_attuale
+    FROM UTENTE
+    WHERE idUtente = NEW.idUtente;
+
+    IF saldo_attuale < NEW.prezzoAcquisto THEN
+        RAISE EXCEPTION 'Saldo insufficiente. Il saldo attuale è %, ma il costo è %.', saldo_attuale, NEW.prezzoAcquisto;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_verifica_saldo_utente
+    BEFORE INSERT ON FATTURA
+    FOR EACH ROW
+EXECUTE FUNCTION verifica_saldo_utente();
+
+-- Funzione per aggiornare fondi in seguito a un acquisto
+CREATE OR REPLACE FUNCTION trasferimento_fondi_acquisto()
+    RETURNS TRIGGER AS $$
+DECLARE
+    sviluppatore_target INT;
+BEGIN
+    -- Aggiorno fondi utente
+    UPDATE UTENTE
+    SET saldo = saldo - NEW.prezzoAcquisto
+    WHERE idUtente = NEW.idUtente;
+
+    -- Trovo id Sviluppatore
+    SELECT G.idSviluppatore INTO sviluppatore_target
+    FROM EDIZIONE_GIOCO EG
+             JOIN GIOCO G ON EG.idGioco = G.idGioco
+    WHERE EG.idEdizione = NEW.idEdizione;
+
+    -- Aggiungo i fondi allo Sviluppatore
+    UPDATE SVILUPPATORE
+    SET fondi = fondi + NEW.prezzoAcquisto
+    WHERE idSviluppatore = sviluppatore_target;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_trasferimento_fondi
+    AFTER INSERT ON FATTURA
+    FOR EACH ROW
+EXECUTE FUNCTION trasferimento_fondi_acquisto();
