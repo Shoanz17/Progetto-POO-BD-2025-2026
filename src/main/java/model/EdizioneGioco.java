@@ -41,7 +41,6 @@ public class EdizioneGioco {
         if (o == null || getClass() != o.getClass()) return false;
         EdizioneGioco that = (EdizioneGioco) o;
 
-        //return id == that.id;
         // confrontiamo il gioco e la piattaforma anziché l'id
         return gioco.equals(that.gioco) &&
                 piattaforma.equals(that.piattaforma);
