@@ -349,6 +349,16 @@ public class Controller {
         }
     }
 
+    public ArrayList<Genere> getGeneriFiltrati(String testoRicerca) throws CampoNonValidoException {
+        try {
+
+            return genereDAO.getGeneriFiltrati(testoRicerca);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+
     public ArrayList<Categoria> getCategorie() {
         ArrayList<Categoria> categorie = new ArrayList<>();
 
@@ -431,21 +441,29 @@ public class Controller {
 
     //metodi per prendere dati dei generi
     public String getNomeGenere(Genere genere) {return genere.getNome();}
-    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) { //DA FARE col DAO
-        ArrayList<Genere> listaGeneri = new ArrayList<>();
+    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) throws CampoNonValidoException { //DA FARE con implementazione
+        try {
 
-        for(Genere genere : this.listaGeneri){
-            if(listaNomi.contains(genere.getNome()))
-                listaGeneri.add(genere);
+            if(listaNomi == null || listaNomi.isEmpty())
+                return new ArrayList<>();
+
+            return genereDAO.getGeneriDaListaNomi(listaNomi);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
-
-        return listaGeneri;
     }
 
     public void createGenere(String nome) throws CampoNonValidoException {
         Genere genere = new Genere(nome);
 
-        listaGeneri.add(genere); //DA FARE modificare col dao e IMPORTANTE se il genere già esiste non aggiungerlo
+        try {
+
+            genereDAO.creaGenere(genere);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     //metodi per prendere dati da Piattaforma

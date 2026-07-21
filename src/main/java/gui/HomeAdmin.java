@@ -745,17 +745,17 @@ public class HomeAdmin {
 
         DefaultListModel<Genere> modelloGeneri = new DefaultListModel<>();
 
-        if(testoRicerca.isEmpty()) modelloGeneri.addAll(controller.getGeneri()); //se non ho niente da filtrare passo tutto
-        else {
-            for(Genere genere : controller.getGeneri()){
-                if(controller.getNomeGenere(genere).toLowerCase().contains(testoRicerca))
+        try {
+            ArrayList<Genere> lista = controller.getGeneriFiltrati(testoRicerca);
 
-                    modelloGeneri.addElement(genere);
+            for (Genere genere : lista) {
+                modelloGeneri.addElement(genere);
             }
-
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
-        listaGeneri.setModel(modelloGeneri);
+        listaGiochi.setModel(modelloGeneri);
     }
 
     private void associaListenerPulsanteAggiungiGenere(){
