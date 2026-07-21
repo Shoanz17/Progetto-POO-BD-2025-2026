@@ -1,9 +1,6 @@
 package controller;
 
-import dao.GenereDao;
-import dao.GiocoDao;
-import dao.PiattaformaDao;
-import dao.SviluppatoreDao;
+import dao.*;
 import model.*;
 
 import java.lang.reflect.Array;
@@ -30,6 +27,8 @@ public class Controller {
     private GiocoDao giocoDao;
     private GenereDao genereDao;
     private PiattaformaDao piattaformaDao;
+    private PromozioneDao promozioneDao;
+    private RecensioneDao recensioneDao;
 
 
 
@@ -790,7 +789,7 @@ public class Controller {
             }
 
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione fallita! Impossibile salvare le modifiche al gioco nel database.");
+            throw new CampoNonValidoException("Operazione fallita! ");
         }
 
         updateGeneriGioco(gioco, generi);
@@ -817,35 +816,44 @@ public Gioco creaNuovoGioco
         }
 
     } catch (SQLException e) {
-        throw new CampoNonValidoException("Operazione fallita! Impossibile salvare il gioco o le sue edizioni nel database.");
+        throw new CampoNonValidoException("Operazione fallita!");
     }
 
     return nuovoGioco;
 }
 
 
-    public void caricaPromozioniFittizie() {
+//    public void caricaPromozioniFittizie() {
+//        try {
+//            listaPromozioni.add(new Promozione("Natale 2026", LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 31)));
+//            listaPromozioni.add(new Promozione("Sconti Estivi", LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 31)));
+//            listaPromozioni.add(new Promozione("Gennaio 1st Week", LocalDate.of(2027, 1, 1), LocalDate.of(2027, 1, 7)));
+//        } catch (CampoNonValidoException e) {
+//            System.out.println("Errore nei dati fittizi");
+//        }
+//    }
+
+
+    public ArrayList<Promozione> getListaPromozioni() throws CampoNonValidoException {
         try {
-            listaPromozioni.add(new Promozione("Natale 2026", LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 31)));
-            listaPromozioni.add(new Promozione("Sconti Estivi", LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 31)));
-            listaPromozioni.add(new Promozione("Gennaio 1st Week", LocalDate.of(2027, 1, 1), LocalDate.of(2027, 1, 7)));
-        } catch (CampoNonValidoException e) {
-            System.out.println("Errore nei dati fittizi");
+            return promozioneDao.getTuttePromozioni();
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Errore: Impossibile caricare le promozioni dal server.");
         }
     }
 
-    public ArrayList<Promozione> getListaPromozioni() {return listaPromozioni;}
-
     public void partecipaAPromozione(Gioco gioco, Promozione promozione, int percentualeSconto) throws CampoNonValidoException {
 
+        if (percentualeSconto <= 0 || percentualeSconto >= 100) {
+            throw new CampoNonValidoException("La percentuale di sconto deve essere compresa tra 1 e 99!");
+        }
 
-        GiocoInPromozione nuovoSconto = new GiocoInPromozione(percentualeSconto, gioco, promozione);
+        try {
+            promozioneDao.inserisciGiocoInPromozione(gioco.getId(), promozione.getId(), percentualeSconto);
 
-
-        promozione.addGiocoInPromozione(nuovoSconto);
-
-        //DAO
-    }
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita!");
+        }    }
 
     public String getStringaPromozioniPerGioco(Gioco giocoScelto) {
         String risultato = "";
@@ -917,9 +925,36 @@ public Gioco creaNuovoGioco
         try {
             return giocoDao.getGuadagnoTotalePerGioco(gioco.getTitolo());
         } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita!");
+        }
+    }
+
+
+    public ArrayList<Recensione> getRecensioniGioco(Gioco gioco) throws CampoNonValidoException {
+        try {
+            return recensioneDao.getRecensioniPerGioco(gioco.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita!");
+        }
+    }
+
+
+    public ArrayList<Gioco> getListaGiochiSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
+        try {
+            return giocoDao.getGiochiSviluppatore(sviluppatore.getId());
+
+        } catch (SQLException e) {
             throw new CampoNonValidoException("Operzione fallita!");
         }
     }
+
+
+
+//    public void eseguiLogout() {
+//
+//        listaAccountLoggati.clear();
+//    }
+
 }
 
 

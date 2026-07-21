@@ -9,6 +9,5 @@ public interface PromozioneDao {
 
     void inserisciGiocoInPromozione(int idGioco, int idPromozione, int percentuale)throws SQLException;
 
-
     ArrayList<Promozione> getTuttePromozioni()throws SQLException;
 }

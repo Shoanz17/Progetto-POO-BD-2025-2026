@@ -11,6 +11,7 @@ public interface SviluppatoreDao {
 
     void aggiornaProfilo(Sviluppatore sviluppatore)throws SQLException;
 
+
 }
 
 

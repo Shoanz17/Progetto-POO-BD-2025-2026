@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface GenereDao {
 
-    ArrayList<Genere> getTuttiGeneri()throws SQLException;
+    ArrayList<Genere> getListaGeneri()throws SQLException;
 
     void collegaGeneriAGioco(int idGioco, ArrayList<Genere> generi)throws SQLException;
 

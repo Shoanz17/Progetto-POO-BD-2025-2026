@@ -84,7 +84,7 @@ public class HomeSviluppatore {
         Controller controller = new Controller();
         this.controller = controller;
 
-        controller.caricaPromozioniFittizie();
+       // controller.caricaPromozioniFittizie();
 
         popolaListe();
         ricercaListaLib();
@@ -119,29 +119,36 @@ public class HomeSviluppatore {
     }
 
 
+
     private void popolaListe() {
         // creiamo i modelli corretti
         modelLibreria = new DefaultListModel<>();
         modelPannelloControllo = new DefaultListModel<>();
 
+        try {
+            ArrayList<Sviluppatore> loggati = controller.getListaSviluppatoriLoggati();
 
-        // prendiamo i giochi dal controller
-        ArrayList<Gioco> tuttiIGiochi = controller.getListaGiochi();
+            if (loggati != null && !loggati.isEmpty()) {
 
+                Sviluppatore sviluppatoreCorrente = loggati.get(0);
 
-        // riempiamo i modelli con gli oggetti Gioco
-        if (tuttiIGiochi != null) {
-            for (Gioco gioco : tuttiIGiochi) {
-                modelLibreria.addElement(gioco);
-                modelPannelloControllo.addElement(gioco);
-                listaCompletaGiochi.add(gioco);
+                ArrayList<Gioco> tuttiIGiochi = controller.getListaGiochiSviluppatore(sviluppatoreCorrente);
+
+                if (tuttiIGiochi != null) {
+                    for (Gioco gioco : tuttiIGiochi) {
+                        modelLibreria.addElement(gioco);
+                        modelPannelloControllo.addElement(gioco);
+                        listaCompletaGiochi.add(gioco);
+                    }
+                }
             }
+
+            listaTitoli.setModel(modelLibreria);
+            listaGiochiAggiunti.setModel(modelPannelloControllo);
+
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
-
-        // colleghiamo i modelli alle liste visive
-        listaTitoli.setModel(modelLibreria);
-        listaGiochiAggiunti.setModel(modelPannelloControllo);
-
     }
 
     private void filtraLista(String testoCercato, DefaultListModel<Gioco> modelloDestinazione) {
@@ -194,8 +201,7 @@ public class HomeSviluppatore {
                     Gioco giocoSelezionato = listaTitoli.getSelectedValue();
 
                     if (giocoSelezionato != null) {
-//                        informazioniGioco.setVisible(true);
-                        // 3. aggiorniamo le Label con le stringhe complete
+
                         Titolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         lblCategoria.setText("Categoria: " + controller.getCategoriaDaGioco(giocoSelezionato));
                         textAreaGeneri.setText("Genere: " + controller.getGenereDaGioco(giocoSelezionato));
@@ -208,7 +214,13 @@ public class HomeSviluppatore {
 
                     }
 
-//                    else {informazioniGioco.setVisible(false);}
+//                    try {
+//                        guadagnoTotale.setText("Guadagno totale: " + controller.getGuadagnoTotaleDaGioco(giocoSelezionato) + "€");
+//                        unitàVendute.setText("Unità vendute: " + controller.getUnitaVenduteDaGioco(giocoSelezionato));
+//                    } catch (CampoNonValidoException ex) {
+//                        JOptionPane.showMessageDialog(null, "Impossibile recuperare i dati: ");
+//
+//                    }
                 }
             }
         });
@@ -248,8 +260,6 @@ public class HomeSviluppatore {
                         textTitolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         textPegi.setText(String.valueOf(controller.getPegiDaGioco(giocoSelezionato)));
                         aggCategoria.setSelectedItem(controller.getCategoriaDaGioco(giocoSelezionato));
-
-//
                         textPrezzo.setText(String.valueOf(controller.getPrezzoPrimaEdizioneDaGioco(giocoSelezionato)));
                         textDataRilascio.setText(controller.getDataRilascioPrimaEdizioneFormattata(giocoSelezionato));
 
@@ -634,7 +644,6 @@ public class HomeSviluppatore {
 
     private void gestioneLogout() {
         pulsanteLogout.addActionListener(e -> {
-            // Mostra un popup di conferma (opzionale ma molto carino per l'utente)
             int conferma = JOptionPane.showConfirmDialog(
                     null,
                     "Sei sicuro di voler effettuare il logout?",
@@ -644,14 +653,13 @@ public class HomeSviluppatore {
             );
 
             if (conferma == JOptionPane.YES_OPTION) {
-                // 1. Trova e chiude definitivamente la finestra della HomeSviluppatore
-                // Sostituisci "homeSviluppatore" col nome del tuo JPanel principale se diverso
+
                 JFrame frameCorrente = (JFrame) SwingUtilities.getWindowAncestor(homeSviluppatore);
                 if (frameCorrente != null) {
                     frameCorrente.dispose();
                 }
 
-                // 2. Apre una nuova finestra di Login pulita
+
                 new Accedi();
             }
         });
