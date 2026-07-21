@@ -622,13 +622,21 @@ public class Controller {
         return listaFinale;
     }
 
-    public ArrayList<Sviluppatore> getSviluppatoriFiltrati(boolean checkBoxSviluppatore, String testoRicerca, Utente utenteLoggato) {
+    public ArrayList<Sviluppatore> getSviluppatoriFiltrati(boolean checkBoxSviluppatore, String testoRicerca, Utente utenteLoggato) throws CampoNonValidoException {
         ArrayList<Sviluppatore> listaFiltrata;
 
         if (checkBoxSviluppatore) {
-            listaFiltrata = utenteLoggato.getSviluppatoriSeguiti();
+            try {
+                listaFiltrata = utenteDAO.getListaSeguiti(utenteLoggato.getId());
+            } catch (SQLException e) {
+                throw new CampoNonValidoException("Operazione Fallita");
+            }
         } else {
-            listaFiltrata = getListaSviluppatoriLoggati();
+            try {
+                listaFiltrata = sviluppatoreDAO.getListaSviluppatori();
+            } catch (SQLException e) {
+                throw new CampoNonValidoException("Operazione Fallita");
+            }
         }
 
         ArrayList<Sviluppatore> listaFinale = new ArrayList<>();

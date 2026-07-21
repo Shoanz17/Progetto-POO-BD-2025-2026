@@ -724,7 +724,12 @@ public class HomeUtente {
 
         boolean checkBoxSviluppatoriSeguiti = checkBoxSeguiti.isSelected();
 
-        ArrayList<Sviluppatore> listaFiltrata = controller.getSviluppatoriFiltrati(checkBoxSviluppatoriSeguiti, testoRicerca, utenteLoggato);
+        ArrayList<Sviluppatore> listaFiltrata = null;
+        try {
+            listaFiltrata = controller.getSviluppatoriFiltrati(checkBoxSviluppatoriSeguiti, testoRicerca, utenteLoggato);
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         for (Sviluppatore s : listaFiltrata) {
             modelloFiltrato.addElement(s);

@@ -1,5 +1,6 @@
 package dao;
 
+import model.Sviluppatore;
 import model.Utente;
 
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ public interface UtenteDAO {
     void inserisciAmico(int idUtente, int idAmico) throws SQLException;
     void eliminaAmico(int idUtente, int idAmico) throws SQLException;
     ArrayList<Utente> getListaAmici(int idUtente) throws SQLException;
+    ArrayList<Sviluppatore> getListaSeguiti(int idUtente) throws SQLException;
 
     void inserisciSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
     void eliminaSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException;
