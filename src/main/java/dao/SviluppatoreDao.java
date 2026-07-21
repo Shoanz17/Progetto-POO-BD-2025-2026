@@ -17,4 +17,5 @@ public interface SviluppatoreDAO {
     void aggiornaFondi(int idSviluppatore)throws SQLException;
 
     void aggiornaProfilo(Sviluppatore sviluppatore)throws SQLException;
+
 }

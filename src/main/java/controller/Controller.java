@@ -23,6 +23,7 @@ public class Controller {
     private GenereDAO genereDAO;
     private PiattaformaDiGiocoDAO piattaformaDiGiocoDAO;
     private PromozioneDao promozioneDAO;
+    private GiocoInPromozioneDAO giocoInPromozioneDAO;
 
     public Controller() {
     }
@@ -137,13 +138,17 @@ public class Controller {
         return listaPiattaforme;
     }
 
-    public PiattaformaDiGioco getPiattaformaDaNome(String nome) {
-        for (PiattaformaDiGioco p : listaPiattaformeDiGioco) {
+    public PiattaformaDiGioco getPiattaformaDaNome(String nome) throws CampoNonValidoException {
+
+        ArrayList<PiattaformaDiGioco> piattaformeDb = getPiattaformeDiGioco();
+
+        for (PiattaformaDiGioco p : piattaformeDb) {
             if (p.getNome().equals(nome)) {
                 return p;
             }
         }
-        return null;
+
+        return null; // Se non la trova, restituisce null
     }
 
 
@@ -440,9 +445,13 @@ public class Controller {
         }
     }
 
+    public void addEdizioneALDB(EdizioneGioco ed) throws CampoNonValidoException {
+        try {
+            edizioneGiocoDAO.inserisciEdizione(ed);
 
-    public void addEdizioneAlDB(EdizioneGioco ed) {
-        listaEdizioniGiochi.add(ed);
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Impossibile salvare l'edizione nel database: " + e.getMessage());
+        }
     }
 
 
@@ -1181,22 +1190,24 @@ public class Controller {
         }
     }
 
-    public String getStringaPromozioniPerGioco(Gioco giocoScelto) {
+    public String getStringaPromozioniPerGioco(Gioco giocoScelto) throws CampoNonValidoException {
         String risultato = "";
 
-        for (Promozione promo : listaPromozioni) {
+        try {
 
-            for (GiocoInPromozione sconto : promo.getGiochiInPromozione()) {
+            ArrayList<GiocoInPromozione> scontiDelGioco = giocoInPromozioneDAO.getPromozioniPerGioco(giocoScelto);
 
-                if (sconto.getGioco().equals(giocoScelto)) {
+            for (GiocoInPromozione sconto : scontiDelGioco) {
 
-                    if (!risultato.isEmpty()) {
-                        risultato += ", ";
-                    }
-
-                    risultato += promo.getNome() + " (-" + sconto.getPercentuale() + "%)";
+                if (!risultato.isEmpty()) {
+                    risultato += ", ";
                 }
+
+                risultato += sconto.getPromozione().getNome() + " (-" + sconto.getPercentuale() + "%)";
             }
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Impossibile recuperare le promozioni dal database.");
         }
 
         if (risultato.isEmpty()) {
@@ -1206,28 +1217,6 @@ public class Controller {
         return risultato;
     }
 
-    public String getStringaRecensioniPerGioco(Gioco giocoScelto) {
-
-        String risultato = "";
-
-        for (Recensione recensione : listaRecensioni) {
-
-            if (recensione.getFattura().getGioco().getGioco().getTitolo().equals(giocoScelto.getTitolo())) {
-
-                risultato += recensione + "\n";
-                risultato += "Voto: " + recensione.getVoto() + "/100";
-                risultato += "  (Utilità: " + recensione.getDifferenzaLike() + ")\n";
-                risultato += "\"" + recensione.getDescrizione() + "\"\n";
-                risultato += "--------------------------------------------------\n\n";
-            }
-        }
-
-        if (risultato.isEmpty()) {
-            return "Ancora nessuna recensione per questo titolo.";
-        }
-
-        return risultato;
-    }
 
     public void invertiStatoBan(int idUtente) throws CampoNonValidoException {
         try {
@@ -1265,6 +1254,29 @@ public class Controller {
             throw new CampoNonValidoException("Operazione fallita!");
         }
     }
+    public String getStringaRecensioniPerGioco(Gioco giocoScelto)throws CampoNonValidoException {
+
+        String risultato = "";
+
+        ArrayList<Recensione> recensioniDelGioco = getRecensioniGioco(giocoScelto);
+
+        for (Recensione recensione : recensioniDelGioco) {
+
+
+                risultato += recensione + "\n";
+                risultato += "Voto: " + recensione.getVoto() + "/100";
+                risultato += "  (Utilità: " + recensione.getDifferenzaLike() + ")\n";
+                risultato += "\"" + recensione.getDescrizione() + "\"\n";
+                risultato += "--------------------------------------------------\n\n";
+
+        }
+
+        if (risultato.isEmpty()) {
+            return "Ancora nessuna recensione per questo titolo.";
+        }
+
+        return risultato;
+    }
 
 
     public ArrayList<Gioco> getListaGiochiSviluppatore(Sviluppatore sviluppatore) throws
@@ -1277,6 +1289,16 @@ public class Controller {
         }
     }
 
+
+    public ArrayList<Sviluppatore> getListaSviluppatoriLog() throws CampoNonValidoException {
+        try {
+            // Chiamiamo il metodo del DAO che hai appena trovato!
+            return sviluppatoreDAO.getListaSviluppatori();
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Errore di connessione: impossibile caricare la lista degli sviluppatori dal server.");
+        }
+    }
 }
 //    public void eseguiLogout() {
 //
