@@ -15,8 +15,4 @@ public interface RecensioneDAO {
     int getMediaVotiEdizioneGioco() throws SQLException;
     void aggiornaDifferenzaLike(int idFattura, int differenza) throws SQLException;
 
-    int getVotoUtenteSuRecensione(int idUtente, int idFattura) throws SQLException;
-    void inserisciVotoRecensione(int idUtente, int idFattura, int voto) throws SQLException;
-    void aggiornaVotoRecensione(int idUtente, int idFattura, int nuovoVoto) throws SQLException;
-    void eliminaVotoRecensione(int idUtente, int idFattura) throws SQLException;
 }
