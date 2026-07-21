@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public interface RecensioneDAO {
     ArrayList<Recensione> getListaRecensioniUtente(int idUtente) throws SQLException;
+    ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws SQLException;
 
     void creaRecensione (int idFattura, int voto, String testo) throws SQLException;
     void eliminaRecensione(int idFattura) throws SQLException;

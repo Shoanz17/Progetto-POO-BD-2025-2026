@@ -488,6 +488,8 @@ public class Controller {
     public String getTitoloDaFattura(Fattura f) {return f.getGioco().getGioco().getTitolo();}
     public String getPiattaformaDaFattura(Fattura f) {return f.getGioco().getPiattaforma().getNome();}
     public LocalDate getDataRilascioDaFattura(Fattura f) {return f.getGioco().getDataRilascio();}
+    public Utente getUtenteDaFattura(Fattura fattura) { return fattura.getUtente(); }
+    public String getNomeUtenteDaFattura(Fattura fattura) { return fattura.getUtente().getNome(); }
     public Categoria getCategoriaDaFattura(Fattura f) {return f.getGioco().getGioco().getCategoria();}
     public int getPegiDaFattura(Fattura f) {return f.getGioco().getGioco().getPegi();}
     public ArrayList<Genere> getGeneriDaFattura(Fattura f) {return f.getGioco().getGioco().getGeneri();}
@@ -500,6 +502,16 @@ public class Controller {
     public LocalDate getDataAcquistoDaFattura(Fattura f){return (f.getDataAcquisto());}
     public String getKeyDaFattura(Fattura f){return f.getKey();}
     public int getPrezzoAcquistoDaFattura(Fattura f){return f.getPrezzoAcquisto();}
+
+    public ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws CampoNonValidoException {
+        try{
+
+            return recensioneDAO.getRecensioniFiltrateAdmin(testoRicerca);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
 
     public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
         try {
@@ -817,17 +829,41 @@ public class Controller {
         }
     }
 
+    public void effettuaRimborso(Fattura fattura, Utente utente) throws CampoNonValidoException {
+        try {
+
+            fatturaDAO.effettuaRimborso(fattura.getId(), utente.getId(), fattura.getPrezzoAcquisto());
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+
 //    Da fare con DAO
 //    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
 //    }
 
-    public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
+    public void invertiStatoBan(int idUtente) throws CampoNonValidoException {
         try {
 
             utenteDAO.invertiStatoBan(idUtente);
 
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
+        }
+    }
+
+    public void setBannatoUtente(Utente utente) throws CampoNonValidoException {
+        boolean flag = utente.isBannato();
+        utente.setBannato(true);
+
+        try{
+
+            utenteDAO.setBannato(utente.getId());
+
+        } catch (SQLException e) {
+            utente.setBannato(flag);
+            throw new CampoNonValidoException("Operazione fallita");
         }
     }
 }
