@@ -95,7 +95,6 @@ public class Sviluppatore extends Account{
         this.listaGiochi.add(gioco);
     }
 
-
 }
 
 

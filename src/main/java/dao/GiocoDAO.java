@@ -17,4 +17,11 @@ public interface GiocoDAO {
     void updatePegiGioco(int idGioco, int pegi) throws SQLException;
     void updateGeneriGioco(int idGioco, ArrayList<Genere> nuoviGeneri) throws SQLException;
     ArrayList<Gioco> getListaGiochi() throws SQLException;
+
+    void aggiornaGioco(Gioco gioco)throws SQLException;
+    int inserisciGioco(Gioco gioco)throws SQLException;
+    void inserisciEdizione(EdizioneGioco edizioneGioco, int idGioco)throws SQLException;
+    int getUnitaVendutePerGioco(String titoloGioco)throws SQLException;
+    int getGuadagnoTotalePerGioco(String titoloGioco)throws SQLException;
+    ArrayList<Gioco> getGiochiSviluppatore(int idSviluppatore)throws SQLException;
 }

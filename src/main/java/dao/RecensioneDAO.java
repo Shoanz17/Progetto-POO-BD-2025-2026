@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public interface RecensioneDAO {
     ArrayList<Recensione> getListaRecensioniUtente(int idUtente) throws SQLException;
     ArrayList<Recensione> getListaRecensioniEdizione(int idEdizioneGioco) throws SQLException;
+    ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws SQLException;
 
     void creaRecensione (int idFattura, int voto, String testo) throws SQLException;
     void eliminaRecensione(int idFattura) throws SQLException;
@@ -16,5 +17,7 @@ public interface RecensioneDAO {
 
     int getMediaVotiEdizioneGioco(int idEdizioneGioco) throws SQLException;
     void aggiornaDifferenzaLike(int idFattura, int differenza) throws SQLException;
+
+    ArrayList<Recensione> getRecensioniPerGioco(int idGioco) throws SQLException;
 
 }

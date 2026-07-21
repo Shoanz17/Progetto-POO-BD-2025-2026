@@ -14,6 +14,7 @@ public interface UtenteDAO {
     Utente getUtenteById(int idUtente) throws SQLException;
 
     void invertiStatoBan(int idUtente) throws SQLException;
+    void setBannato(int idUtente) throws SQLException;
 
     ArrayList<Utente> getListaUtenti() throws SQLException;
     void aggiornaProfiloUtente(Utente utente) throws SQLException;
