@@ -903,7 +903,11 @@ public class HomeUtente {
     private void configuraComboBoxPiattaformaCatalogo() {
         DefaultComboBoxModel<PiattaformaDiGioco> modelPiattaforma = new DefaultComboBoxModel<>();
 
-        modelPiattaforma.addAll(controller.getPiattaformeDiGioco());
+        try {
+            modelPiattaforma.addAll(controller.getPiattaformeDiGioco());
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
 
         piattaformaFiltroCatalogo.setModel(modelPiattaforma);
         piattaformaFiltroCatalogo.setSelectedIndex(-1);

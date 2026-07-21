@@ -96,16 +96,6 @@ public class Controller {
         }
     }
 
-    public ArrayList<Utente> getListaUtentiLoggati() {
-        ArrayList<Utente> listaUtentiLoggati = new ArrayList<>();
-        for (Account u : listaAccountLoggati) {
-            if (u instanceof Utente) {
-                listaUtentiLoggati.add((Utente) u);
-            }
-        }
-        return listaUtentiLoggati;
-    }
-
     public ArrayList<Utente> getUtentiFiltratiAdmin(String testoRicerca, boolean statoBan) throws CampoNonValidoException{
         try{
 
@@ -330,7 +320,7 @@ public class Controller {
 
     public Fattura getFatturaDaRecensione(Recensione r){return r.getFattura();}
 
-    public void rimuoviRecensioneSelezionata(Fattura fattura) throws CampoNonValidoException {
+    public void rimuoviRecensioneSelezionataDaFattura(Fattura fattura) throws CampoNonValidoException {
         fattura.setRecensione(null);
 
         try {
@@ -523,6 +513,14 @@ public class Controller {
 
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+
+    public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() throws CampoNonValidoException {
+        try {
+            return piattaformaDiGiocoDAO.getListaPiattaforme();
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 

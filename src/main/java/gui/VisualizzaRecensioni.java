@@ -8,7 +8,6 @@ import model.Utente;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -94,7 +93,7 @@ public class VisualizzaRecensioni {
                 if (rigaSelezionata != -1) {
                     Fattura f = acquistiUtenteConRecensione.get(rigaSelezionata);
                     try { // Temporaneo
-                        controller.rimuoviRecensioneSelezionata(f);
+                        controller.rimuoviRecensioneSelezionataDaFattura(f);
 
                         JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Recensione rimossa!");
                         textDescrizione.setText("");
