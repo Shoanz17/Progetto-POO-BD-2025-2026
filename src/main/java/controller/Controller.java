@@ -181,7 +181,21 @@ public class Controller {
         try {
             utenteDAO.aggiornaProfiloUtente(utenteLoggato);
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione fallita");
+            annullaModifiche(utenteLoggato);
+            throw new CampoNonValidoException("Operazione fallita: controlla che l'email non sia già in uso o che i dati siano corretti.");
+        }
+    }
+
+    public void annullaModifiche(Utente utenteLoggato) throws CampoNonValidoException {
+        try {
+            Utente utenteOriginale = utenteDAO.getUtenteById(utenteLoggato.getId());
+            utenteLoggato.setNome(utenteOriginale.getNome());
+            utenteLoggato.setEmail(utenteOriginale.getEmail());
+            utenteLoggato.setPassword(utenteOriginale.getPassword());
+            utenteLoggato.setDataNascita(utenteOriginale.getDataNascita());
+            utenteLoggato.setGenere(utenteOriginale.getGenere());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
@@ -279,7 +293,7 @@ public class Controller {
     public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPiattaforma();}
     public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getGeneri();}
     public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getPegi();}
-    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco();} //da fare
+    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());} //da fare
     public Categoria getCategoriaDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getCategoria();}
     public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getDataRilascio();}
 
@@ -702,21 +716,11 @@ public class Controller {
     }
 
     public ArrayList<Recensione> getRecensioniEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
-        ArrayList<Recensione> listaRecensioniGioco = new ArrayList<>();
-
-        ArrayList<Fattura> listaFatture;
         try {
-            listaFatture = fatturaDAO.getListaFatture();
+            return recensioneDAO.getListaRecensioniEdizione(edizioneGioco.getId());
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
         }
-
-        for (Fattura f : listaFatture){
-            if(f.getGioco().equals(edizioneGioco) && f.getRecensione() != null) {
-                listaRecensioniGioco.add(f.getRecensione());
-            }
-        }
-        return listaRecensioniGioco;
     }
 
     public String getDescrizioneRecensione(Recensione recensione){return recensione.getDescrizione();}
