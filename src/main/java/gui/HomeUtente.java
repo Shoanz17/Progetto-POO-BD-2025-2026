@@ -479,7 +479,7 @@ public class HomeUtente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String keyDaCopiare = keyLibreria.getText();
-                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux)
+                //l'ho trovato su internet. Permette di copiare un testo nella clipboard di Windows mac e linux
                 java.awt.datatransfer.StringSelection selezione = new java.awt.datatransfer.StringSelection(keyDaCopiare);
                 java.awt.Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selezione, null);
             }

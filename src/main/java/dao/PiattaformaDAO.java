@@ -5,7 +5,7 @@ import model.PiattaformaDiGioco;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface PiattaformaDao {
+public interface PiattaformaDAO {
     ArrayList<PiattaformaDiGioco> getTuttePiattaforme()throws SQLException;
 
 }
