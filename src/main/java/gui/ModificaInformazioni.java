@@ -65,6 +65,8 @@ public class ModificaInformazioni {
                         controller.setDataDiNascitaUtente(textFieldDataDiNascita.getText(), utenteLoggato);
                     }
 
+                    controller.salvaModificheProfilo(utenteLoggato);
+
                     homeUtente.configuraTestoInformazioniPersonali();
                     modificaInformazioniFrame.dispose();
                 } catch (CampoNonValidoException ex) {
