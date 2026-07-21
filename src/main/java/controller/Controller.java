@@ -186,7 +186,7 @@ public class Controller {
         }
     }
 
-    public void annullaModifiche(Utente utenteLoggato) throws CampoNonValidoException {
+    public void annullaModifiche(Utente utenteLoggato) {
         try {
             Utente utenteOriginale = utenteDAO.getUtenteById(utenteLoggato.getId());
             utenteLoggato.setNome(utenteOriginale.getNome());
@@ -194,8 +194,7 @@ public class Controller {
             utenteLoggato.setPassword(utenteOriginale.getPassword());
             utenteLoggato.setDataNascita(utenteOriginale.getDataNascita());
             utenteLoggato.setGenere(utenteOriginale.getGenere());
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
+        } catch (SQLException | CampoNonValidoException e) {
         }
     }
 

@@ -70,11 +70,7 @@ public class ModificaInformazioni {
                     homeUtente.configuraTestoInformazioniPersonali();
                     modificaInformazioniFrame.dispose();
                 } catch (CampoNonValidoException ex) {
-                    try {
-                        controller.annullaModifiche(utenteLoggato);
-                    } catch (CampoNonValidoException exc) {
-                        JOptionPane.showMessageDialog(modificaInformazioniFrame,exc.getMessage());
-                    }
+                    controller.annullaModifiche(utenteLoggato);
                     JOptionPane.showMessageDialog(modificaInformazioniFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
