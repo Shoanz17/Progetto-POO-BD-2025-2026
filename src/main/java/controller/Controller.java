@@ -20,6 +20,7 @@ public class Controller {
     private GiocoDAO giocoDAO;
     private EdizioneGiocoDAO edizioneGiocoDAO;
     private GenereDAO genereDAO;
+    private PiattaformaDiGiocoDAO piattaformaDiGiocoDAO;
 
     public Controller() {
     }
@@ -474,7 +475,13 @@ public class Controller {
     public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome, produttore, portabile);
 
-        listaPiattaformeDiGioco.add(piattaformaDiGioco);
+        try {
+
+            piattaformaDiGiocoDAO.creaPiattaforma(piattaformaDiGioco);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     // metodi per prendere dati da una fattura
@@ -509,8 +516,14 @@ public class Controller {
         }
     }
 
-    public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() {
-        return listaPiattaformeDiGioco;
+    public ArrayList<PiattaformaDiGioco> getPiattaformeFiltrate(String testoRicerca) throws CampoNonValidoException {
+        try {
+
+            return piattaformaDiGiocoDAO.getPiattaformeFiltrate(testoRicerca);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public ArrayList<EdizioneGioco> getEdizioniGiochi() throws CampoNonValidoException {

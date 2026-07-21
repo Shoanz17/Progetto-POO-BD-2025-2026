@@ -789,9 +789,8 @@ public class HomeAdmin {
 
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(PiattaformaDiGioco piattaforma : controller.getPiattaformeDiGioco()){
-            //per ottimizzare il codice evitando che faccia tanti contains inutilmente se il testo è vuoto
-            if(testoRicerca.isEmpty() || controller.getNomePiattaforma(piattaforma).toLowerCase().contains(testoRicerca)){
+        try {
+            for(PiattaformaDiGioco piattaforma : controller.getPiattaformeFiltrate(testoRicerca)){
                 Object[] riga = {
                         controller.getNomePiattaforma(piattaforma),
                         controller.getProduttorePiattaforma(piattaforma),
@@ -799,6 +798,8 @@ public class HomeAdmin {
                 };
                 righe.add(riga);
             }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         aggiornaContenutoTabella(tabellaPiattaforme, righe);
