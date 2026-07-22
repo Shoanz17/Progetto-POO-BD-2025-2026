@@ -5,6 +5,7 @@ import database.ConnessioneDatabase;
 import model.GenereEnum;
 import model.Utente;
 
+import java.security.PublicKey;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -123,10 +124,40 @@ public class UtenteDAOPostgres implements UtenteDAO {
     }
 
     @Override
-    void setBannato(int idUtente) throws SQLException{
+    public void setBannato(int idUtente) throws SQLException {
         String query = "UPDATE UTENTE SET bannato = ? WHERE idUtente = ?";
 
-        ConnessioneDatabase.getInstance().eseguiUpdate(query,idUtente);
+        ConnessioneDatabase.getInstance().eseguiUpdate(query,true, idUtente);
+    }
+
+    @Override
+    public ArrayList<Utente> getListaUtenti() throws SQLException {
+        ArrayList<Utente> listaUtenti = new ArrayList<>();
+        String query = "SELECT a.nome, a.password, a.dataCreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
+                "FROM ACCOUNT a JOIN UTENTE u ON a.idAccount = u.idUtente";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+
+        // Convertito da Statement a PreparedStatement
+        try (PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("idUtente");
+                String nome = rs.getString("nome");
+                String password = rs.getString("password");
+                LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                GenereEnum genere = GenereEnum.valueOf(rs.getString("genere"));
+                String email = rs.getString("email");
+                LocalDate dataNascita = rs.getDate("dataNascita").toLocalDate();
+                int saldo = rs.getInt("saldo");
+                boolean bannato = rs.getBoolean("bannato");
+
+                Utente u = new Utente(id, nome, password, dataCreazione, genere, email, dataNascita, saldo, bannato);
+                listaUtenti.add(u);
+            }
+        }
+        return listaUtenti;
     }
 
     @Override
@@ -140,41 +171,66 @@ public class UtenteDAOPostgres implements UtenteDAO {
     }
 
     @Override
-    public ArrayList<Utente> getListaUtenti() throws SQLException {
-        ArrayList<Utente> listaUtenti = new ArrayList<>();
-        String query = "SELECT a.nome, a.password,a.datacreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
-                "FROM ACCOUNT a JOIN UTENTE u " +
-                "ON a.idAccount = u.idUtente";
-
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            while (rs.next()) {
-                int id = rs.getInt("idUtente");
-                String nome = rs.getString("nome");
-                LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
-                String password = rs.getString("password");
-                GenereEnum genere = GenereEnum.valueOf(rs.getString("genere"));
-                String email = rs.getString("email");
-                LocalDate dataNascita = rs.getDate("dataNascita").toLocalDate();
-                int saldo = rs.getInt("saldo");
-                boolean bannato = rs.getBoolean("bannato");
-
-                Utente u = new Utente(id, nome, password, dataCreazione, genere, email, dataNascita, saldo, bannato);
-
-                listaUtenti.add(u);
-            }
-        }
-        return listaUtenti;
-    }
-
-    @Override
     public void aggiungiSaldo(int idUtente, int importoDaAggiungere) throws SQLException {
         String query = "UPDATE UTENTE SET saldo = saldo + ? WHERE idUtente = ?";
 
         ConnessioneDatabase.getInstance().eseguiUpdate(query, importoDaAggiungere, idUtente);
 
     }
+
+    @Override
+    public void inserisciAmico(int idUtente, int idAmico) throws SQLException {
+        int primoAmico = Math.min(idUtente, idAmico);
+        int secondoAmico = Math.max(idUtente, idAmico);
+
+        String query = "INSERT INTO AMICI (idAmico1, idAmico2) VALUES (?, ?)";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, primoAmico, secondoAmico);
+    }
+
+    @Override
+    public void eliminaAmico(int idUtente, int idAmico) throws SQLException {
+        int utente = Math.min(idUtente, idAmico);
+        int secondoAmico = Math.max(idUtente, idAmico);
+
+        String query = "DELETE FROM AMICI WHERE idAmico1 = ? AND idAmico2 = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, utente, secondoAmico);
+    }
+
+    @Override
+    public ArrayList<Utente> getListaAmici(int idUtente) throws SQLException {
+        ArrayList<Utente> listaAmici = new ArrayList<>();
+
+        String query = "SELECT a.nome, a.password, a.dataCreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
+                "FROM ACCOUNT a JOIN UTENTE u ON a.idAccount = u.idUtente " +
+                "JOIN AMICI am ON (am.idAmico1 = ? AND am.idAmico2 = u.idUtente) " +
+                "OR (am.idAmico2 = ? AND am.idAmico1 = u.idUtente)";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, idUtente);
+            pstmt.setInt(2, idUtente);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("idUtente");
+                    String nome = rs.getString("nome");
+                    String password = rs.getString("password");
+                    LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                    GenereEnum genere = GenereEnum.valueOf(rs.getString("genere"));
+                    String email = rs.getString("email");
+                    LocalDate dataNascita = rs.getDate("dataNascita").toLocalDate();
+                    int saldo = rs.getInt("saldo");
+                    boolean statoBan = rs.getBoolean("bannato");
+
+                    Utente amico = new Utente(id, nome, password, dataCreazione, genere, email, dataNascita, saldo, statoBan);
+                    listaAmici.add(amico);
+                }
+            }
+        }
+
+        return listaAmici;
+    }
+
 
 }
