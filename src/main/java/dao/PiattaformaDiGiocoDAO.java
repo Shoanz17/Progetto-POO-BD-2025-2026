@@ -1,5 +1,6 @@
 package dao;
 
+import model.Gioco;
 import model.PiattaformaDiGioco;
 
 import java.sql.SQLException;
@@ -10,4 +11,6 @@ public interface PiattaformaDiGiocoDAO {
 
     ArrayList<PiattaformaDiGioco> getPiattaformeFiltrate(String testoRicerca) throws SQLException;
     ArrayList<PiattaformaDiGioco> getListaPiattaforme() throws SQLException;
+
+    ArrayList<PiattaformaDiGioco> getListaPiattaformeDaGioco(Gioco gioco) throws SQLException;
 }
