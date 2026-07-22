@@ -15,4 +15,6 @@ public interface SviluppatoreDAO {
     void rimuoviStrike(int idSviluppatore) throws SQLException;
 
     void aggiornaProfilo(Sviluppatore sviluppatore)throws SQLException;
+
+    int getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException;
 }

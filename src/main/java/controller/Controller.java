@@ -854,8 +854,13 @@ public class Controller {
         }
     }
 
-//    Da fare con DAO
-//    public int giocoPiuVendutoSviluppatore(Sviluppatore sviluppatore){
+    public int getGiocoPiuVendutoSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
+        try {
+            return sviluppatoreDAO.getGiocoPiuVendutoSviluppatore(sviluppatore.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
 // metodi per la homeSviluppatore CV
 
     public String getGenereDaGioco(Gioco gioco) {

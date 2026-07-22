@@ -662,7 +662,11 @@ public class HomeUtente {
                 if (sviluppatoreSelezionato != null) {
                     descrizioneSviluppatoreProfilo.setText(controller.getDescrizioneSviluppatore(sviluppatoreSelezionato));
                     testoGiochiRilasciati.setText("Numero di giochi rilasciati: " + String.valueOf(controller.getNumeroGiochiRilasciatiSviluppatore(sviluppatoreSelezionato)));
-                    //testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));  DA FARE CON DAO DISPONIBILE
+                    try {
+                        testoGiocoPiuVenduto.setText(String.valueOf(controller.getGiocoPiuVendutoSviluppatore(sviluppatoreSelezionato)));
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame,ex.getMessage());
+                    }
                 }
             }
         });
