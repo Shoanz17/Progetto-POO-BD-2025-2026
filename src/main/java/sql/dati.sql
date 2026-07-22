@@ -54,25 +54,25 @@ INSERT INTO sviluppatore (idSviluppatore, descrizione) VALUES
 (14, 'Facciamo uscire un gioco ogni 10 anni ma rivoluziona il mercato'),
 (15, 'Abbiamo riportato in vita i classici GDR con dadi e scelte multiple');
 
-INSERT INTO utente (idUtente, genere, dataNascita, email) VALUES
-(16, 'Maschio', '2001-05-12', 'marcox@hotmail.com'),
-(17, 'Maschio', '1999-10-23', 'tullio.cin@gmail.com'),
-(18, 'Femmina', '2002-08-15', 'giulia.super@fastmail.com'),
-(19, 'Maschio', '1998-01-30', 'ciro.xx@gmail.com'),
-(20, 'Maschio', '2003-11-05', 'andrea.pignieri@libero.com'),
-(21, 'Altro', '2000-04-18', 'musella.gamer@hotmail.com'),
-(22, 'Altro', '1994-02-10', 'ilpianobardisusy@gmail.com'),
-(23, 'Femmina', '1974-02-14', 'jill@stars.com'),
-(24, 'Maschio', '1973-05-05', 'chris@bsaa.org'),
-(25, 'Maschio', '1960-08-11', 'wesker@umbrella.com'),
-(26, 'Maschio', '1977-09-09', 'leon.kennedy@rcpd.gov'),
-(27, 'Maschio', '1990-01-01', 'luciopt@libero.it'),
-(28, 'Maschio', '2001-02-12', 'bomber.kvara@napoli.it'),
-(29, 'Maschio', '1998-05-20', 'ciro.gol@hotmail.it'),
-(30, 'Maschio', '2002-11-11', 'gymbro99@gmail.com'),
-(31, 'Maschio', '1999-12-25', 'peppe.stort@libero.it'),
-(32, 'Femmina', '2003-04-14', 'anna.pazza@gmail.com'),
-(33, 'Maschio', '1980-08-20', 'franchino@gmail.com');
+INSERT INTO utente (idUtente, genere, dataNascita, email, saldo) VALUES
+(16, 'Maschio', '2001-05-12', 'marcox@hotmail.com', 300),
+(17, 'Maschio', '1999-10-23', 'tullio.cin@gmail.com', 300),
+(18, 'Femmina', '2002-08-15', 'giulia.super@fastmail.com', 300),
+(19, 'Maschio', '1998-01-30', 'ciro.xx@gmail.com', 300),
+(20, 'Maschio', '2003-11-05', 'andrea.pignieri@libero.com', 300),
+(21, 'Altro', '2000-04-18', 'musella.gamer@hotmail.com', 300),
+(22, 'Altro', '1994-02-10', 'ilpianobardisusy@gmail.com', 300),
+(23, 'Femmina', '1974-02-14', 'jill@stars.com', 300),
+(24, 'Maschio', '1973-05-05', 'chris@bsaa.org', 300),
+(25, 'Maschio', '1960-08-11', 'wesker@umbrella.com', 300),
+(26, 'Maschio', '1977-09-09', 'leon.kennedy@rcpd.gov', 300),
+(27, 'Maschio', '1990-01-01', 'luciopt@libero.it', 300),
+(28, 'Maschio', '2001-02-12', 'bomber.kvara@napoli.it', 300),
+(29, 'Maschio', '1998-05-20', 'ciro.gol@hotmail.it', 300),
+(30, 'Maschio', '2002-11-11', 'gymbro99@gmail.com', 300),
+(31, 'Maschio', '1999-12-25', 'peppe.stort@libero.it', 300),
+(32, 'Femmina', '2003-04-14', 'anna.pazza@gmail.com', 300),
+(33, 'Maschio', '1980-08-20', 'franchino@gmail.com', 300);
 
 INSERT INTO amici (idamico1, idamico2) VALUES
 (21, 22),
@@ -166,10 +166,6 @@ INSERT INTO promozione (nome, dataInizio, dataFine) VALUES
 ('Golden Week', '2026-04-29', '2026-05-06'),
 ('Black Friday 2026', '2026-11-23', '2026-11-30');
 
-INSERT INTO gioco_in_promozione (idGioco, idPromozione, percentuale) VALUES
-(2, 1, 50),
-(4, 1, 10),
-(5, 3, 75);
 
 INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
 ('Switch','Nintendo',true),
@@ -235,6 +231,10 @@ INSERT INTO seguiti(idutente, idsviluppatore) VALUES
 (18, 8),
 (16, 7);
 
+INSERT INTO gioco_in_promozione (idGioco, idPromozione, percentuale) VALUES
+(4, 1, 10),
+(5, 3, 75);
+
 INSERT INTO fattura (idUtente, idEdizione, prezzoAcquisto, key, dataAcquisto) VALUES
 (16, 10, 60, '123e4567-e89b-12d3-a456-426614174001', '2022-03-01'),
 (17, 5, 60, '123e4567-e89b-12d3-a456-426614174002', '2018-12-25'),
@@ -249,7 +249,7 @@ INSERT INTO fattura (idUtente, idEdizione, prezzoAcquisto, key, dataAcquisto) VA
 (31, 15, 30, '123e4567-e89b-12d3-a456-426614174011', '2016-06-01'),
 (19, 11, 60, '123e4567-e89b-12d3-a456-426614174012', '2022-04-12');
 
-    INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES
+INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES
 (1, 95, 'Capolavoro assoluto, mi ha fatto esplorare per ore senza mai annoiarmi.', 45),
 (2, 100, 'Super Mario non delude mai, puro divertimento per tutte le eta.', 12),
 (3, 85, 'Ottimo porting per PC, una storia fantastica e straziante.', 8),
