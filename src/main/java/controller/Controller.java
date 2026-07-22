@@ -994,10 +994,9 @@ public class Controller {
 
     }
 
-    public void modificaGiocoEsistente
-            (Gioco gioco, String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
-             ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio) throws
-            CampoNonValidoException {
+    public void modificaGiocoEsistente(Gioco gioco, String titolo, int pegi, Categoria categoria,
+                                       ArrayList<Genere> generi, ArrayList<PiattaformaDiGioco> piattaforme,
+                                       double prezzo, LocalDate dataRilascio) throws CampoNonValidoException {
 
         gioco.setTitolo(titolo);
         gioco.setPegi(pegi);
@@ -1007,19 +1006,21 @@ public class Controller {
             giocoDAO.aggiornaGioco(gioco);
             genereDAO.collegaGeneriAGioco(gioco.getId(), generi);
 
+            ArrayList<PiattaformaDiGioco> piattaformeEsistenti = piattaformaDiGiocoDAO.getListaPiattaformeDaGioco(gioco);
+
             for (PiattaformaDiGioco p : piattaforme) {
 
-                if (!piattaformaDiGiocoDAO.getListaPiattaformeDaGioco(gioco).contains(p)) {
+                if (!piattaformeEsistenti.contains(p)) {
 
                     EdizioneGioco nuovaEdizione = new EdizioneGioco(gioco, p, (int) prezzo, dataRilascio);
                     gioco.addEdizione(nuovaEdizione);
 
-                    giocoDAO.inserisciEdizione(nuovaEdizione, gioco.getId());
+                    edizioneGiocoDAO.inserisciEdizione(nuovaEdizione);
                 }
             }
 
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione fallita! ");
+            throw new CampoNonValidoException("Operazione fallita! " + e.getMessage());
         }
 
         updateGeneriGioco(gioco, generi);
@@ -1211,5 +1212,20 @@ public class Controller {
         } catch (SQLException e) {
             throw new CampoNonValidoException("Errore di connessione: impossibile caricare la lista degli sviluppatori dal server.");
         }
+    }
+
+    public PiattaformaDiGioco getPiattaformaDaNome(String nomePiattaforma) {
+        try {
+            ArrayList<PiattaformaDiGioco> tutteLePiattaforme = getPiattaformeDiGioco();
+
+            for (PiattaformaDiGioco p : tutteLePiattaforme) {
+                if (p.getNome().equalsIgnoreCase(nomePiattaforma)) {
+                    return p;
+                }
+            }
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore durante la ricerca della piattaforma: " + e.getMessage());
+        }
+        return null;
     }
 }
