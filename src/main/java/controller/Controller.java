@@ -854,6 +854,9 @@ public class Controller {
     }
 
     public int getPrezzoCarrello(Utente utenteLoggato) {
+        if (utenteLoggato.getCarrello() == null){
+            return 0;
+        }
         return utenteLoggato.getCarrello().getTotale();
     }
 
