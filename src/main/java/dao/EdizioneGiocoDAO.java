@@ -10,4 +10,7 @@ public interface EdizioneGiocoDAO {
     ArrayList<model.EdizioneGioco> getCatalogoCompleto() throws SQLException;
 
     ArrayList<EdizioneGioco> getListaGiochiCarrello(int idUtente) throws SQLException;
+
+    void inserisciEdizione(EdizioneGioco edizioneGioco)throws SQLException;
+
 }
