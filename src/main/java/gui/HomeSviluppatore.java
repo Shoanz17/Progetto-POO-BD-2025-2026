@@ -81,7 +81,7 @@ public class HomeSviluppatore {
     private JFrame sviluppatoreFrame;
 
 
-    public HomeSviluppatore(Controller controller,Sviluppatore sviluppatore) {
+    public HomeSviluppatore(Controller controller, JFrame accediGUI, Sviluppatore sviluppatore) {
 
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
         if(sviluppatore == null) throw new IllegalArgumentException("Sviluppatore passato inesistente");
@@ -103,7 +103,7 @@ public class HomeSviluppatore {
         reset();
         rimuoviGioco();
         partecipaPromozione();
-        gestioneLogout();
+        gestioneLogout(accediGUI);
 
 
     }
@@ -618,7 +618,7 @@ public class HomeSviluppatore {
         });
     }
 
-    private void gestioneLogout() {
+    private void gestioneLogout(JFrame accediGUI) {
         pulsanteLogout.addActionListener(e -> {
             int conferma = JOptionPane.showConfirmDialog(
                     null,
@@ -630,10 +630,8 @@ public class HomeSviluppatore {
 
             if (conferma == JOptionPane.YES_OPTION) {
 
-                JFrame frameCorrente = (JFrame) SwingUtilities.getWindowAncestor(homeSviluppatore);
-                if (frameCorrente != null) {
-                    frameCorrente.dispose();
-                }
+                accediGUI.setVisible(true);
+                sviluppatoreFrame.dispose();
 
 
                 new Accedi();
