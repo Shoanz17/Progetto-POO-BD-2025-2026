@@ -143,7 +143,7 @@ CREATE TABLE recensione(
     descrizione VARCHAR(500),
     differenzaLike INT DEFAULT 0,
 
-    CONSTRAINT fk_recensione_fattura FOREIGN KEY (idFattura) REFERENCES fattura (idFattura),
+    CONSTRAINT fk_recensione_fattura FOREIGN KEY (idFattura) REFERENCES fattura (idFattura) ON DELETE CASCADE,
     CONSTRAINT chk_recensione_voto CHECK ( voto >= 0 AND voto <= 100 )
 );
 

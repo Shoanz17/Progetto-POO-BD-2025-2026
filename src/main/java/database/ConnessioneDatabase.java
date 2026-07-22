@@ -37,20 +37,15 @@ public class ConnessioneDatabase {
         return instance;
     }
 
-    public int eseguiUpdate(String query, Object... parametri) {
+    public void eseguiUpdate(String query, Object... parametri) throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 
-            // Inserisce i parametri al posto dei punti interrogativi
             for (int i = 0; i < parametri.length; i++) {
                 pstmt.setObject(i + 1, parametri[i]);
             }
 
-            // Esegue la query e restituisce il numero di righe modificate
-            return pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
-        } catch (SQLException e) {
-            System.err.println("Errore nell'esecuzione dell'update: " + e.getMessage());
-            return -1;
         }
     }
 }

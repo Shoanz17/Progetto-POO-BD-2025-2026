@@ -837,7 +837,7 @@ public class HomeAdmin {
             JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
-        listaGiochi.setModel(modelloGeneri);
+        listaGeneri.setModel(modelloGeneri);
     }
 
     private void associaListenerPulsanteAggiungiGenere(){
@@ -1011,7 +1011,7 @@ public class HomeAdmin {
                 int rigaSelezionata = tabellaRecensioni.getSelectedRow();
 
                 if(rigaSelezionata != -1){
-                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Sicuro di voler bannare l'utente " + tabellaRecensioni.getValueAt(rigaSelezionata, 1) + "?",
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Sicuro di voler bannare l'utente " + tabellaRecensioni.getValueAt(rigaSelezionata, 0) + "?",
                             "Ban", JOptionPane.YES_NO_OPTION);
 
                     if(risposta == JOptionPane.YES_OPTION) {

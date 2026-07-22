@@ -122,6 +122,8 @@ public abstract class Account {
         this.password = password;
     }
 
+    public void setId(int id) {this.id = id;}
+
     public LocalDate getDataCreazione() {return dataCreazione;}
 
     /**

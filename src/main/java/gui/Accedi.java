@@ -69,6 +69,10 @@ public class Accedi {
                     else if(accountLoggato instanceof Sviluppatore){
                         JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
                         //apri form sviluppatore
+                        HomeSviluppatore homeSviluppatore = new HomeSviluppatore(controller, accediFrame, (Sviluppatore) accountLoggato);
+                        accediFrame.setVisible(false);
+                        nomeTextBox.setText("");
+                        passwordTextBox.setText("");
                     }
                     else if(accountLoggato instanceof Admin){
                         JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
