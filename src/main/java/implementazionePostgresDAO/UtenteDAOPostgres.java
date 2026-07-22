@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class UtenteDAOPostgres implements UtenteDAO {
     private Connection connection;
 
-    public UtenteDAOPostgres(){
+    public UtenteDAOPostgres() {
         try {
             this.connection = ConnessioneDatabase.getInstance().connection;
         } catch (SQLException e) {
@@ -47,6 +47,41 @@ public class UtenteDAOPostgres implements UtenteDAO {
 
         ConnessioneDatabase.getInstance().eseguiUpdate(queryUtente, idGenerato, utente.getGenere().name(), utente.getSaldo(), utente.isBannato(), Date.valueOf(utente.getDataNascita()), utente.getEmail()
         );
+    }
+
+    @Override
+    public ArrayList<Utente> getUtentiFiltratiAdmin(String testoRicerca, boolean bannato) throws SQLException {
+        ArrayList<Utente> listaUtenti = new ArrayList<>();
+
+        String query = "SELECT a.nome, a.password, a.dataCreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
+                        "FROM ACCOUNT a JOIN UTENTE u ON a.idAccount = u.idUtente " +
+                        "WHERE u.bannato = ? AND LOWER(a.nome) LIKE LOWER(?)";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setBoolean(1, bannato);
+            // Trovato su internet. I % servono per cercare qualsiasi nome che contiene quella parola
+            pstmt.setString(2, "%" + testoRicerca.trim() + "%");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("idUtente");
+                    String nome = rs.getString("nome");
+                    String password = rs.getString("password");
+                    LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                    GenereEnum genere = GenereEnum.valueOf(rs.getString("genere"));
+                    String email = rs.getString("email");
+                    LocalDate dataNascita = rs.getDate("dataNascita").toLocalDate();
+                    int saldo = rs.getInt("saldo");
+                    boolean statoBan = rs.getBoolean("bannato");
+
+                    Utente u = new Utente(id, nome, password, dataCreazione, genere, email, dataNascita, saldo, statoBan);
+                    listaUtenti.add(u);
+                }
+            }
+        }
+        return listaUtenti;
     }
 
     @Override
