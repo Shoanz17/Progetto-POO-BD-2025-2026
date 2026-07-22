@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Recensione {
+public class RilasciaRecensione {
     private JPanel recensionePanel;
     private JButton pulsanteRilasciaRecensione;
     private JSpinner spinnerVoto;
@@ -24,7 +24,7 @@ public class Recensione {
     private Utente utenteLoggato;
     private Fattura fatturaSelezionata;
 
-    public Recensione(Controller controller, HomeUtente homeUtente, Utente utenteLoggato, Fattura fatturaSelezionata) {
+    public RilasciaRecensione(Controller controller, HomeUtente homeUtente, Utente utenteLoggato, Fattura fatturaSelezionata) {
 
         this.controller = controller;
         this.homeUtente = homeUtente;
