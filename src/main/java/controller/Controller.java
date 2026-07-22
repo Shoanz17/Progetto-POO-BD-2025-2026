@@ -1,6 +1,7 @@
 package controller;
 
 import dao.*;
+import implementazionePostgresDAO.*;
 import model.*;
 
 import java.sql.SQLException;
@@ -11,20 +12,30 @@ import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 
 public class Controller {
-    private AccountDAO accountDAO;
-    private UtenteDAO utenteDAO;
-    private SviluppatoreDAO sviluppatoreDAO;
-    private AdminDAO adminDAO;
-    private FatturaDAO fatturaDAO;
-    private RecensioneDAO recensioneDAO;
-    private GiocoDAO giocoDAO;
-    private EdizioneGiocoDAO edizioneGiocoDAO;
-    private GenereDAO genereDAO;
-    private PiattaformaDiGiocoDAO piattaformaDiGiocoDAO;
-    private PromozioneDAO promozioneDAO;
-    private GiocoInPromozioneDAO giocoInPromozioneDAO;
+    private final AccountDAO accountDAO;
+    private final UtenteDAO utenteDAO;
+    private final SviluppatoreDAO sviluppatoreDAO;
+    private final FatturaDAO fatturaDAO;
+    private final RecensioneDAO recensioneDAO;
+    private final GiocoDAO giocoDAO;
+    private final EdizioneGiocoDAO edizioneGiocoDAO;
+    private final GenereDAO genereDAO;
+    private final PiattaformaDiGiocoDAO piattaformaDiGiocoDAO;
+    private final PromozioneDAO promozioneDAO;
+    private final GiocoInPromozioneDAO giocoInPromozioneDAO;
 
     public Controller() {
+        this.accountDAO = new AccountDAOPostgres();
+        this.utenteDAO = new UtenteDAOPostgres();
+        this.sviluppatoreDAO = new SviluppatoreDAOPostgres();
+        this.fatturaDAO = new FatturaDAOPostgres();
+        this.recensioneDAO = new RecensioneDAOPostgres();
+        this.giocoDAO = new GiocoDAOPostgres();
+        this.edizioneGiocoDAO = new EdizioneGiocoDAOPostgres();
+        this.genereDAO = new GenereDAOPostgres();
+        this.piattaformaDiGiocoDAO = new PiattaformaDiGiocoDAOPostgres();
+        this.promozioneDAO = new PromozioneDAOPostgres();
+        this.giocoInPromozioneDAO = new GiocoInPromozioneDAOPostgres();
     }
 
     public String getNomeAccount(Account account) {return account.getNome();}
