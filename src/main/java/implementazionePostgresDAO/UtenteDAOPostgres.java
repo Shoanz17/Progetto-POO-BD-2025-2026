@@ -3,9 +3,9 @@ package implementazionePostgresDAO;
 import dao.UtenteDAO;
 import database.ConnessioneDatabase;
 import model.GenereEnum;
+import model.Sviluppatore;
 import model.Utente;
 
-import java.security.PublicKey;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -230,6 +230,71 @@ public class UtenteDAOPostgres implements UtenteDAO {
         }
 
         return listaAmici;
+    }
+
+    @Override
+    public ArrayList<Sviluppatore> getListaSeguiti(int idUtente) throws SQLException {
+        ArrayList<Sviluppatore> listaSeguiti = new ArrayList<>();
+
+        String query = "SELECT a.idAccount, a.nome, a.password, a.dataCreazione, s.strike, s.descrizione, s.fondi " +
+                "FROM ACCOUNT a " +
+                "JOIN SVILUPPATORE s ON a.idAccount = s.idSviluppatore " +
+                "JOIN SEGUITI seg ON s.idSviluppatore = seg.idSviluppatore " +
+                "WHERE seg.idUtente = ?";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, idUtente);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("idAccount");
+                    String nome = rs.getString("nome");
+                    String password = rs.getString("password");
+                    LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                    int strike = rs.getInt("strike");
+                    String descrizione = rs.getString("descrizione");
+                    int fondi = rs.getInt("fondi");
+
+                    Sviluppatore s = new Sviluppatore(nome, id, password,dataCreazione, strike, descrizione, fondi);
+                    listaSeguiti.add(s);
+                }
+            }
+        }
+
+        return listaSeguiti;
+    }
+
+    @Override
+    public void inserisciSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException {
+        String query = "INSERT INTO SEGUITI (idUtente, idSviluppatore) VALUES (?, ?)";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idUtente, idSviluppatore);
+    }
+
+    @Override
+    public void eliminaSviluppatoreSeguito(int idUtente, int idSviluppatore) throws SQLException {
+        String query = "DELETE FROM SEGUITI WHERE idUtente = ? AND idSviluppatore = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idUtente, idSviluppatore);
+    }
+
+
+    @Override
+    public void inserisciCarrello(int idUtente, int idEdizione) throws SQLException {
+        String query = "INSERT INTO CARRELLO (idUtente, idEdizione) VALUES (?, ?)";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idUtente, idEdizione);
+    }
+
+    @Override
+    public void eliminaCarrello(int idUtente, int idEdizione) throws SQLException {
+        String query = "DELETE FROM CARRELLO WHERE idUtente = ? AND idEdizione = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idUtente, idEdizione);
+    }
+
+    @Override
+    public void svuotaCarrello(int idUtente) throws SQLException {
+        String query = "DELETE FROM CARRELLO WHERE idUtente = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idUtente);
     }
 
 
