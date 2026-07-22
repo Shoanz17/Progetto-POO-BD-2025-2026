@@ -442,7 +442,7 @@ public class HomeUtente {
         pulsanteRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Recensione recensione = new Recensione(controller, HomeUtente.this, utenteLoggato, (Fattura) listaLibreria.getSelectedValue());
+                RilasciaRecensione rilasciaRecensione = new RilasciaRecensione(controller, HomeUtente.this, utenteLoggato, (Fattura) listaLibreria.getSelectedValue());
             }
         });
     }
