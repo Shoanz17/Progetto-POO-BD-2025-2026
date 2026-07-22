@@ -77,14 +77,19 @@ public class HomeSviluppatore {
     private DefaultListModel<Gioco> modelLibreria;
     ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
     private Controller controller;
+    private Sviluppatore sviluppatoreCorrente;
+    private JFrame sviluppatoreFrame;
 
 
-    public HomeSviluppatore() {
+    public HomeSviluppatore(Controller controller,Sviluppatore sviluppatore) {
 
-        Controller controller = new Controller();
+        if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
+        if(sviluppatore == null) throw new IllegalArgumentException("Sviluppatore passato inesistente");
+
         this.controller = controller;
+        this.sviluppatoreCorrente = sviluppatore;
 
-        controller.caricaPromozioniFittizie();
+        configuraInterfaccia();
 
         popolaListe();
         ricercaListaLib();
@@ -93,55 +98,48 @@ public class HomeSviluppatore {
         graficaLibreriaGen();
         pannelloAggMod();
         inserimentoGioco();
-        profilo(controller.getListaSviluppatoriLoggati().get(0));
-        gestProfilo(controller.getListaSviluppatoriLoggati().get(0));
+        profilo(this.sviluppatoreCorrente);
+        gestProfilo(this.sviluppatoreCorrente);
         reset();
         rimuoviGioco();
         partecipaPromozione();
         gestioneLogout();
 
 
-//        listaTitoli.clearSelection();
-//        informazioniGioco.setVisible(false);
-
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("HomeSviluppatore");
-        frame.setContentPane(new HomeSviluppatore().homeSviluppatore);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1155, 700);
-//        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
 
-
+    private void configuraInterfaccia(){
+        sviluppatoreFrame = new JFrame("HomeSviluppatore");
+        sviluppatoreFrame.setContentPane(homeSviluppatore);
+        sviluppatoreFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        sviluppatoreFrame.setSize(1155, 700);
+        sviluppatoreFrame.setLocationRelativeTo(null);
+        sviluppatoreFrame.setVisible(true);
     }
-
 
     private void popolaListe() {
         // creiamo i modelli corretti
         modelLibreria = new DefaultListModel<>();
         modelPannelloControllo = new DefaultListModel<>();
 
+        try {
+                ArrayList<Gioco> tuttiIGiochi = controller.getListaGiochiSviluppatore(sviluppatoreCorrente);
 
-        // prendiamo i giochi dal controller
-        ArrayList<Gioco> tuttiIGiochi = controller.getListaGiochi();
+                if (tuttiIGiochi != null) {
+                    for (Gioco gioco : tuttiIGiochi) {
+                        modelLibreria.addElement(gioco);
+                        modelPannelloControllo.addElement(gioco);
+                        listaCompletaGiochi.add(gioco);
+                    }
+                }
 
+            listaTitoli.setModel(modelLibreria);
+            listaGiochiAggiunti.setModel(modelPannelloControllo);
 
-        // riempiamo i modelli con gli oggetti Gioco
-        if (tuttiIGiochi != null) {
-            for (Gioco gioco : tuttiIGiochi) {
-                modelLibreria.addElement(gioco);
-                modelPannelloControllo.addElement(gioco);
-                listaCompletaGiochi.add(gioco);
-            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
-
-        // colleghiamo i modelli alle liste visive
-        listaTitoli.setModel(modelLibreria);
-        listaGiochiAggiunti.setModel(modelPannelloControllo);
-
     }
 
     private void filtraLista(String testoCercato, DefaultListModel<Gioco> modelloDestinazione) {
@@ -194,21 +192,30 @@ public class HomeSviluppatore {
                     Gioco giocoSelezionato = listaTitoli.getSelectedValue();
 
                     if (giocoSelezionato != null) {
-//                        informazioniGioco.setVisible(true);
-                        // 3. aggiorniamo le Label con le stringhe complete
+
                         Titolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         lblCategoria.setText("Categoria: " + controller.getCategoriaDaGioco(giocoSelezionato));
                         textAreaGeneri.setText("Genere: " + controller.getGenereDaGioco(giocoSelezionato));
                         Piattaforma.setText("Piattaforma: " + controller.getStringPiattaformeDaGioco(giocoSelezionato));
                         pegi.setText("Pegi: " + controller.getPegiDaGioco(giocoSelezionato));
+
+                    try {
                         promozioniAttive.setText("Promozione: "+ controller.getStringaPromozioniPerGioco(giocoSelezionato));
+                        guadagnoTotale.setText("Guadagno totale: " + controller.getGuadagnoTotaleDaGioco(giocoSelezionato) + "€");
+                        unitàVendute.setText("Unità vendute: " + controller.getUnitaVenduteDaGioco(giocoSelezionato));
                         areaRecensioni.setText(controller.getStringaRecensioniPerGioco(giocoSelezionato));
                         areaRecensioni.setCaretPosition(0);
 
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(null, "Impossibile recuperare i dati di vendita: " + ex.getMessage());
 
+                        guadagnoTotale.setText("Guadagno totale: ---");
+                        unitàVendute.setText("Unità vendute: ---");
+                        areaRecensioni.setText("Errore di connessione: impossibile caricare le recensioni.");
+                        promozioniAttive.setText("Nessuna promozione attiva");
                     }
 
-//                    else {informazioniGioco.setVisible(false);}
+                    }
                 }
             }
         });
@@ -220,14 +227,11 @@ public class HomeSviluppatore {
         textAreaGeneri.setWrapStyleWord(true);
         textAreaGeneri.setEditable(false);
         textAreaGeneri.setOpaque(false);
-        textAreaGeneri.setFont(Titolo.getFont());
+        textAreaGeneri.setFont(categoria.getFont());
         textAreaGeneri.setFocusable(false);
 
 
-//        areaRecensioni.setFont(Titolo.getFont());
         areaRecensioni.setEditable(false);
-//        areaRecensioni.setLineWrap(true);
-//        areaRecensioni.setWrapStyleWord(true);
         areaRecensioni.setOpaque(true);
         areaRecensioni.setFocusable(false);
 
@@ -248,8 +252,6 @@ public class HomeSviluppatore {
                         textTitolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         textPegi.setText(String.valueOf(controller.getPegiDaGioco(giocoSelezionato)));
                         aggCategoria.setSelectedItem(controller.getCategoriaDaGioco(giocoSelezionato));
-
-//
                         textPrezzo.setText(String.valueOf(controller.getPrezzoPrimaEdizioneDaGioco(giocoSelezionato)));
                         textDataRilascio.setText(controller.getDataRilascioPrimaEdizioneFormattata(giocoSelezionato));
 
@@ -327,58 +329,35 @@ public class HomeSviluppatore {
 
 
         generiPanel.setLayout(new BoxLayout(generiPanel, BoxLayout.Y_AXIS));
-
-        for (Genere nomeGenere : controller.getGeneri()) {
-            JCheckBox cb = new JCheckBox(nomeGenere.toString());
-            listaCheckboxGeneri.add(cb);
-            generiPanel.add(cb);
-        }
-
-        if (generiPanel.getParent() instanceof JViewport viewport) {
-            if (viewport.getParent() instanceof JScrollPane scrollPane) {
-
-                int larghezzaAttuale = scrollPane.getPreferredSize().width;
-                scrollPane.setPreferredSize(new Dimension(larghezzaAttuale, 150));
-                scrollPane.setMaximumSize(new Dimension(larghezzaAttuale, 150));
-
-                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        try {
+            for (Genere nomeGenere : controller.getGeneri()) {
+                JCheckBox cb = new JCheckBox(nomeGenere.toString());
+                listaCheckboxGeneri.add(cb);
+                generiPanel.add(cb);
             }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(null, "Errore nel caricamento dei generi: " + e.getMessage());
         }
 
-        int altezzaTotale = listaCheckboxGeneri.size() * 25;
-        generiPanel.setPreferredSize(new Dimension(150, altezzaTotale));
-
-        generiPanel.revalidate();
-        generiPanel.repaint();
+        configuraDimensioniScroll(generiPanel, listaCheckboxGeneri.size());
 
 
         piattaformaPanel.setLayout(new BoxLayout(piattaformaPanel, BoxLayout.Y_AXIS));
 
-        for (PiattaformaDiGioco nomePiattaforma : controller.getPiattaformeDiGioco()) {
-            JCheckBox cb = new JCheckBox(nomePiattaforma.toString());
-            listaCheckboxPiattaforma.add(cb);
-            piattaformaPanel.add(cb);
-        }
-
-        if (piattaformaPanel.getParent() instanceof JViewport viewport) {
-            if (viewport.getParent() instanceof JScrollPane scrollPane) {
-
-
-                int larghezzaAttuale = scrollPane.getPreferredSize().width;
-                scrollPane.setPreferredSize(new Dimension(larghezzaAttuale, 150));
-                scrollPane.setMaximumSize(new Dimension(larghezzaAttuale, 150));
-
-                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        try {
+            for (PiattaformaDiGioco nomePiattaforma : controller.getPiattaformeDiGioco()) {
+                JCheckBox cb = new JCheckBox(nomePiattaforma.toString());
+                listaCheckboxPiattaforma.add(cb);
+                piattaformaPanel.add(cb);
             }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(null, "Errore caricamento piattaforme: " + e.getMessage());
         }
 
-        int altezzaTotalePan = listaCheckboxPiattaforma.size() * 25;
-        piattaformaPanel.setPreferredSize(new Dimension(150, altezzaTotalePan));
-
-        piattaformaPanel.revalidate();
-        piattaformaPanel.repaint();
-
+     configuraDimensioniScroll(piattaformaPanel,listaCheckboxPiattaforma.size());
     }
+
+
 
     private void configuraAzioneAggiungi() {
 
@@ -404,9 +383,6 @@ public class HomeSviluppatore {
                 LocalDate dataLocale = LocalDate.parse(dataRilascio, formatter);
                 int pegi = Integer.parseInt(pegiStr);
                 double prezzo = Double.parseDouble(prezzoStr.replace(",", "."));
-
-
-                Sviluppatore sviluppatoreLoggato = controller.getListaSviluppatoriLoggati().getFirst();
 
 
                 ArrayList<Genere> listaGeneri = new ArrayList<>();
@@ -441,7 +417,7 @@ public class HomeSviluppatore {
                 } else {
 
                     Gioco nuovoGioco = controller.creaNuovoGioco
-                            (titolo, pegi, categoriaEnum, listaGeneri, listaPiattaforma, prezzo, dataLocale, sviluppatoreLoggato);
+                            (titolo, pegi, categoriaEnum, listaGeneri, listaPiattaforma, prezzo, dataLocale, this.sviluppatoreCorrente);
 
 
                     modelPannelloControllo.addElement(nuovoGioco);
@@ -584,10 +560,20 @@ public class HomeSviluppatore {
                 dialogPartecipa.setLocationRelativeTo(null);
                 dialogPartecipa.setLayout(new GridLayout(3, 2, 40, 40));
 
-                ArrayList<Promozione> promozioniEsistenti = controller.getListaPromozioni();
-                String[] nomiPromozioni = new String[promozioniEsistenti.size()];
-                for (int i = 0; i < promozioniEsistenti.size(); i++) {
-                    nomiPromozioni[i] = promozioniEsistenti.get(i).getNome();
+                String[] nomiPromozioni = new String[0];
+                ArrayList<Promozione> promozioniEsistenti ;
+
+                try {
+                    promozioniEsistenti = controller.getListaPromozioni();
+                    nomiPromozioni = new String[promozioniEsistenti.size()];
+
+                    for (int i = 0; i < promozioniEsistenti.size(); i++) {
+                        nomiPromozioni[i] = promozioniEsistenti.get(i).getNome(); // Cambia getNome() se il tuo metodo si chiama diversamente!
+                    }
+
+                } catch (CampoNonValidoException es) {
+                    JOptionPane.showMessageDialog(null, "Errore caricamento promozioni: " + es.getMessage());
+                    return;
                 }
 
                 JComboBox<String> comboPromozioni = new JComboBox<>(nomiPromozioni);
@@ -634,7 +620,6 @@ public class HomeSviluppatore {
 
     private void gestioneLogout() {
         pulsanteLogout.addActionListener(e -> {
-            // Mostra un popup di conferma (opzionale ma molto carino per l'utente)
             int conferma = JOptionPane.showConfirmDialog(
                     null,
                     "Sei sicuro di voler effettuare il logout?",
@@ -644,14 +629,13 @@ public class HomeSviluppatore {
             );
 
             if (conferma == JOptionPane.YES_OPTION) {
-                // 1. Trova e chiude definitivamente la finestra della HomeSviluppatore
-                // Sostituisci "homeSviluppatore" col nome del tuo JPanel principale se diverso
+
                 JFrame frameCorrente = (JFrame) SwingUtilities.getWindowAncestor(homeSviluppatore);
                 if (frameCorrente != null) {
                     frameCorrente.dispose();
                 }
 
-                // 2. Apre una nuova finestra di Login pulita
+
                 new Accedi();
             }
         });
@@ -675,6 +659,21 @@ public class HomeSviluppatore {
             campoVuotoP.setEnabled(true);
 
         }
+    }
+
+    private void configuraDimensioniScroll(JPanel pannello, int numeroElementi) {
+        if (pannello.getParent() instanceof JViewport viewport) {
+            if (viewport.getParent() instanceof JScrollPane scrollPane) {
+                int larghezzaAttuale = scrollPane.getPreferredSize().width;
+                scrollPane.setPreferredSize(new Dimension(larghezzaAttuale, 150));
+                scrollPane.setMaximumSize(new Dimension(larghezzaAttuale, 150));
+                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            }
+        }
+        int altezzaTotale = numeroElementi * 25;
+        pannello.setPreferredSize(new Dimension(150, altezzaTotale));
+        pannello.revalidate();
+        pannello.repaint();
     }
 }
 

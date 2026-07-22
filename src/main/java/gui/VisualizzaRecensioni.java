@@ -8,7 +8,6 @@ import model.Utente;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -50,6 +49,7 @@ public class VisualizzaRecensioni {
 
     private void configuraInterfacciaRecensioni() {
         String[] colonne = {"Edizione Gioco", "Piattaforma", "Voto", "Differenza Like"};
+        acquistiUtenteConRecensione = new ArrayList<>();
 
         DefaultTableModel modelloRecensioni = new DefaultTableModel(colonne, 0) {
             @Override
@@ -58,11 +58,16 @@ public class VisualizzaRecensioni {
             }
         };
 
-        for (Recensione r : controller.getListaRecensioniUtente(utenteLoggato)) {
-            Fattura f = controller.getFatturaDaRecensione(r);
+        try {
+            for (Recensione r : controller.getListaRecensioniUtente(controller.getIdUtente(utenteLoggato))) {
+                Fattura f = controller.getFatturaDaRecensione(r);
 
-            Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
-            modelloRecensioni.addRow(riga);
+                Object[] riga = {controller.getTitoloDaFattura(f), controller.getPiattaformaDaFattura(f), controller.getVotoDaFattura(f), controller.getDifferenzaLikeDaFattura(f)};
+                modelloRecensioni.addRow(riga);
+                acquistiUtenteConRecensione.add(f);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(visualizzaRecensioniFrame,e.getMessage());
         }
         tabellaRecensioni.setModel(modelloRecensioni);
     }
@@ -88,7 +93,7 @@ public class VisualizzaRecensioni {
                 if (rigaSelezionata != -1) {
                     Fattura f = acquistiUtenteConRecensione.get(rigaSelezionata);
                     try { // Temporaneo
-                        controller.rimuoviRecensioneSelezionata(f);
+                        controller.rimuoviRecensioneSelezionataDaFattura(f);
 
                         JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Recensione rimossa!");
                         textDescrizione.setText("");

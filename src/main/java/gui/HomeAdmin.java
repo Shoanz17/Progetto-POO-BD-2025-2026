@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class HomeAdmin {
@@ -32,8 +33,8 @@ public class HomeAdmin {
     private JTextField campoNomePiattaforma;
     private JTextField campoProduttore;
     private JTextField campoNomePromozione;
-    private JTextField campoDataInizio;
-    private JTextField campoDataFine;
+    private JFormattedTextField campoDataInizio;
+    private JFormattedTextField campoDataFine;
     private JButton pulsanteRimuoviRecensioneUtenti;
     private JTable tabellaUtenti;
     private JButton pulsanteAggiungiPromozione;
@@ -83,6 +84,8 @@ public class HomeAdmin {
     private JPanel pannelloGeneriGioco;
     private JScrollPane scrollPaneGeneri;
 
+    private boolean ordinaPerDataAttivo = false;
+
     private JFrame adminFrame;
     private Controller controller;
     private Admin admin;
@@ -104,6 +107,8 @@ public class HomeAdmin {
         associaListenerRicercaUtenti();
         associaListenerTabellaUtenti();
         associaListenerPulsanteBannaUtenteUtenti();
+        associaListenerPulsanteRimuoviRecensioneUtente();
+        associaListenerPulsanteRimborsaUtente();
 
         //Sviluppatori
         associaListenerListaSviluppatori();
@@ -131,6 +136,14 @@ public class HomeAdmin {
 
         //Recensioni
         associaListenerRicercaRecensioni();
+        associaListenerListaRecensioni();
+        associaListenerPulsanteRimuoviRecensioneRecensioni();
+        associaListenerPulsanteBannaUtenteRecensioni();
+
+        //Promozioni
+        associaListenerRicercaPromozioni();
+        associaListenerPulsanteOrdinaPerData();
+        associaListenerPulsanteAggiungiPromozione();
 
         associaListenerPulsanteLogout(accediGUI);
 
@@ -149,6 +162,7 @@ public class HomeAdmin {
         configuraPannelloGeneri();
         configuraPannelloPiattaforme();
         configuraPannelloRecensioni();
+        configuraPannelloPromozioni();
 
     }
 
@@ -157,11 +171,21 @@ public class HomeAdmin {
         configuraTabella(colonneUtenti, tabellaUtenti);
         filtraUtenti(); //riempio la tabella senza filtri
 
-        String[] colonneRecensioni = {"Voto", "Differenza Like"};
+        String[] colonneRecensioni = {"Gioco", "Voto", "Differenza Like", "Oggetto"};
         configuraTabella(colonneRecensioni, tabellaRecensioniUtenti);
 
-        String[] colonneGiochi = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforma", "Prezzo"};
+        //nascondo la quarta colonna che mi serve solo per prendere velocemente la recensione
+        tabellaRecensioniUtenti.getColumnModel().getColumn(3).setMinWidth(0);
+        tabellaRecensioniUtenti.getColumnModel().getColumn(3).setMaxWidth(0);
+        tabellaRecensioniUtenti.getColumnModel().getColumn(3).setWidth(0);
+
+        String[] colonneGiochi = {"Titolo", "Categoria", "PEGI", "Generi", "Piattaforma", "Prezzo", "Oggetto"};
         configuraTabella(colonneGiochi, tabellaGiochiUtenti);
+
+        //nascondo la settima colonna che mi serve solo per prendere velocemente la fattura
+        tabellaGiochiUtenti.getColumnModel().getColumn(6).setMinWidth(0);
+        tabellaGiochiUtenti.getColumnModel().getColumn(6).setMaxWidth(0);
+        tabellaGiochiUtenti.getColumnModel().getColumn(6).setWidth(0);
 
     }
 
@@ -180,13 +204,15 @@ public class HomeAdmin {
 
     private void filtraUtenti() {
         String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
+        boolean flag = checkBoxBannatiUtenti.isSelected();
 
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        //filtro in base alla checkBox e alla barra di ricerca
-        boolean flag = checkBoxBannatiUtenti.isSelected();
-        for(Utente utente : controller.getListaUtentiLoggati()){
-            if(utente.isBannato() == flag && controller.getNomeUtente(utente).toLowerCase().contains(testoRicerca)){
+        try{
+
+            ArrayList<Utente> utentiFiltrati = controller.getUtentiFiltratiAdmin(testoRicerca, flag);
+
+            for(Utente utente : utentiFiltrati){
                 Object[] riga = {
                         controller.getIdUtente(utente),
                         controller.getNomeUtente(utente),
@@ -196,6 +222,8 @@ public class HomeAdmin {
                 };
                 righe.add(riga);
             }
+        } catch (CampoNonValidoException e){
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         aggiornaContenutoTabella(tabellaUtenti, righe);
@@ -230,41 +258,55 @@ public class HomeAdmin {
 
                 if (rigaSelezionata != -1) {
                     int selezione = (int) tabellaUtenti.getValueAt(rigaSelezionata, 0);
-                    Utente utente = controller.getUtenteById(selezione);
-                    riempiTabellaGiochiUtente(utente);
-                    riempiTabellaRecensioniUtente(utente);
+                    //Utente utente = controller.getUtenteById(selezione);
+                    riempiTabellaGiochiUtente(selezione);
+                    riempiTabellaRecensioniUtente(selezione);
                 }
+
             }
         });
     }
 
-    private void riempiTabellaGiochiUtente(Utente utente){
+    private void riempiTabellaGiochiUtente(int idUtente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(Fattura gioco : controller.getLibreriaUtente(utente)){
-            Object[] riga = {
-                    controller.getTitoloDaFattura(gioco),
-                    controller.getCategoriaDaFattura(gioco),
-                    controller.getPegiDaFattura(gioco),
-                    controller.getGeneriDaFattura(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
-                    controller.getPiattaformaDaFattura(gioco),
-                    controller.getPrezzoAcquistoDaFattura(gioco)
-            };
-            righe.add(riga);
+        try {
+            for(Fattura gioco : controller.getLibreriaUtente(idUtente)){
+                Object[] riga = {
+                        controller.getTitoloDaFattura(gioco),
+                        controller.getCategoriaDaFattura(gioco),
+                        controller.getPegiDaFattura(gioco),
+                        controller.getGeneriDaFattura(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                        controller.getPiattaformaDaFattura(gioco),
+                        controller.getPrezzoAcquistoDaFattura(gioco),
+                        gioco
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
+
         aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
     }
 
-    private void riempiTabellaRecensioniUtente(Utente utente){
+    private void riempiTabellaRecensioniUtente(int idUtente){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(model.Recensione recensione : controller.getListaRecensioniUtente(utente)){ //DA FARE dao
-            Object[] riga = {
-                    controller.getVotoRecensione(recensione),
-                    controller.getDifferenzaLikeRecensione(recensione)
-            };
-            righe.add(riga);
+        try {
+            for(Recensione recensione : controller.getListaRecensioniUtente(idUtente)){ //DA FARE implementazione
+                Object[] riga = {
+                        controller.getTitoloDaFattura(recensione.getFattura()),
+                        controller.getVotoRecensione(recensione),
+                        controller.getDifferenzaLikeRecensione(recensione),
+                        recensione
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
+
         aggiornaContenutoTabella(tabellaRecensioniUtenti, righe);
     }
 
@@ -292,6 +334,62 @@ public class HomeAdmin {
                     }
 
                 } else JOptionPane.showMessageDialog(adminFrame, "Nessun utente selezionato", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private void associaListenerPulsanteRimuoviRecensioneUtente(){
+        pulsanteRimuoviRecensioneUtenti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaRecensioniUtenti.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+
+                    Recensione recensione = (Recensione) tabellaRecensioniUtenti.getModel().getValueAt(rigaSelezionata, 2);
+
+                    try {
+
+                        controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
+
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                    }
+
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Seleziona prima una recensione");
+
+            }
+        });
+    }
+
+    private void associaListenerPulsanteRimborsaUtente(){
+        pulsanteRimborsa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaGiochiUtenti.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+
+                    Fattura fattura = (Fattura) tabellaGiochiUtenti.getModel().getValueAt(rigaSelezionata, 6);
+
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Confermi il rimborso di questo gioco?", "Conferma", JOptionPane.YES_NO_OPTION);
+
+                    if(risposta == JOptionPane.YES_OPTION){
+                        try{
+
+                            Utente utente = controller.getUtenteDaFattura(fattura);
+
+                            controller.effettuaRimborso(fattura, utente);
+                            riempiTabellaGiochiUtente(controller.getIdUtente(controller.getUtenteDaFattura(fattura)));
+                            filtraUtenti();
+
+                        } catch (CampoNonValidoException ex) {
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                        }
+                    } else
+                        JOptionPane.showMessageDialog(adminFrame, "Seleziona un gioco da rimborsare");
+                }
             }
         });
     }
@@ -329,16 +427,21 @@ public class HomeAdmin {
     private void riempiTabellaGiochiSviluppatore(Sviluppatore sviluppatore){
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(EdizioneGioco gioco : controller.getListaEdizioniSviluppatore(sviluppatore)){
-            Object[] riga = {
-                    controller.getTitoloDaEdizioneGioco(gioco),
-                    controller.getCategoriaDaEdizioneGioco(gioco),
-                    controller.getPegiDaEdizioneGioco(gioco),
-                    controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
-                    controller.getPiattaformaDaEdizioneGioco(gioco)
-            };
-            righe.add(riga);
+        try {
+            for(EdizioneGioco gioco : controller.getListaEdizioniSviluppatore(sviluppatore)){
+                Object[] riga = {
+                        controller.getTitoloDaEdizioneGioco(gioco),
+                        controller.getCategoriaDaEdizioneGioco(gioco),
+                        controller.getPegiDaEdizioneGioco(gioco),
+                        controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                        controller.getPiattaformaDaEdizioneGioco(gioco)
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
+
         aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
     }
 
@@ -367,13 +470,17 @@ public class HomeAdmin {
 
         //filtro in base alla checkBox e alla barra di ricerca
         boolean flag = checkBoxBannatiSviluppatori.isSelected();
-        for(Sviluppatore sviluppatore : controller.getListaSviluppatoriLoggati()){
-            if(controller.isSviluppatoreBannato(sviluppatore) == flag && controller.getNomeSviluppatore(sviluppatore).toLowerCase().contains(testoRicerca))
-
-                modelloSviluppatori.addElement(sviluppatore);
+        try {
+            for(Sviluppatore sviluppatore : controller.getListaSviluppatoriFiltrati(testoRicerca)){
+                if(controller.isSviluppatoreBannato(sviluppatore) == flag)
+                    modelloSviluppatori.addElement(sviluppatore);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         listaSviluppatori.setModel(modelloSviluppatori);
+
     }
 
     private void associaListenerAggiungiStrike(){
@@ -431,8 +538,27 @@ public class HomeAdmin {
     //PANNELLO GIOCHI
 
     private void configuraPannelloGiochi(){
+        inizializzaCheckBoxGeneri();
         filtraGiochi();
         svuotaDatiGioco();
+    }
+
+    private void inizializzaCheckBoxGeneri(){
+        pannelloGeneriGioco.removeAll();
+        pannelloGeneriGioco.setLayout(new BoxLayout(pannelloGeneriGioco, BoxLayout.Y_AXIS));
+
+        try {
+            for(Genere genere : controller.getGeneri()){
+                JCheckBox checkBox = new JCheckBox(controller.getNomeGenere(genere));
+                checkBox.setSelected(false);
+                pannelloGeneriGioco.add(checkBox);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
+        }
+
+        pannelloGeneriGioco.revalidate();
+        pannelloGeneriGioco.repaint();
     }
 
     private void filtraGiochi(){
@@ -440,14 +566,14 @@ public class HomeAdmin {
 
         DefaultListModel<Gioco> modelloGiochi = new DefaultListModel<>();
 
-        if(testoRicerca.isEmpty()) modelloGiochi.addAll(controller.getListaGiochi()); //se non ho niente da filtrare passo tutto
-        else {
-            for(Gioco gioco : controller.getListaGiochi()){
-                if(controller.getTitoloGioco(gioco).toLowerCase().contains(testoRicerca))
+        try {
+            ArrayList<Gioco> lista = controller.getGiochiFiltrati(testoRicerca);
 
-                    modelloGiochi.addElement(gioco);
+            for (Gioco gioco : lista) {
+                modelloGiochi.addElement(gioco);
             }
-
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         listaGiochi.setModel(modelloGiochi);
@@ -477,27 +603,26 @@ public class HomeAdmin {
     }
 
     private void popolaListaGeneriGioco(Gioco gioco){
-        //svuota lista
-        pannelloGeneriGioco.removeAll();
+        try {
+            ArrayList<Genere> generiGioco = controller.getGeneriDaGioco(gioco);
 
-        //imposta layout in verticale
-        pannelloGeneriGioco.setLayout(new BoxLayout(pannelloGeneriGioco, BoxLayout.Y_AXIS));
+            ArrayList<String> nomiGeneriGioco = new ArrayList<>();
+            for(Genere genere : generiGioco) {
+                nomiGeneriGioco.add(controller.getNomeGenere(genere));
+            }
 
-        ArrayList<Genere> generiGioco = controller.getGeneriDaGioco(gioco);
+            for (Component componente : pannelloGeneriGioco.getComponents()) {
 
-        for(Genere genere : controller.getGeneri()){
-            JCheckBox checkBox = new JCheckBox(controller.getNomeGenere(genere));
+                if (componente instanceof JCheckBox) {
+                    JCheckBox casella = (JCheckBox) componente;
 
-            //spunto la checkBox se il gioco ha quel genere
-            if(generiGioco.contains(genere))
-                checkBox.setSelected(true);
-
-            pannelloGeneriGioco.add(checkBox);
+                    if (nomiGeneriGioco.contains(casella.getText()))
+                        casella.setSelected(true);
+                }
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
-
-        //aggiorna grandezza della lista
-        pannelloGeneriGioco.revalidate();
-        pannelloGeneriGioco.repaint();
     }
 
     private void svuotaDatiGioco(){
@@ -702,17 +827,17 @@ public class HomeAdmin {
 
         DefaultListModel<Genere> modelloGeneri = new DefaultListModel<>();
 
-        if(testoRicerca.isEmpty()) modelloGeneri.addAll(controller.getGeneri()); //se non ho niente da filtrare passo tutto
-        else {
-            for(Genere genere : controller.getGeneri()){
-                if(controller.getNomeGenere(genere).toLowerCase().contains(testoRicerca))
+        try {
+            ArrayList<Genere> lista = controller.getGeneriFiltrati(testoRicerca);
 
-                    modelloGeneri.addElement(genere);
+            for (Genere genere : lista) {
+                modelloGeneri.addElement(genere);
             }
-
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
-        listaGeneri.setModel(modelloGeneri);
+        listaGiochi.setModel(modelloGeneri);
     }
 
     private void associaListenerPulsanteAggiungiGenere(){
@@ -746,9 +871,8 @@ public class HomeAdmin {
 
         ArrayList<Object[]> righe = new ArrayList<>();
 
-        for(PiattaformaDiGioco piattaforma : controller.getPiattaformeDiGioco()){
-            //per ottimizzare il codice evitando che faccia tanti contains inutilmente se il testo è vuoto
-            if(testoRicerca.isEmpty() || controller.getNomePiattaforma(piattaforma).toLowerCase().contains(testoRicerca)){
+        try {
+            for(PiattaformaDiGioco piattaforma : controller.getPiattaformeFiltrate(testoRicerca)){
                 Object[] riga = {
                         controller.getNomePiattaforma(piattaforma),
                         controller.getProduttorePiattaforma(piattaforma),
@@ -756,6 +880,8 @@ public class HomeAdmin {
                 };
                 righe.add(riga);
             }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
         aggiornaContenutoTabella(tabellaPiattaforme, righe);
@@ -795,24 +921,205 @@ public class HomeAdmin {
     //PANNELLO RECENSIONI
     private void configuraPannelloRecensioni(){
         descrizioneRecensioneRecensioni.setText("");
-        String[] colonneRecensioni = {"Autore", "Voto", "DifferenzaLike"};
+        String[] colonneRecensioni = {"Autore", "Gioco", "Voto", "DifferenzaLike", "Oggetto"};
         configuraTabella(colonneRecensioni, tabellaRecensioni);
-        //filtraRecensioni(); DA FARE con dao
+
+        //nascondo la colonna che serve solo per prenderla con facilità
+        tabellaRecensioni.getColumnModel().getColumn(4).setMinWidth(0);
+        tabellaRecensioni.getColumnModel().getColumn(4).setMaxWidth(0);
+        tabellaRecensioni.getColumnModel().getColumn(4).setWidth(0);
+
+        filtraRecensioni();
     }
 
-//    private void filtraRecensioni(){
-//        String testoRicerca = ricercaRecensioni.getText().toLowerCase().trim();
-//
-//        ArrayList<Object[]> righe = new ArrayList<>();
-//
-//        for(Recensione recensione : controller.recension)
-//    }
+    private void filtraRecensioni(){
+        String testoRicerca = ricercaRecensioni.getText().toLowerCase().trim();
+
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        try{
+            for(Recensione recensione : controller.getRecensioniFiltrateAdmin(testoRicerca)){
+                Fattura fattura = controller.getFatturaDaRecensione(recensione);
+
+                Object[] riga = {
+                        controller.getNomeUtenteDaFattura(fattura),
+                        controller.getTitoloDaFattura(fattura),
+                        controller.getVotoRecensione(recensione),
+                        controller.getDifferenzaLikeRecensione(recensione),
+                        recensione
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e){
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
+        }
+
+        aggiornaContenutoTabella(tabellaRecensioni, righe);
+    }
 
     private void associaListenerRicercaRecensioni(){
         ricercaRecensioni.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                //filtraRecensioni();
+                filtraRecensioni();
+            }
+        });
+    }
+
+    private void associaListenerListaRecensioni(){
+        tabellaRecensioni.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int rigaSelezionata = tabellaRecensioni.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+                    Recensione recensioneSelezionata = (Recensione) tabellaRecensioni.getValueAt(rigaSelezionata, 4);
+
+                    descrizioneRecensioneRecensioni.setText(controller.getDescrizioneRecensione(recensioneSelezionata));
+                }
+            }
+        });
+    }
+
+    private void associaListenerPulsanteRimuoviRecensioneRecensioni(){
+        pulsanteRimuoviRecensioneRecensioni.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaRecensioni.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+
+                    Recensione recensione = (Recensione) tabellaRecensioni.getModel().getValueAt(rigaSelezionata, 4);
+
+                    try{
+
+                        controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
+
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Seleziona prima una recensione");
+            }
+        });
+    }
+
+    private void associaListenerPulsanteBannaUtenteRecensioni(){
+        pulsanteBannaUtenteRecensioni.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rigaSelezionata = tabellaRecensioni.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Sicuro di voler bannare l'utente " + tabellaRecensioni.getValueAt(rigaSelezionata, 1) + "?",
+                            "Ban", JOptionPane.YES_NO_OPTION);
+
+                    if(risposta == JOptionPane.YES_OPTION) {
+                        try{
+
+                            Fattura fattura = controller.getFatturaDaRecensione((Recensione) tabellaRecensioni.getModel().getValueAt(rigaSelezionata, 4));
+                            Utente utente = controller.getUtenteDaFattura(fattura);
+                            controller.setBannatoUtente(utente);
+
+                        } catch (CampoNonValidoException ex) {
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    //PANNELLO PROMOZIONI
+    private void configuraPannelloPromozioni(){
+        String[] colonnePromozioni = {"Nome", "DataInizio", "DataFine"};
+        configuraTabella(colonnePromozioni, tabellaPromozioni);
+
+        applicaMascheraData(campoDataInizio);
+        applicaMascheraData(campoDataFine);
+
+
+        filtraPromozioni();
+    }
+
+    private void applicaMascheraData(JFormattedTextField campoData) {
+        try {
+            // Il carattere '#' accetta solo numeri, le barre vengono messe da sole
+            javax.swing.text.MaskFormatter mascheraData = new javax.swing.text.MaskFormatter("##/##/####");
+
+            // Mostra i trattini bassi dove l'utente deve ancora digitare
+            mascheraData.setPlaceholderCharacter('_');
+
+            // Applica la maschera al campo formattato
+            mascheraData.install(campoData);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void filtraPromozioni(){
+        String testoRicerca = ricercaPromozioni.getText().toLowerCase().trim();
+
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        try {
+            //il controller restituirà la lista filtrata per testo e ordinata (o meno) per data
+            for (Promozione promozione : controller.getPromozioniFiltrateAdmin(testoRicerca, ordinaPerDataAttivo)) {
+                Object[] riga = {
+                        controller.getNomePromozione(promozione),
+                        controller.getDataInizioPromozione(promozione),
+                        controller.getDataFinePromozione(promozione)
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
+        }
+
+        aggiornaContenutoTabella(tabellaPromozioni, righe);
+    }
+
+    private void associaListenerRicercaPromozioni(){
+        ricercaPromozioni.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraPromozioni();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteOrdinaPerData(){
+        pulsanteOrdinaPerData.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //inverte lo stato dell'ordinamento a ogni click
+                ordinaPerDataAttivo = !ordinaPerDataAttivo;
+
+                filtraPromozioni();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteAggiungiPromozione() {
+        pulsanteAggiungiPromozione.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nome = campoNomePromozione.getText();
+                String dataInizio = campoDataInizio.getText();
+                String dataFine = campoDataFine.getText();
+
+                try {
+                    controller.createPromozione(nome, dataInizio, dataFine);
+
+                    campoNomePromozione.setText("");
+                    campoDataInizio.setText("");
+                    campoDataFine.setText("");
+
+                    filtraPromozioni();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                }
             }
         });
     }

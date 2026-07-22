@@ -707,7 +707,7 @@
                   <font size="18"/>
                 </properties>
               </component>
-              <component id="fe86e" class="javax.swing.JTextField" binding="campoDataInizio">
+              <component id="d238c" class="javax.swing.JFormattedTextField" binding="campoDataInizio">
                 <constraints>
                   <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -717,7 +717,7 @@
                   <font size="18"/>
                 </properties>
               </component>
-              <component id="5e2e8" class="javax.swing.JTextField" binding="campoDataFine">
+              <component id="33ef3" class="javax.swing.JFormattedTextField" binding="campoDataFine">
                 <constraints>
                   <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
