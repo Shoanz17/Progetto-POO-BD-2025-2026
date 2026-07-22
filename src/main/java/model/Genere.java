@@ -54,11 +54,14 @@ public class Genere {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
-        else if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Genere og = (Genere) o;
-        return this.id == og.id;
+
+        if (this.id > 0 && og.id > 0) {
+            return this.id == og.id;
+        }
+        return this.nome != null && og.nome != null && this.nome.equalsIgnoreCase(og.nome);
     }
 
     @Override

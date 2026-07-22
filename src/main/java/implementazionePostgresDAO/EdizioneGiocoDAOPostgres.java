@@ -27,7 +27,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
         ArrayList<EdizioneGioco> listaEdizioni = new ArrayList<>();
 
-        // Abbiamo aggiunto titolo, categoria e pegi alla SELECT per poter costruire l'oggetto Gioco!
         String query = "SELECT eg.idEdizione, eg.idGioco, eg.nomePiattaforma, eg.prezzo, eg.dataRilascio, " +
                 "g.titolo, g.categoria, g.pegi " +
                 "FROM edizione_gioco eg " +
@@ -44,52 +43,27 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
                 while (rs.next()) {
 
-                    // 1. Estraiamo i dati per l'Edizione
                     int idEdizione = rs.getInt("idEdizione");
                     int prezzo = rs.getInt("prezzo");
                     java.time.LocalDate dataRilascio = rs.getDate("dataRilascio").toLocalDate();
                     String nomePiattaforma = rs.getString("nomePiattaforma");
 
-                    // 2. Estraiamo i dati per il Gioco
                     int idGioco = rs.getInt("idGioco");
                     String titolo = rs.getString("titolo");
                     String categoriaString = rs.getString("categoria");
                     int pegi = rs.getInt("pegi");
 
 
-                    Sviluppatore fintoSviluppatore = new Sviluppatore(
-                            "Sconosciuto",
-                            idSviluppatore,
-                            "nessuna",
-                            java.time.LocalDate.now(),
-                            0,
-                            "",
-                            0
-                    );
+                    Sviluppatore fintoSviluppatore = new Sviluppatore("Sconosciuto", idSviluppatore, "nessuna", java.time.LocalDate.now(), 0, "", 0);
 
 
 
                     try {
                         PiattaformaDiGioco piattaformaObj = new PiattaformaDiGioco(nomePiattaforma, "Sconosciuto", false);
-                        // 5. Creiamo il Gioco usando il suo costruttore rigoroso
-                        Gioco fintoGioco = new Gioco(
-                                fintoSviluppatore,
-                                idGioco,
-                                titolo,
-                                Categoria.valueOf(categoriaString),
-                                pegi
-                        );
+                        Gioco fintoGioco = new Gioco(fintoSviluppatore, idGioco, titolo, Categoria.valueOf(categoriaString), pegi);
 
-                        // 6. Creiamo l'EdizioneGioco con il TUO costruttore esatto
-                        EdizioneGioco edizioneCorrente = new EdizioneGioco(
-                                idEdizione,
-                                fintoGioco,
-                                piattaformaObj,
-                                prezzo,
-                                dataRilascio
-                        );
+                        EdizioneGioco edizioneCorrente = new EdizioneGioco(idEdizione, fintoGioco, piattaformaObj, prezzo, dataRilascio);
 
-                        // 7. Aggiungiamo alla lista!
                         listaEdizioni.add(edizioneCorrente);
 
                     } catch (CampoNonValidoException e) {
@@ -108,7 +82,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
         ArrayList<EdizioneGioco> catalogo = new ArrayList<>();
 
-        // Query senza filtri: prende TUTTE le edizioni del database con i rispettivi giochi e sviluppatori
         String query = "SELECT eg.idEdizione, eg.idGioco, eg.nomePiattaforma, eg.prezzo, eg.dataRilascio, " +
                 "g.titolo, g.categoria, g.pegi, g.idSviluppatore " +
                 "FROM edizione_gioco eg " +
@@ -116,26 +89,22 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
         Connection conn = ConnessioneDatabase.getInstance().connection;
 
-        // Inseriamo anche il ResultSet nel try-with-resources così si chiude in automatico in sicurezza
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
 
-                // 1. Estraiamo i dati per l'Edizione
                 int idEdizione = rs.getInt("idEdizione");
                 int prezzo = rs.getInt("prezzo");
                 java.time.LocalDate dataRilascio = rs.getDate("dataRilascio").toLocalDate();
                 String nomePiattaforma = rs.getString("nomePiattaforma");
 
-                // 2. Estraiamo i dati per il Gioco
                 int idGioco = rs.getInt("idGioco");
                 String titolo = rs.getString("titolo");
                 String categoriaString = rs.getString("categoria");
                 int pegi = rs.getInt("pegi");
-                int idSviluppatore = rs.getInt("idSviluppatore"); // Recuperiamo anche l'ID reale dello sviluppatore
+                int idSviluppatore = rs.getInt("idSviluppatore");
 
-                // 3. Sviluppatore fittizio con l'ID reale del DB
                 Sviluppatore fintoSviluppatore = new Sviluppatore(
                         "Sconosciuto",
                         idSviluppatore,
@@ -147,10 +116,8 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                 );
 
                 try {
-                    // 4. Creiamo la piattaforma (protetta dal try per l'eccezione)
                     PiattaformaDiGioco piattaformaObj = new PiattaformaDiGioco(nomePiattaforma, "Sconosciuto", false);
 
-                    // 5. Creiamo il Gioco
                     Gioco fintoGioco = new Gioco(
                             fintoSviluppatore,
                             idGioco,
@@ -159,7 +126,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                             pegi
                     );
 
-                    // 6. Creiamo l'EdizioneGioco con il tuo costruttore ufficiale
                     EdizioneGioco edizioneCorrente = new EdizioneGioco(
                             idEdizione,
                             fintoGioco,
@@ -168,7 +134,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                             dataRilascio
                     );
 
-                    // 7. Aggiungiamo al catalogo generale
                     catalogo.add(edizioneCorrente);
 
                 } catch (CampoNonValidoException e) {
@@ -177,7 +142,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
             }
         }
 
-        // Restituiamo il catalogo pieno zeppo di edizioni
         return catalogo;
     }
 
@@ -186,7 +150,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
         ArrayList<EdizioneGioco> listaCarrello = new ArrayList<>();
 
-        // Query che unisce carrello, edizione_gioco e gioco filtrando per l'idUtente
         String query = "SELECT eg.idEdizione, eg.idGioco, eg.nomePiattaforma, eg.prezzo, eg.dataRilascio, " +
                 "g.titolo, g.categoria, g.pegi, g.idSviluppatore " +
                 "FROM carrello c " +
@@ -198,27 +161,23 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            // Passiamo l'ID dell'utente al posto del punto interrogativo
             stmt.setInt(1, idUtente);
 
             try (ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
 
-                    // 1. Estraiamo i dati per l'Edizione
                     int idEdizione = rs.getInt("idEdizione");
                     int prezzo = rs.getInt("prezzo");
                     java.time.LocalDate dataRilascio = rs.getDate("dataRilascio").toLocalDate();
                     String nomePiattaforma = rs.getString("nomePiattaforma");
 
-                    // 2. Estraiamo i dati per il Gioco
                     int idGioco = rs.getInt("idGioco");
                     String titolo = rs.getString("titolo");
                     String categoriaString = rs.getString("categoria");
                     int pegi = rs.getInt("pegi");
                     int idSviluppatore = rs.getInt("idSviluppatore");
 
-                    // 3. Sviluppatore fittizio con l'ID reale del DB
                     Sviluppatore fintoSviluppatore = new Sviluppatore(
                             "Sconosciuto",
                             idSviluppatore,
@@ -230,10 +189,8 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                     );
 
                     try {
-                        // 4. Creiamo la piattaforma
                         PiattaformaDiGioco piattaformaObj = new PiattaformaDiGioco(nomePiattaforma, "Sconosciuto", false);
 
-                        // 5. Creiamo il Gioco
                         Gioco fintoGioco = new Gioco(
                                 fintoSviluppatore,
                                 idGioco,
@@ -242,7 +199,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                                 pegi
                         );
 
-                        // 6. Creiamo l'EdizioneGioco
                         EdizioneGioco edizioneCorrente = new EdizioneGioco(
                                 idEdizione,
                                 fintoGioco,
@@ -251,7 +207,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                                 dataRilascio
                         );
 
-                        // 7. Aggiungiamo alla lista del carrello
                         listaCarrello.add(edizioneCorrente);
 
                     } catch (CampoNonValidoException e) {
@@ -269,7 +224,6 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
 
         String query = "INSERT INTO edizione_gioco (idGioco, nomePiattaforma, prezzo, dataRilascio) VALUES (?, ?, ?, ?)";
 
-        // Sfruttiamo il tuo metodo helper personalizzato passando i parametri in ordine
         ConnessioneDatabase.getInstance().eseguiUpdate(
                 query,
                 edizioneGioco.getGioco().getId(),

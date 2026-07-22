@@ -52,7 +52,7 @@ public class Gioco {
             throw new CampoNonValidoException("Promozione non esistente");
         }
         if (this.promozioni.contains(promozione)) {
-            throw new CampoNonValidoException("Il gioco ha già partecipato ha questa promozione");
+            throw new CampoNonValidoException("Il gioco ha già partecipato a questa promozione");
         }
         promozioni.add(promozione);
     }

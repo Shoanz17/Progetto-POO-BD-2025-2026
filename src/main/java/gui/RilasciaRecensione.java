@@ -8,6 +8,7 @@ import model.Utente;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class RilasciaRecensione {
     private JPanel recensionePanel;
@@ -32,32 +33,39 @@ public class RilasciaRecensione {
         this.fatturaSelezionata = fatturaSelezionata;
 
         configuraInterfaccia();
-
         associaListenerRilasciaRecensione();
-
         mostraForm(homeUtente.homeUtenteFrame);
     }
 
-    private void associaListenerRilasciaRecensione(){
+    private void associaListenerRilasciaRecensione() {
         pulsanteRilasciaRecensione.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int risposta = 0;
-                if (controller.getRecensioneDaFattura(fatturaSelezionata) != null) {
-                    risposta = JOptionPane.showConfirmDialog(recensioneFrame, "Sovrascriverai la recensione giá lasciata", "Sicuro?", JOptionPane.YES_NO_OPTION);
-                }
-                if (risposta == JOptionPane.YES_OPTION) {
-                    try {
-                        if (controller.getRecensioneDaFattura(fatturaSelezionata) == null) {
-                            controller.rilasciaRecensione((Integer) spinnerVoto.getValue(), textAreaDescrizione.getText(), fatturaSelezionata);
-                        } else controller.aggiornaRecensione((Integer) spinnerVoto.getValue(), textAreaDescrizione.getText(), fatturaSelezionata);
+                try {
+                    int voto = (Integer) spinnerVoto.getValue();
+                    String testo = textAreaDescrizione.getText().trim();
 
-                        JOptionPane.showMessageDialog(recensioneFrame, "Recensione rilasciata correttamente!", "Successo", JOptionPane.INFORMATION_MESSAGE);
-                        recensioneFrame.dispose();
+                    if (controller.haGiaRecensito(utenteLoggato, fatturaSelezionata)) {
+                        int risposta = JOptionPane.showConfirmDialog(
+                                recensioneFrame,
+                                "Hai già rilasciato una recensione per questo acquisto. Vuoi sovrascriverla?",
+                                "Conferma Sovrascrittura",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
 
-                    } catch (CampoNonValidoException ex) {
-                        JOptionPane.showMessageDialog(recensioneFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                        if (risposta != JOptionPane.YES_OPTION) {
+                            return;
+                        }
                     }
+
+                    controller.rilasciaRecensione(voto, testo, fatturaSelezionata);
+
+                    JOptionPane.showMessageDialog(recensioneFrame, "Recensione salvata con successo!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                    recensioneFrame.dispose();
+
+                } catch (CampoNonValidoException | SQLException ex) {
+                    JOptionPane.showMessageDialog(recensioneFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -72,7 +80,7 @@ public class RilasciaRecensione {
         configuraSpinnerVoto();
     }
 
-    private void configuraSpinnerVoto(){
+    private void configuraSpinnerVoto() {
         spinnerVoto.setModel(new SpinnerNumberModel(0, 0, 100, 1));
     }
 
@@ -81,5 +89,4 @@ public class RilasciaRecensione {
         recensioneFrame.setLocationRelativeTo(homeUtente);
         recensioneFrame.setVisible(true);
     }
-
 }

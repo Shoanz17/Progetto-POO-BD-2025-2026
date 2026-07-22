@@ -103,9 +103,9 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             rs.getInt("f_id"),
                             utente,
                             edizione,
-                            rs.getInt("prezzo_acquisto"),
+                            rs.getInt("f_prezzo_acquisto"),
                             rs.getString("key"),
-                            rs.getDate("data_acquisto").toLocalDate()
+                            rs.getDate("f_data_acquisto").toLocalDate()
                     );
 
                     Recensione recensione = new Recensione(
@@ -114,6 +114,8 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             rs.getInt("differenzaLike"),
                             fattura
                     );
+
+                    fattura.setRecensione(recensione);
 
                     lista.add(recensione);
                 }
@@ -216,6 +218,7 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             fattura
                     );
 
+                    fattura.setRecensione(recensione);
                     lista.add(recensione);
                 }
             }
@@ -317,6 +320,7 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             fattura
                     );
 
+                    fattura.setRecensione(recensione);
                     lista.add(recensione);
                 }
             }
@@ -325,11 +329,14 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
     }
 
     @Override
-    public void creaRecensione(int idFattura, int voto, String testo) throws SQLException {
-        String query = "INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES (?, ?, ?, 0)";
-        ConnessioneDatabase.getInstance().eseguiUpdate(query, idFattura, voto, testo);
-    }
+    public void creaRecensione(int idFattura, int voto, String descrizione) throws SQLException {
+        String query = "INSERT INTO recensione (idFattura, voto, descrizione) " +
+                "VALUES (?, ?, ?) " +
+                "ON CONFLICT (idFattura) " +
+                "DO UPDATE SET voto = EXCLUDED.voto, descrizione = EXCLUDED.descrizione";
 
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idFattura, voto, descrizione);
+    }
     @Override
     public void eliminaRecensione(int idFattura) throws SQLException {
         String query = "DELETE FROM recensione WHERE idFattura = ?";

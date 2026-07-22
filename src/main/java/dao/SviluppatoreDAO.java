@@ -10,11 +10,12 @@ public interface SviluppatoreDAO {
 
     ArrayList<Sviluppatore> getListaSviluppatoriFiltrati(String testoRicerca) throws SQLException;
     ArrayList<Sviluppatore> getListaSviluppatori() throws SQLException;
+    int getNumeroGiochiRilasciati(int idSviluppatore) throws SQLException;
 
     void aggiungiStrike(int idSviluppatore) throws SQLException;
     void rimuoviStrike(int idSviluppatore) throws SQLException;
 
     void aggiornaProfilo(Sviluppatore sviluppatore)throws SQLException;
 
-    int getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException;
+    String getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException;
 }

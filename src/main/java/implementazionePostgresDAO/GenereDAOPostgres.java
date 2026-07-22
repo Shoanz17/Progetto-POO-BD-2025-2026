@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class GenereDAOPostgres implements GenereDAO {
     private Connection connection;
 
-    public GenereDAOPostgres(){
+    public GenereDAOPostgres() {
         try {
             this.connection = ConnessioneDatabase.getInstance().connection;
         } catch (SQLException e) {
@@ -25,21 +25,20 @@ public class GenereDAOPostgres implements GenereDAO {
 
     @Override
     public void creaGenere(Genere genere) throws SQLException {
-        String query = "INSERT INTO Genere (nome) VALUES (?)";
-
+        String query = "INSERT INTO genere (nome) VALUES (?)";
         ConnessioneDatabase.getInstance().eseguiUpdate(query, genere.getNome());
     }
 
     @Override
     public ArrayList<Genere> getListaGeneri() throws SQLException, CampoNonValidoException {
         ArrayList<Genere> lista = new ArrayList<>();
-        String query = "SELECT nome FROM Genere ORDER BY nome ASC";
+        String query = "SELECT idGenere, nome FROM genere ORDER BY nome ASC";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                lista.add(new Genere(rs.getString("nome")));
+                lista.add(new Genere(rs.getInt("idGenere"), rs.getString("nome")));
             }
         }
         return lista;
@@ -48,7 +47,7 @@ public class GenereDAOPostgres implements GenereDAO {
     @Override
     public ArrayList<Genere> getListaGeneriDaGioco(Gioco gioco) throws SQLException, CampoNonValidoException {
         ArrayList<Genere> lista = new ArrayList<>();
-        String query = "SELECT g.nome FROM Genere g " +
+        String query = "SELECT g.idGenere, g.nome FROM genere g " +
                 "JOIN gioco_genere gg ON g.idGenere = gg.idGenere " +
                 "WHERE gg.idGioco = ?";
 
@@ -57,7 +56,7 @@ public class GenereDAOPostgres implements GenereDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(new Genere(rs.getString("nome")));
+                    lista.add(new Genere(rs.getInt("idGenere"), rs.getString("nome")));
                 }
             }
         }
@@ -67,14 +66,14 @@ public class GenereDAOPostgres implements GenereDAO {
     @Override
     public ArrayList<Genere> getGeneriFiltrati(String testoRicerca) throws SQLException, CampoNonValidoException {
         ArrayList<Genere> lista = new ArrayList<>();
-        String query = "SELECT nome FROM Genere WHERE LOWER(nome) LIKE LOWER(?) ORDER BY nome ASC";
+        String query = "SELECT idGenere, nome FROM genere WHERE LOWER(nome) LIKE LOWER(?) ORDER BY nome ASC";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, "%" + testoRicerca.trim() + "%");
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(new Genere(rs.getString("nome")));
+                    lista.add(new Genere(rs.getInt("idGenere"), rs.getString("nome")));
                 }
             }
         }
@@ -89,8 +88,7 @@ public class GenereDAOPostgres implements GenereDAO {
             return lista;
         }
 
-        //Costruzione dinamica della query con IN (?, ?, ...)
-        StringBuilder sb = new StringBuilder("SELECT nome FROM Genere WHERE nome IN (");
+        StringBuilder sb = new StringBuilder("SELECT idGenere, nome FROM genere WHERE nome IN (");
         for (int i = 0; i < listaNomi.size(); i++) {
             sb.append("?");
             if (i < listaNomi.size() - 1) {
@@ -106,7 +104,7 @@ public class GenereDAOPostgres implements GenereDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(new Genere(rs.getString("nome")));
+                    lista.add(new Genere(rs.getInt("idGenere"), rs.getString("nome")));
                 }
             }
         }
@@ -118,13 +116,11 @@ public class GenereDAOPostgres implements GenereDAO {
         if (generi == null || generi.isEmpty()) {
             return;
         }
-        //Rimuove tutti i vecchi generi per evitare duplicati
         String queryDelete = "DELETE FROM gioco_genere WHERE idGioco = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(queryDelete, idGioco);
 
-        //Inserisco i nuovi generi
         String queryInsert = "INSERT INTO gioco_genere (idGioco, idGenere) " +
-                "VALUES (?, (SELECT idGenere FROM genere WHERE nome = ?))";
+                "VALUES (?, (SELECT idGenere FROM genere WHERE LOWER(nome) = LOWER(?)))";
         for (Genere g : generi) {
             ConnessioneDatabase.getInstance().eseguiUpdate(queryInsert, idGioco, g.getNome());
         }

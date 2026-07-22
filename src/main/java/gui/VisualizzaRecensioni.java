@@ -92,19 +92,19 @@ public class VisualizzaRecensioni {
                 int rigaSelezionata = tabellaRecensioni.getSelectedRow();
                 if (rigaSelezionata != -1) {
                     Fattura f = acquistiUtenteConRecensione.get(rigaSelezionata);
-                    try { // Temporaneo
+                    try {
                         controller.rimuoviRecensioneSelezionataDaFattura(f);
 
-                        JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Recensione rimossa!");
+                        JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Recensione rimossa con successo!", "Successo", JOptionPane.INFORMATION_MESSAGE);
                         textDescrizione.setText("");
-                        configuraInterfacciaRecensioni();
+                        configuraInterfacciaRecensioni(); // Ricarica la tabella aggiornata
 
                     } catch (CampoNonValidoException ex) {
                         JOptionPane.showMessageDialog(visualizzaRecensioniFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
                     }
-                } else
-                    JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Selezionare una recensione!", "Errore", JOptionPane.ERROR_MESSAGE);
-
+                } else {
+                    JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Selezionare una recensione dalla tabella!", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
     }

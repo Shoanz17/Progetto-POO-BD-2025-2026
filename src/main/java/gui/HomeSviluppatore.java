@@ -632,9 +632,7 @@ public class HomeSviluppatore {
 
                 accediGUI.setVisible(true);
                 sviluppatoreFrame.dispose();
-
-
-                new Accedi();
+                
             }
         });
     }

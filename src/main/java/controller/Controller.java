@@ -85,7 +85,6 @@ public class Controller {
     public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException {
         Sviluppatore sviluppatore = new Sviluppatore(nome, password, descrizione);
 
-        //DA FARE completare con implementazione
         try {
             sviluppatoreDAO.registraSviluppatore(sviluppatore);
         } catch (SQLException e) {
@@ -214,14 +213,30 @@ public class Controller {
         }
     }
 
-    public int getIdUtente(Utente u){return u.getId();}
-    public int getNumeroGiochiAcquistatiUtente(Utente u){return u.getGiochiAcquistati().size();}
-    public GenereEnum getGenereUtente(Utente u){return u.getGenere();}
-    public String getNomeUtente(Utente u){return u.getNome();}
-    public String getEmailUtente(Utente u){return u.getEmail();}
-    public LocalDate getDataDiNascitaUtente(Utente u){return u.getDataNascita();}
-    public int getSaldoUtente(Utente u){return u.getSaldo();}
-    public ArrayList<Fattura> getLibreriaUtente(int idUtente) throws CampoNonValidoException{
+    public int getIdUtente(Utente u) {return u.getId();}
+
+    public int getNumeroGiochiAcquistatiUtente(Utente u) throws CampoNonValidoException {
+        if (u == null) return 0;
+        return getLibreriaUtente(u.getId()).size();
+    }
+
+    public GenereEnum getGenereUtente(Utente u) {
+        return u.getGenere();
+    }
+    public String getNomeUtente(Utente u) {
+        return u.getNome();
+    }
+    public String getEmailUtente(Utente u) {
+        return u.getEmail();
+    }
+    public LocalDate getDataDiNascitaUtente(Utente u) {
+        return u.getDataNascita();
+    }
+    public int getSaldoUtente(Utente u) {
+        return u.getSaldo();
+    }
+
+    public ArrayList<Fattura> getLibreriaUtente(int idUtente) throws CampoNonValidoException {
         try {
             return fatturaDAO.getLibreriaUtente(idUtente);
 
@@ -230,15 +245,11 @@ public class Controller {
         }
     }
 
-    public LocalDate getDataCreazioneAccountUtente(Utente u) {
-        return u.getDataCreazione();
-    }
+    public LocalDate getDataCreazioneAccountUtente(Utente u) {return u.getDataCreazione();}
 
-    public boolean isUtenteBannato(Utente u) {
-        return u.isBannato();
-    }
+    public boolean isUtenteBannato(Utente u) {return u.isBannato();}
 
-    public Utente getUtenteById(int idUtente) throws CampoNonValidoException { //DA FARE con implementazione
+    public Utente getUtenteById(int idUtente) throws CampoNonValidoException {
         try {
             Utente utenteTrovato = utenteDAO.getUtenteById(idUtente);
 
@@ -275,9 +286,7 @@ public class Controller {
         }
     }
 
-    public String getDescrizioneSviluppatore(Sviluppatore s) {
-        return s.getDescrizione();
-    }
+    public String getDescrizioneSviluppatore(Sviluppatore s) {return s.getDescrizione();}
 
     public ArrayList<EdizioneGioco> getListaEdizioniSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         try {
@@ -289,13 +298,15 @@ public class Controller {
         }
     }
 
-    public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s) {
-        return s.getListaGiochi().size();
+    public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s) throws CampoNonValidoException {
+        try {
+            return sviluppatoreDAO.getNumeroGiochiRilasciati(s.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
     }
 
-    public boolean isSviluppatoreBannato(Sviluppatore sviluppatore) {
-        return sviluppatore.isBannato();
-    }
+    public boolean isSviluppatoreBannato(Sviluppatore sviluppatore) {return sviluppatore.isBannato();}
 
     public void addStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         sviluppatore.addStrike();
@@ -318,18 +329,59 @@ public class Controller {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
-    public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
-    public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException { addStrikeSviluppatore(gioco.getSviluppatore()); }
-    public String getNomeSviluppatore(Sviluppatore s){return s.getNome();}
-    public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getSviluppatore().getNome();}
-    public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPrezzo();}
-    public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getPiattaforma();}
-    public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getGeneri();}
-    public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getPegi();}
-    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());} //da fare
-    public Categoria getCategoriaDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getGioco().getCategoria();}
-    public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco){return edizioneGioco.getDataRilascio();}
 
+    public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
+    public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
+    public String getNomeSviluppatore(Sviluppatore s) {return s.getNome();}
+    public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
+        if (edizioneGioco == null || edizioneGioco.getGioco() == null) return "Sconosciuto";
+
+        Sviluppatore sviluppatoreGioco = edizioneGioco.getGioco().getSviluppatore();
+        if (sviluppatoreGioco == null) return "Sconosciuto";
+
+        if (sviluppatoreGioco.getNome() == null || sviluppatoreGioco.getNome().trim().isEmpty() || sviluppatoreGioco.getNome().equalsIgnoreCase("Sconosciuto")) {
+            try {
+                ArrayList<Sviluppatore> tuttiSviluppatori = sviluppatoreDAO.getListaSviluppatori();
+                for (Sviluppatore sv : tuttiSviluppatori) {
+                    if (sv.getId() == sviluppatoreGioco.getId()) {
+                        sviluppatoreGioco.setNome(sv.getNome());
+                        return sv.getNome();
+                    }
+                }
+            } catch (SQLException e) {
+                throw new CampoNonValidoException("Operazione Fallita");
+            }
+        }
+        return sviluppatoreGioco.getNome() != null ? sviluppatoreGioco.getNome() : "Sconosciuto";
+    }
+
+    public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPrezzo();}
+    public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPiattaforma();}
+
+    public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
+        if (edizioneGioco == null || edizioneGioco.getGioco() == null) return new ArrayList<>();
+
+        Gioco gioco = edizioneGioco.getGioco();
+
+        if (gioco.getGeneri() == null || gioco.getGeneri().isEmpty()) {
+            try {
+                ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(gioco);
+                for (Genere g : generiDalDB) {
+                    if (!gioco.getGeneri().contains(g)) {
+                        gioco.getGeneri().add(g);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new CampoNonValidoException("Operazione Fallita");
+            }
+        }
+        return gioco.getGeneri();
+    }
+
+    public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getPegi();}
+    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());}
+    public Categoria getCategoriaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getCategoria();}
+    public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getDataRilascio();}
 
 
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
@@ -370,12 +422,21 @@ public class Controller {
     }
 
     public void rimuoviRecensioneSelezionataDaFattura(Fattura fattura) throws CampoNonValidoException {
-        fattura.setRecensione(null);
+        if (fattura == null) {
+            throw new CampoNonValidoException("Seleziona prima una recensione dalla tabella!");
+        }
 
         try {
             recensioneDAO.eliminaRecensione(fattura.getId());
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
+        }
+
+        try {
+            if (fattura.getRecensione() != null) {
+                fattura.setRecensione(null);
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -397,7 +458,6 @@ public class Controller {
             throw new CampoNonValidoException("Impossibile salvare l'edizione nel database: " + e.getMessage());
         }
     }
-
 
     public ArrayList<Genere> getGeneriFiltrati(String testoRicerca) throws CampoNonValidoException {
         try {
@@ -436,11 +496,13 @@ public class Controller {
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
+
     public String getTitoloGioco(Gioco gioco) {return gioco.getTitolo();}
     public Categoria getCategoriaGioco(Gioco gioco) {return gioco.getCategoria();}
     public int getPegiGioco(Gioco gioco) {return gioco.getPegi();}
-    public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) throws CampoNonValidoException{
-        try{
+
+    public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) throws CampoNonValidoException {
+        try {
 
             return genereDAO.getListaGeneriDaGioco(gioco);
 
@@ -524,7 +586,6 @@ public class Controller {
     public String getNomePiattaforma(PiattaformaDiGioco piattaformaDiGioco) { return piattaformaDiGioco.getNome(); }
     public String getProduttorePiattaforma(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.getProduttore();}
     public boolean isPortabile(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.isPortatile();}
-    //DA FARE
     public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome, produttore, portabile);
 
@@ -565,12 +626,23 @@ public class Controller {
         }
     }
 
-    public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
-        try {
-            recensioneDAO.creaRecensione(fatturaSelezionata.getId(),voto,testo);
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
+    public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException, SQLException {
+        if (fatturaSelezionata == null) {
+            throw new CampoNonValidoException("Seleziona prima una fattura dalla libreria!");
         }
+            recensioneDAO.creaRecensione(fatturaSelezionata.getId(), voto, testo);
+    }
+
+    public boolean haGiaRecensito(Utente utente, Fattura fattura) throws CampoNonValidoException {
+        if (utente == null || fattura == null) return false;
+
+        ArrayList<Recensione> recensioni = getListaRecensioniUtente(utente.getId());
+        for (Recensione r : recensioni) {
+            if (r.getFattura().getId() == fattura.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void aggiornaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
@@ -633,6 +705,7 @@ public class Controller {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
+
     public void createPromozione(String nome, String dataInizioStringa, String dataFineStringa) throws CampoNonValidoException {
         LocalDate dataInizio = convertiDataRigida(dataInizioStringa);
         LocalDate dataFine = convertiDataRigida(dataFineStringa);
@@ -648,7 +721,7 @@ public class Controller {
         }
     }
 
-    public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
+    public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, PiattaformaDiGioco piattaformaScelta, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
 
         ArrayList<EdizioneGioco> listaEdizioniGiochi;
         try {
@@ -660,14 +733,44 @@ public class Controller {
         ArrayList<EdizioneGioco> listaFiltrata = new ArrayList<>();
 
         for (EdizioneGioco e : listaEdizioniGiochi) {
+            Gioco gioco = e.getGioco();
 
-            if (e.getGioco().getTitolo().toLowerCase().contains(testoRicerca) &&
+            if (gioco.getGeneri() == null || gioco.getGeneri().isEmpty()) {
+                try {
+                    ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(gioco);
+                    for (Genere g : generiDalDB) {
+                        if (!gioco.getGeneri().contains(g)) {
+                            gioco.getGeneri().add(g);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new CampoNonValidoException("Operazione Fallita");
+                }
+            }
+
+            if (gioco.getSviluppatore() != null &&
+                    (gioco.getSviluppatore().getNome() == null || gioco.getSviluppatore().getNome().equalsIgnoreCase("Sconosciuto"))) {
+                getNomeSviluppatoreDaEdizioneGioco(e);
+            }
+
+            boolean contieneGenere = (genere == null);
+            if (genere != null && gioco.getGeneri() != null) {
+                for (Genere g : gioco.getGeneri()) {
+                    if (g.getId() == genere.getId()) {
+                        contieneGenere = true;
+                        break;
+                    }
+                }
+            }
+
+            if (gioco.getTitolo().toLowerCase().contains(testoRicerca) &&
                     (prezzoMax == -1 || e.getPrezzo() <= prezzoMax) &&
-                    (genere == null || (e.getGioco().getGeneri() != null && e.getGioco().getGeneri().contains(genere))) &&
-                    (categoria == null || e.getGioco().getCategoria().equals(categoria)) &&
-                    (pegi == null || pegi.trim().isEmpty() || String.valueOf(e.getGioco().getPegi()).equals(pegi)) &&
+                    (piattaformaScelta == null || e.getPiattaforma().equals(piattaformaScelta)) &&
+                    contieneGenere &&
+                    (categoria == null || gioco.getCategoria().equals(categoria)) &&
+                    (pegi == null || pegi.trim().isEmpty() || String.valueOf(gioco.getPegi()).equals(pegi)) &&
                     (!inPromozione || isInPromozione(e)) &&
-                    (!traSeguiti || utenteLoggato.getSviluppatoriSeguiti().contains(e.getGioco().getSviluppatore()))) {
+                    (!traSeguiti || utenteLoggato.getSviluppatoriSeguiti().contains(gioco.getSviluppatore()))) {
 
                 listaFiltrata.add(e);
             }
@@ -694,14 +797,33 @@ public class Controller {
         ArrayList<Fattura> listaFiltrata = new ArrayList<>();
 
         for (Fattura f : libreriaUtente) {
-            Gioco giocoBase = getGiocoDaFattura(f); //fatto solo per non scrivere sempre get gioco get gioco
+            Gioco giocoBase = getGiocoDaFattura(f);
+
+            ArrayList<Genere> generiGioco = giocoBase.getGeneri();
+            if (generiGioco == null || generiGioco.isEmpty()) {
+                try {
+                    generiGioco = genereDAO.getListaGeneriDaGioco(giocoBase);
+                } catch (SQLException ex) {
+                    generiGioco = new ArrayList<>();
+                }
+            }
+
+            boolean contieneGenere = (genereFiltro == null);
+            if (genereFiltro != null && generiGioco != null) {
+                for (Genere g : generiGioco) {
+                    if (g.getId() == genereFiltro.getId()) {
+                        contieneGenere = true;
+                        break;
+                    }
+                }
+            }
 
             if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
-                    (genereFiltro == null || (giocoBase.getGeneri() != null && giocoBase.getGeneri().contains(genereFiltro))) && //Controllo se il genere della combobox é contenuto nei generi del gioco
-                    (categoriaFiltro == null || giocoBase.getCategoria().equals(categoriaFiltro)) && //controllo che la categoria selezionata sia uguale al gioco
-                    (pegiFiltro == null || pegiFiltro.trim().isEmpty() || String.valueOf(getPegiDaFattura(f)).equals(pegiFiltro))) { //controllo ce il pegi sia uguale
+                    contieneGenere &&
+                    (categoriaFiltro == null || giocoBase.getCategoria().equals(categoriaFiltro)) &&
+                    (pegiFiltro == null || pegiFiltro.trim().isEmpty() || String.valueOf(getPegiDaFattura(f)).equals(pegiFiltro))) {
 
-                listaFiltrata.add(f); // Se é tutto apposto filtro
+                listaFiltrata.add(f);
             }
         }
 
@@ -724,7 +846,6 @@ public class Controller {
         }
 
         return listaFiltrata;
-
     }
 
     public ArrayList<Utente> getUtentiFiltrati(boolean checkBoxAmici, String testoRicerca, Utente utenteLoggato) throws CampoNonValidoException {
@@ -781,17 +902,24 @@ public class Controller {
     }
 
     public void aggiungiAlCarrello(Utente utenteLoggato, EdizioneGioco edizioneGiocoSelezionata) throws CampoNonValidoException {
+        if (edizioneGiocoSelezionata == null) {
+            throw new CampoNonValidoException("Selezionare prima un gioco dal catalogo!");
+        }
+
+        ArrayList<Fattura> libreriaUtente = getLibreriaUtente(utenteLoggato.getId());
+        for (Fattura f : libreriaUtente) {
+            if (f.getGioco() != null && f.getGioco().getId() == edizioneGiocoSelezionata.getId()) {
+                throw new CampoNonValidoException("Possiedi già " + edizioneGiocoSelezionata.getGioco().getTitolo() + " (" + edizioneGiocoSelezionata.getPiattaforma().getNome() + ") nella tua libreria!");
+            }
+        }
 
         if (utenteLoggato.getCarrello() == null) {
             Carrello nuovoCarrello = new Carrello(utenteLoggato);
             utenteLoggato.setCarrello(nuovoCarrello);
         }
 
-        if (utenteLoggato.getCarrello().getListaGiochi().contains(edizioneGiocoSelezionata)){
-            throw new CampoNonValidoException("Hai giá aggiunto questo gioco al carrello");
-        }
-        if (edizioneGiocoSelezionata == null) {
-            throw new CampoNonValidoException("Selezionare un gioco dal catalogo");
+        if (utenteLoggato.getCarrello().getListaGiochi().contains(edizioneGiocoSelezionata)) {
+            throw new CampoNonValidoException("Hai già aggiunto questo gioco al carrello!");
         }
 
         utenteLoggato.getCarrello().addEdizione(edizioneGiocoSelezionata);
@@ -854,60 +982,87 @@ public class Controller {
     }
 
     public int getPrezzoCarrello(Utente utenteLoggato) {
-        if (utenteLoggato.getCarrello() == null){
+        try {
+            ArrayList<EdizioneGioco> giochi = getGiochiCarrello(utenteLoggato);
+            int totale = 0;
+            for (EdizioneGioco e : giochi) {
+                totale += e.getPrezzo();
+            }
+            return totale;
+        } catch (CampoNonValidoException e) {
             return 0;
         }
-        return utenteLoggato.getCarrello().getTotale();
     }
 
     public void rimuoviDalCarrello(Utente utenteLoggato, EdizioneGioco edizioneGioco) throws CampoNonValidoException {
-
-        if (utenteLoggato.getCarrello() == null) {
-            throw new CampoNonValidoException("Il carrello è già vuoto!");
+        if (edizioneGioco == null) {
+            throw new CampoNonValidoException("Seleziona prima un gioco da rimuovere!");
         }
-        utenteLoggato.getCarrello().removeEdizione(edizioneGioco);
 
         try {
             utenteDAO.eliminaCarrello(utenteLoggato.getId(), edizioneGioco.getId());
         } catch (SQLException e) {
-            utenteLoggato.getCarrello().addEdizione(edizioneGioco);
             throw new CampoNonValidoException("Operazione Fallita");
         }
+
+        if (utenteLoggato.getCarrello() != null && utenteLoggato.getCarrello().getListaGiochi() != null) {
+            utenteLoggato.getCarrello().getListaGiochi().removeIf(ed -> ed.getId() == edizioneGioco.getId());
+        }
     }
-
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
-        Carrello carrello = utenteLoggato.getCarrello();
-
-        if (carrello == null || carrello.getListaGiochi().isEmpty()) {
-            throw new CampoNonValidoException("Vuoi acquistare il nulla?");
+        if (utenteLoggato == null) {
+            throw new CampoNonValidoException("Utente non valido!");
         }
 
+        ArrayList<Fattura> libreriaDalDB = getLibreriaUtente(utenteLoggato.getId());
 
-        if (utenteLoggato.getSaldo() < carrello.getTotale()) {
-            throw new CampoNonValidoException("Saldo insufficiente.");
+        ArrayList<EdizioneGioco> giochiInCarrello = getGiochiCarrello(utenteLoggato);
+
+        if (giochiInCarrello == null || giochiInCarrello.isEmpty()) {
+            throw new CampoNonValidoException("Il carrello è vuoto!");
         }
 
-        utenteLoggato.rimuoviSaldo(carrello.getTotale());
-
-        for (EdizioneGioco giocoAcquistato : carrello.getListaGiochi()) {
-            Fattura nuovaFattura = new Fattura(utenteLoggato, giocoAcquistato, giocoAcquistato.getPrezzo());
-            utenteLoggato.addGioco(nuovaFattura);
-
-            giocoAcquistato.getGioco().getSviluppatore().addFondi(nuovaFattura.getPrezzoAcquisto());
-
-            try {
-                fatturaDAO.inserisciFattura(nuovaFattura);
-            } catch (SQLException e) {
-                throw new CampoNonValidoException("Operazione Fallita");
+        for (EdizioneGioco giocoInCarrello : giochiInCarrello) {
+            for (Fattura f : libreriaDalDB) {
+                if (f.getGioco() != null && f.getGioco().getId() == giocoInCarrello.getId()) {
+                    throw new CampoNonValidoException("Impossibile procedere: possiedi già \""
+                            + giocoInCarrello.getGioco().getTitolo() + "\" ("
+                            + giocoInCarrello.getPiattaforma().getNome() + ") in libreria!");
+                }
             }
         }
 
-        utenteLoggato.getCarrello().svuotaCarrello();
+        int totale = 0;
+        for (EdizioneGioco e : giochiInCarrello) {
+            totale += e.getPrezzo();
+        }
+
+        if (utenteLoggato.getSaldo() < totale) {
+            throw new CampoNonValidoException("Saldo insufficiente! Il totale è di " + totale + "€, ma hai solo " + utenteLoggato.getSaldo() + "€.");
+        }
+
+        for (EdizioneGioco giocoAcquistato : giochiInCarrello) {
+            Fattura nuovaFattura = new Fattura(utenteLoggato, giocoAcquistato, giocoAcquistato.getPrezzo());
+
+            try {
+                fatturaDAO.inserisciFattura(nuovaFattura);
+
+                utenteDAO.eliminaCarrello(utenteLoggato.getId(), giocoAcquistato.getId());
+
+                utenteLoggato.addGioco(nuovaFattura);
+                utenteLoggato.rimuoviSaldo(nuovaFattura.getPrezzoAcquisto());
+
+            } catch (SQLException | CampoNonValidoException e) {
+                throw new CampoNonValidoException("Operazione Fallita: " + e.getMessage());
+            }
+        }
 
         try {
             utenteDAO.svuotaCarrello(utenteLoggato.getId());
+            if (utenteLoggato.getCarrello() != null) {
+                utenteLoggato.getCarrello().svuotaCarrello();
+            }
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
@@ -921,9 +1076,10 @@ public class Controller {
         }
     }
 
-    public int getGiocoPiuVendutoSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
+    public String getGiocoPiuVendutoSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         try {
-            return sviluppatoreDAO.getGiocoPiuVendutoSviluppatore(sviluppatore.getId());
+            String titolo = sviluppatoreDAO.getGiocoPiuVendutoSviluppatore(sviluppatore.getId());
+            return (titolo != null) ? titolo : "Nessuno";
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
@@ -1131,7 +1287,7 @@ public class Controller {
     }
 
 
-    public void invertiStatoBan(int idUtente) throws CampoNonValidoException{
+    public void invertiStatoBan(int idUtente) throws CampoNonValidoException {
         try {
 
             utenteDAO.invertiStatoBan(idUtente);
@@ -1182,7 +1338,7 @@ public class Controller {
         }
     }
 
-    public String getStringaRecensioniPerGioco(Gioco giocoScelto)throws CampoNonValidoException {
+    public String getStringaRecensioniPerGioco(Gioco giocoScelto) throws CampoNonValidoException {
 
         String risultato = "";
 
@@ -1191,11 +1347,11 @@ public class Controller {
         for (Recensione recensione : recensioniDelGioco) {
 
 
-                risultato += recensione + "\n";
-                risultato += "Voto: " + recensione.getVoto() + "/100";
-                risultato += "  (Utilità: " + recensione.getDifferenzaLike() + ")\n";
-                risultato += "\"" + recensione.getDescrizione() + "\"\n";
-                risultato += "--------------------------------------------------\n\n";
+            risultato += recensione + "\n";
+            risultato += "Voto: " + recensione.getVoto() + "/100";
+            risultato += "  (Utilità: " + recensione.getDifferenzaLike() + ")\n";
+            risultato += "\"" + recensione.getDescrizione() + "\"\n";
+            risultato += "--------------------------------------------------\n\n";
 
         }
 

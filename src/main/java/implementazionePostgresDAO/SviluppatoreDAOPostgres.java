@@ -133,13 +133,13 @@ public class SviluppatoreDAOPostgres implements SviluppatoreDAO {
     }
 
     @Override
-    public int getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException {
-        String query = "SELECT g.idGioco, COUNT(f.idFattura) AS vendite " +
-                "FROM GIOCO g " +
-                "JOIN EDIZIONE_GIOCO eg ON g.idGioco = eg.idGioco " +
-                "JOIN FATTURA f ON eg.idEdizione = f.idEdizione " +
+    public String getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException {
+        String query = "SELECT g.titolo, COUNT(f.idFattura) AS vendite " +
+                "FROM gioco g " +
+                "JOIN edizione_gioco eg ON g.idGioco = eg.idGioco " +
+                "JOIN fattura f ON eg.idEdizione = f.idEdizione " +
                 "WHERE g.idSviluppatore = ? " +
-                "GROUP BY g.idGioco " +
+                "GROUP BY g.idGioco, g.titolo " +
                 "ORDER BY vendite DESC " +
                 "LIMIT 1";
 
@@ -150,7 +150,23 @@ public class SviluppatoreDAOPostgres implements SviluppatoreDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("idGioco");
+                    return rs.getString("titolo");
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int getNumeroGiochiRilasciati(int idSviluppatore) throws SQLException {
+        String query = "SELECT COUNT(*) AS totale FROM gioco WHERE idSviluppatore = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, idSviluppatore);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totale");
                 }
             }
         }
