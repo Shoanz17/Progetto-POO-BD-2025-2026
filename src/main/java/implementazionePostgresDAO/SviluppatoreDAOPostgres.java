@@ -136,7 +136,7 @@ public class SviluppatoreDAOPostgres implements SviluppatoreDAO {
     public int getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException {
         String query = "SELECT g.idGioco, COUNT(f.idFattura) AS vendite " +
                 "FROM GIOCO g " +
-                "JOIN EDIZIONEGIOCO eg ON g.idGioco = eg.idGioco " +
+                "JOIN EDIZIONE_GIOCO eg ON g.idGioco = eg.idGioco " +
                 "JOIN FATTURA f ON eg.idEdizione = f.idEdizione " +
                 "WHERE g.idSviluppatore = ? " +
                 "GROUP BY g.idGioco " +

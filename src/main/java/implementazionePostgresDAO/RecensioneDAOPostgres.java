@@ -25,25 +25,25 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
     public ArrayList<Recensione> getListaRecensioniUtente(int idUtente) throws SQLException, CampoNonValidoException {
         ArrayList<Recensione> lista = new ArrayList<>();
         String query = "SELECT " +
-                "r.voto, r.descrizione, r.differenza_like, " +
-                "f.id AS f_id, f.prezzo_acquisto, f.key, f.data_acquisto, " +
-                "u.id_utente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.data_creazione AS u_data_creazione, " +
-                "u.genere AS u_genere, u.email AS u_email, u.data_nascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
+                "r.voto, r.descrizione, r.differenzaLike, " +
+                "f.idFattura AS f_id, f.prezzoAcquisto AS f_prezzo_acquisto, f.key, f.dataAcquisto AS f_data_acquisto, " +
+                "u.idUtente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.dataCreazione AS u_data_creazione, " +
+                "u.genere AS u_genere, u.email AS u_email, u.dataNascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
                 "p.nome AS p_nome, p.produttore AS p_produttore, p.portatile AS p_portatile, " +
-                "s.id_sviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.data_creazione AS s_data_creazione, " +
+                "s.idSviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.dataCreazione AS s_data_creazione, " +
                 "s.strike AS s_strike, s.descrizione AS s_descrizione, s.fondi AS s_fondi, " +
-                "g.id AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
-                "eg.id AS eg_id, eg.prezzo AS eg_prezzo, eg.data_rilascio AS eg_data_rilascio " +
-                "FROM Recensione r " +
-                "JOIN Fattura f ON r.id_fattura = f.id " +
-                "JOIN Utente u ON f.id_utente = u.id_utente " +
-                "JOIN Account a_u ON u.id_utente = a_u.id " +
-                "JOIN EdizioneGioco eg ON f.id_edizione_gioco = eg.id " +
-                "JOIN PiattaformaDiGioco p ON eg.nome_piattaforma = p.nome " +
-                "JOIN Gioco g ON eg.id_gioco = g.id " +
-                "JOIN Sviluppatore s ON g.id_sviluppatore = s.id_sviluppatore " +
-                "JOIN Account a_s ON s.id_sviluppatore = a_s.id " +
-                "WHERE f.id_utente = ?";
+                "g.idGioco AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
+                "eg.idEdizione AS eg_id, eg.prezzo AS eg_prezzo, eg.dataRilascio AS eg_data_rilascio " +
+                "FROM recensione r " +
+                "JOIN fattura f ON r.idFattura = f.idFattura " +
+                "JOIN utente u ON f.idUtente = u.idUtente " +
+                "JOIN account a_u ON u.idUtente = a_u.idAccount " +
+                "JOIN edizione_gioco eg ON f.idEdizione = eg.idEdizione " +
+                "JOIN piattaforma_di_gioco p ON eg.nomePiattaforma = p.nome " +
+                "JOIN gioco g ON eg.idGioco = g.idGioco " +
+                "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
+                "JOIN account a_s ON s.idSviluppatore = a_s.idAccount " +
+                "WHERE f.idUtente = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, idUtente);
@@ -111,7 +111,7 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                     Recensione recensione = new Recensione(
                             rs.getInt("voto"),
                             rs.getString("descrizione"),
-                            rs.getInt("differenza_like"),
+                            rs.getInt("differenzaLike"),
                             fattura
                     );
 
@@ -126,25 +126,25 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
     public ArrayList<Recensione> getListaRecensioniEdizione(int idEdizioneGioco) throws SQLException, CampoNonValidoException {
         ArrayList<Recensione> lista = new ArrayList<>();
         String query = "SELECT " +
-                "r.voto, r.descrizione, r.differenza_like, " +
-                "f.id AS f_id, f.prezzo_acquisto, f.key, f.data_acquisto, " +
-                "u.id_utente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.data_creazione AS u_data_creazione, " +
-                "u.genere AS u_genere, u.email AS u_email, u.data_nascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
+                "r.voto, r.descrizione, r.differenzaLike, " +
+                "f.idFattura AS f_id, f.prezzoAcquisto AS f_prezzo_acquisto, f.key, f.dataAcquisto AS f_data_acquisto, " +
+                "u.idUtente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.dataCreazione AS u_data_creazione, " +
+                "u.genere AS u_genere, u.email AS u_email, u.dataNascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
                 "p.nome AS p_nome, p.produttore AS p_produttore, p.portatile AS p_portatile, " +
-                "s.id_sviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.data_creazione AS s_data_creazione, " +
+                "s.idSviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.dataCreazione AS s_data_creazione, " +
                 "s.strike AS s_strike, s.descrizione AS s_descrizione, s.fondi AS s_fondi, " +
-                "g.id AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
-                "eg.id AS eg_id, eg.prezzo AS eg_prezzo, eg.data_rilascio AS eg_data_rilascio " +
-                "FROM Recensione r " +
-                "JOIN Fattura f ON r.id_fattura = f.id " +
-                "JOIN Utente u ON f.id_utente = u.id_utente " +
-                "JOIN Account a_u ON u.id_utente = a_u.id " +
-                "JOIN EdizioneGioco eg ON f.id_edizione_gioco = eg.id " +
-                "JOIN PiattaformaDiGioco p ON eg.nome_piattaforma = p.nome " +
-                "JOIN Gioco g ON eg.id_gioco = g.id " +
-                "JOIN Sviluppatore s ON g.id_sviluppatore = s.id_sviluppatore " +
-                "JOIN Account a_s ON s.id_sviluppatore = a_s.id " +
-                "WHERE f.id_edizione_gioco = ?";
+                "g.idGioco AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
+                "eg.idEdizione AS eg_id, eg.prezzo AS eg_prezzo, eg.dataRilascio AS eg_data_rilascio " +
+                "FROM recensione r " +
+                "JOIN fattura f ON r.idFattura = f.idFattura " +
+                "JOIN utente u ON f.idUtente = u.idUtente " +
+                "JOIN account a_u ON u.idUtente = a_u.idAccount " +
+                "JOIN edizione_gioco eg ON f.idEdizione = eg.idEdizione " +
+                "JOIN piattaforma_di_gioco p ON eg.nomePiattaforma = p.nome " +
+                "JOIN gioco g ON eg.idGioco = g.idGioco " +
+                "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
+                "JOIN account a_s ON s.idSviluppatore = a_s.idAccount " +
+                "WHERE f.idEdizione = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, idEdizioneGioco);
@@ -204,15 +204,15 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             rs.getInt("f_id"),
                             utente,
                             edizione,
-                            rs.getInt("prezzo_acquisto"),
+                            rs.getInt("f_prezzo_acquisto"),
                             rs.getString("key"),
-                            rs.getDate("data_acquisto").toLocalDate()
+                            rs.getDate("f_data_acquisto").toLocalDate()
                     );
 
                     Recensione recensione = new Recensione(
                             rs.getInt("voto"),
                             rs.getString("descrizione"),
-                            rs.getInt("differenza_like"),
+                            rs.getInt("differenzaLike"),
                             fattura
                     );
 
@@ -227,24 +227,24 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
     public ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws SQLException, CampoNonValidoException {
         ArrayList<Recensione> lista = new ArrayList<>();
         String query = "SELECT " +
-                "r.voto, r.descrizione, r.differenza_like, " +
-                "f.id AS f_id, f.prezzo_acquisto, f.key, f.data_acquisto, " +
-                "u.id_utente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.data_creazione AS u_data_creazione, " +
-                "u.genere AS u_genere, u.email AS u_email, u.data_nascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
+                "r.voto, r.descrizione, r.differenzaLike, " +
+                "f.idFattura AS f_id, f.prezzoAcquisto AS f_prezzo_acquisto, f.key, f.dataAcquisto AS f_data_acquisto, " +
+                "u.idUtente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.dataCreazione AS u_data_creazione, " +
+                "u.genere AS u_genere, u.email AS u_email, u.dataNascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
                 "p.nome AS p_nome, p.produttore AS p_produttore, p.portatile AS p_portatile, " +
-                "s.id_sviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.data_creazione AS s_data_creazione, " +
+                "s.idSviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.dataCreazione AS s_data_creazione, " +
                 "s.strike AS s_strike, s.descrizione AS s_descrizione, s.fondi AS s_fondi, " +
-                "g.id AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
-                "eg.id AS eg_id, eg.prezzo AS eg_prezzo, eg.data_rilascio AS eg_data_rilascio " +
-                "FROM Recensione r " +
-                "JOIN Fattura f ON r.id_fattura = f.id " +
-                "JOIN Utente u ON f.id_utente = u.id_utente " +
-                "JOIN Account a_u ON u.id_utente = a_u.id " +
-                "JOIN EdizioneGioco eg ON f.id_edizione_gioco = eg.id " +
-                "JOIN PiattaformaDiGioco p ON eg.nome_piattaforma = p.nome " +
-                "JOIN Gioco g ON eg.id_gioco = g.id " +
-                "JOIN Sviluppatore s ON g.id_sviluppatore = s.id_sviluppatore " +
-                "JOIN Account a_s ON s.id_sviluppatore = a_s.id " +
+                "g.idGioco AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
+                "eg.idEdizione AS eg_id, eg.prezzo AS eg_prezzo, eg.dataRilascio AS eg_data_rilascio " +
+                "FROM recensione r " +
+                "JOIN fattura f ON r.idFattura = f.idFattura " +
+                "JOIN utente u ON f.idUtente = u.idUtente " +
+                "JOIN account a_u ON u.idUtente = a_u.idAccount " +
+                "JOIN edizione_gioco eg ON f.idEdizione = eg.idEdizione " +
+                "JOIN piattaforma_di_gioco p ON eg.nomePiattaforma = p.nome " +
+                "JOIN gioco g ON eg.idGioco = g.idGioco " +
+                "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
+                "JOIN account a_s ON s.idSviluppatore = a_s.idAccount " +
                 "WHERE LOWER(r.descrizione) LIKE LOWER(?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -305,15 +305,15 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             rs.getInt("f_id"),
                             utente,
                             edizione,
-                            rs.getInt("prezzo_acquisto"),
+                            rs.getInt("f_prezzo_acquisto"),
                             rs.getString("key"),
-                            rs.getDate("data_acquisto").toLocalDate()
+                            rs.getDate("f_data_acquisto").toLocalDate()
                     );
 
                     Recensione recensione = new Recensione(
                             rs.getInt("voto"),
                             rs.getString("descrizione"),
-                            rs.getInt("differenza_like"),
+                            rs.getInt("differenzaLike"),
                             fattura
                     );
 
@@ -326,27 +326,27 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
 
     @Override
     public void creaRecensione(int idFattura, int voto, String testo) throws SQLException {
-        String query = "INSERT INTO Recensione (id_fattura, voto, descrizione, differenza_like) VALUES (?, ?, ?, 0)";
+        String query = "INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES (?, ?, ?, 0)";
         ConnessioneDatabase.getInstance().eseguiUpdate(query, idFattura, voto, testo);
     }
 
     @Override
     public void eliminaRecensione(int idFattura) throws SQLException {
-        String query = "DELETE FROM Recensione WHERE id_fattura = ?";
+        String query = "DELETE FROM recensione WHERE idFattura = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(query, idFattura);
     }
 
     @Override
     public void aggiornaRecensione(int idFattura, int nuovoVoto, String nuovoTesto) throws SQLException {
-        String query = "UPDATE Recensione SET voto = ?, descrizione = ? WHERE id_fattura = ?";
+        String query = "UPDATE recensione SET voto = ?, descrizione = ? WHERE idFattura = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(query, nuovoVoto, nuovoTesto, idFattura);
     }
 
     @Override
     public int getMediaVotiEdizioneGioco(int idEdizioneGioco) throws SQLException {
-        String query = "SELECT AVG(r.voto) AS media FROM Recensione r " +
-                "JOIN Fattura f ON r.id_fattura = f.id " +
-                "WHERE f.id_edizione_gioco = ?";
+        String query = "SELECT AVG(r.voto) AS media FROM recensione r " +
+                "JOIN fattura f ON r.idFattura = f.idFattura " +
+                "WHERE f.idEdizione = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, idEdizioneGioco);
@@ -361,7 +361,7 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
 
     @Override
     public void aggiornaDifferenzaLike(int idFattura, int differenza) throws SQLException {
-        String query = "UPDATE Recensione SET differenza_like = ? WHERE id_fattura = ?";
+        String query = "UPDATE recensione SET differenzaLike = ? WHERE idFattura = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(query, differenza, idFattura);
     }
 
@@ -369,25 +369,25 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
     public ArrayList<Recensione> getRecensioniPerGioco(int idGioco) throws SQLException, CampoNonValidoException {
         ArrayList<Recensione> lista = new ArrayList<>();
         String query = "SELECT " +
-                "r.voto, r.descrizione, r.differenza_like, " +
-                "f.id AS f_id, f.prezzo_acquisto, f.key, f.data_acquisto, " +
-                "u.id_utente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.data_creazione AS u_data_creazione, " +
-                "u.genere AS u_genere, u.email AS u_email, u.data_nascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
+                "r.voto, r.descrizione, r.differenzaLike, " +
+                "f.idFattura AS f_id, f.prezzoAcquisto AS f_prezzo_acquisto, f.key, f.dataAcquisto AS f_data_acquisto, " +
+                "u.idUtente AS u_id, a_u.nome AS u_nome, a_u.password AS u_password, a_u.dataCreazione AS u_data_creazione, " +
+                "u.genere AS u_genere, u.email AS u_email, u.dataNascita AS u_data_nascita, u.saldo AS u_saldo, u.bannato AS u_bannato, " +
                 "p.nome AS p_nome, p.produttore AS p_produttore, p.portatile AS p_portatile, " +
-                "s.id_sviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.data_creazione AS s_data_creazione, " +
+                "s.idSviluppatore AS s_id, a_s.nome AS s_nome, a_s.password AS s_password, a_s.dataCreazione AS s_data_creazione, " +
                 "s.strike AS s_strike, s.descrizione AS s_descrizione, s.fondi AS s_fondi, " +
-                "g.id AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
-                "eg.id AS eg_id, eg.prezzo AS eg_prezzo, eg.data_rilascio AS eg_data_rilascio " +
-                "FROM Recensione r " +
-                "JOIN Fattura f ON r.id_fattura = f.id " +
-                "JOIN Utente u ON f.id_utente = u.id_utente " +
-                "JOIN Account a_u ON u.id_utente = a_u.id " +
-                "JOIN EdizioneGioco eg ON f.id_edizione_gioco = eg.id " +
-                "JOIN PiattaformaDiGioco p ON eg.nome_piattaforma = p.nome " +
-                "JOIN Gioco g ON eg.id_gioco = g.id " +
-                "JOIN Sviluppatore s ON g.id_sviluppatore = s.id_sviluppatore " +
-                "JOIN Account a_s ON s.id_sviluppatore = a_s.id " +
-                "WHERE eg.id_gioco = ?";
+                "g.idGioco AS g_id, g.titolo AS g_titolo, g.categoria AS g_categoria, g.pegi AS g_pegi, " +
+                "eg.idEdizione AS eg_id, eg.prezzo AS eg_prezzo, eg.dataRilascio AS eg_data_rilascio " +
+                "FROM recensione r " +
+                "JOIN fattura f ON r.idFattura = f.idFattura " +
+                "JOIN utente u ON f.idUtente = u.idUtente " +
+                "JOIN account a_u ON u.idUtente = a_u.idAccount " +
+                "JOIN edizione_gioco eg ON f.idEdizione = eg.idEdizione " +
+                "JOIN piattaforma_di_gioco p ON eg.nomePiattaforma = p.nome " +
+                "JOIN gioco g ON eg.idGioco = g.idGioco " +
+                "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
+                "JOIN account a_s ON s.idSviluppatore = a_s.idAccount " +
+                "WHERE eg.idGioco = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, idGioco);
@@ -447,15 +447,15 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                             rs.getInt("f_id"),
                             utente,
                             edizione,
-                            rs.getInt("prezzo_acquisto"),
+                            rs.getInt("f_prezzo_acquisto"),
                             rs.getString("key"),
-                            rs.getDate("data_acquisto").toLocalDate()
+                            rs.getDate("f_data_acquisto").toLocalDate()
                     );
 
                     Recensione recensione = new Recensione(
                             rs.getInt("voto"),
                             rs.getString("descrizione"),
-                            rs.getInt("differenza_like"),
+                            rs.getInt("differenzaLike"),
                             fattura
                     );
 
