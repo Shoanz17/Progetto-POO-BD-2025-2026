@@ -115,6 +115,12 @@ public class UtenteDAOPostgres implements UtenteDAO {
         return u;
     }
 
+    @Override
+    public void invertiStatoBan(int idUtente) throws SQLException {
+        String query = "UPDATE UTENTE SET bannato = NOT bannato WHERE idUtente = ?";
+
+        ConnessioneDatabase.getInstance().eseguiUpdate(query, idUtente);
+    }
 
     @Override
     public ArrayList<Utente> getListaUtenti() throws SQLException {
