@@ -21,6 +21,35 @@ public class UtenteDAOPostgres implements UtenteDAO {
     }
 
     @Override
+    public void registraUtente(Utente utente) throws SQLException {
+        String queryAccount = "INSERT INTO ACCOUNT (nome, password) VALUES (?, ?)";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+        int idGenerato;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(queryAccount, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setString(1, utente.getNome());
+            pstmt.setString(2, utente.getPassword());
+
+            pstmt.executeUpdate();
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idGenerato = rs.getInt(1);
+
+                    utente.setId(idGenerato);
+                } else {
+                    throw new SQLException("Registrazione fallita: impossibile recuperare l'idAccount generato.");
+                }
+            }
+        }
+        String queryUtente = "INSERT INTO UTENTE (idUtente, genere, saldo, bannato, dataNascita, email) VALUES (?, ?, ?, ?, ?, ?)";
+
+        ConnessioneDatabase.getInstance().eseguiUpdate(queryUtente, idGenerato, utente.getGenere().name(), utente.getSaldo(), utente.isBannato(), Date.valueOf(utente.getDataNascita()), utente.getEmail()
+        );
+    }
+
+    @Override
     public ArrayList<Utente> getListaUtenti() throws SQLException {
         ArrayList<Utente> listaUtenti = new ArrayList<>();
         String query = "SELECT a.nome, a.password,a.datacreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
