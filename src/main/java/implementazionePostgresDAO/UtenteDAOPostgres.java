@@ -54,8 +54,8 @@ public class UtenteDAOPostgres implements UtenteDAO {
         ArrayList<Utente> listaUtenti = new ArrayList<>();
 
         String query = "SELECT a.nome, a.password, a.dataCreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
-                        "FROM ACCOUNT a JOIN UTENTE u ON a.idAccount = u.idUtente " +
-                        "WHERE u.bannato = ? AND LOWER(a.nome) LIKE LOWER(?)";
+                "FROM ACCOUNT a JOIN UTENTE u ON a.idAccount = u.idUtente " +
+                "WHERE u.bannato = ? AND LOWER(a.nome) LIKE LOWER(?)";
 
         Connection conn = ConnessioneDatabase.getInstance().connection;
 
@@ -85,11 +85,43 @@ public class UtenteDAOPostgres implements UtenteDAO {
     }
 
     @Override
+    public Utente getUtenteById(int idUtente) throws SQLException {
+        String query = "SELECT a.nome, a.password, a.dataCreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
+                "FROM ACCOUNT a JOIN UTENTE u ON a.idAccount = u.idUtente " +
+                "WHERE u.idUtente = ?";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+        Utente u = null;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, idUtente);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("idUtente");
+                    String nome = rs.getString("nome");
+                    String password = rs.getString("password");
+                    LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                    GenereEnum genere = GenereEnum.valueOf(rs.getString("genere"));
+                    String email = rs.getString("email");
+                    LocalDate dataNascita = rs.getDate("dataNascita").toLocalDate();
+                    int saldo = rs.getInt("saldo");
+                    boolean statoBan = rs.getBoolean("bannato");
+
+                    u = new Utente(id, nome, password, dataCreazione, genere, email, dataNascita, saldo, statoBan);
+                }
+            }
+        }
+        return u;
+    }
+
+
+    @Override
     public ArrayList<Utente> getListaUtenti() throws SQLException {
         ArrayList<Utente> listaUtenti = new ArrayList<>();
         String query = "SELECT a.nome, a.password,a.datacreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
-                        "FROM ACCOUNT a JOIN UTENTE u " +
-                        "ON a.idAccount = u.idUtente";
+                "FROM ACCOUNT a JOIN UTENTE u " +
+                "ON a.idAccount = u.idUtente";
 
 
         try (Statement stmt = connection.createStatement();
@@ -106,7 +138,7 @@ public class UtenteDAOPostgres implements UtenteDAO {
                 int saldo = rs.getInt("saldo");
                 boolean bannato = rs.getBoolean("bannato");
 
-                Utente u = new Utente(id,nome,password,dataCreazione,genere,email,dataNascita,saldo,bannato);
+                Utente u = new Utente(id, nome, password, dataCreazione, genere, email, dataNascita, saldo, bannato);
 
                 listaUtenti.add(u);
             }
