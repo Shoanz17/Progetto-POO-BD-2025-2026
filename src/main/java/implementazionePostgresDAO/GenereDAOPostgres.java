@@ -49,8 +49,8 @@ public class GenereDAOPostgres implements GenereDAO {
     public ArrayList<Genere> getListaGeneriDaGioco(Gioco gioco) throws SQLException, CampoNonValidoException {
         ArrayList<Genere> lista = new ArrayList<>();
         String query = "SELECT g.nome FROM Genere g " +
-                "JOIN GiocoGenere gg ON g.nome = gg.nome_genere " +
-                "WHERE gg.id_gioco = ?";
+                "JOIN gioco_genere gg ON g.idGenere = gg.idGenere " +
+                "WHERE gg.idGioco = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, gioco.getId());
@@ -119,11 +119,12 @@ public class GenereDAOPostgres implements GenereDAO {
             return;
         }
         //Rimuove tutti i vecchi generi per evitare duplicati
-        String queryDelete = "DELETE FROM GiocoGenere WHERE id_gioco = ?";
+        String queryDelete = "DELETE FROM gioco_genere WHERE idGioco = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(queryDelete, idGioco);
 
         //Inserisco i nuovi generi
-        String queryInsert = "INSERT INTO GiocoGenere (id_gioco, nome_genere) VALUES (?, ?)";
+        String queryInsert = "INSERT INTO gioco_genere (idGioco, idGenere) " +
+                "VALUES (?, (SELECT idGenere FROM genere WHERE nome = ?))";
         for (Genere g : generi) {
             ConnessioneDatabase.getInstance().eseguiUpdate(queryInsert, idGioco, g.getNome());
         }
