@@ -14,4 +14,5 @@ public interface GenereDAO {
     ArrayList<Genere> getGeneriFiltrati(String testoRicerca) throws SQLException;
 
     ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) throws SQLException;
+    void collegaGeneriAGioco(int idGioco, ArrayList<Genere> generi)throws SQLException;
 }

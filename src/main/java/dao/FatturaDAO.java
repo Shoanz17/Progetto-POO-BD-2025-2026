@@ -10,4 +10,6 @@ public interface FatturaDAO {
     ArrayList<Fattura> getListaFatture() throws SQLException;
 
     void inserisciFattura(Fattura fattura) throws SQLException;
+
+    void effettuaRimborso(int idFattura, int idUtente, int importo) throws SQLException;
 }
