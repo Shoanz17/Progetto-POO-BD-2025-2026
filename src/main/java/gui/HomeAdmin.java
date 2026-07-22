@@ -33,8 +33,8 @@ public class HomeAdmin {
     private JTextField campoNomePiattaforma;
     private JTextField campoProduttore;
     private JTextField campoNomePromozione;
-    private JTextField campoDataInizio;
-    private JTextField campoDataFine;
+    private JFormattedTextField campoDataInizio;
+    private JFormattedTextField campoDataFine;
     private JButton pulsanteRimuoviRecensioneUtenti;
     private JTable tabellaUtenti;
     private JButton pulsanteAggiungiPromozione;
@@ -83,6 +83,8 @@ public class HomeAdmin {
     private JLabel nStrike;
     private JPanel pannelloGeneriGioco;
     private JScrollPane scrollPaneGeneri;
+
+    private boolean ordinaPerDataAttivo = false;
 
     private JFrame adminFrame;
     private Controller controller;
@@ -138,6 +140,11 @@ public class HomeAdmin {
         associaListenerPulsanteRimuoviRecensioneRecensioni();
         associaListenerPulsanteBannaUtenteRecensioni();
 
+        //Promozioni
+        associaListenerRicercaPromozioni();
+        associaListenerPulsanteOrdinaPerData();
+        associaListenerPulsanteAggiungiPromozione();
+
         associaListenerPulsanteLogout(accediGUI);
 
         mostraForm();
@@ -155,6 +162,7 @@ public class HomeAdmin {
         configuraPannelloGeneri();
         configuraPannelloPiattaforme();
         configuraPannelloRecensioni();
+        configuraPannelloPromozioni();
 
     }
 
@@ -1017,6 +1025,100 @@ public class HomeAdmin {
                             JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
                         }
                     }
+                }
+            }
+        });
+    }
+
+    //PANNELLO PROMOZIONI
+    private void configuraPannelloPromozioni(){
+        String[] colonnePromozioni = {"Nome", "DataInizio", "DataFine"};
+        configuraTabella(colonnePromozioni, tabellaPromozioni);
+
+        applicaMascheraData(campoDataInizio);
+        applicaMascheraData(campoDataFine);
+
+
+        filtraPromozioni();
+    }
+
+    private void applicaMascheraData(JFormattedTextField campoData) {
+        try {
+            // Il carattere '#' accetta solo numeri, le barre vengono messe da sole
+            javax.swing.text.MaskFormatter mascheraData = new javax.swing.text.MaskFormatter("##/##/####");
+
+            // Mostra i trattini bassi dove l'utente deve ancora digitare
+            mascheraData.setPlaceholderCharacter('_');
+
+            // Applica la maschera al campo formattato
+            mascheraData.install(campoData);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void filtraPromozioni(){
+        String testoRicerca = ricercaPromozioni.getText().toLowerCase().trim();
+
+        ArrayList<Object[]> righe = new ArrayList<>();
+
+        try {
+            //il controller restituirà la lista filtrata per testo e ordinata (o meno) per data
+            for (Promozione promozione : controller.getPromozioniFiltrateAdmin(testoRicerca, ordinaPerDataAttivo)) {
+                Object[] riga = {
+                        controller.getNomePromozione(promozione),
+                        controller.getDataInizioPromozione(promozione),
+                        controller.getDataFinePromozione(promozione)
+                };
+                righe.add(riga);
+            }
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(adminFrame, e.getMessage());
+        }
+
+        aggiornaContenutoTabella(tabellaPromozioni, righe);
+    }
+
+    private void associaListenerRicercaPromozioni(){
+        ricercaPromozioni.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                filtraPromozioni();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteOrdinaPerData(){
+        pulsanteOrdinaPerData.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //inverte lo stato dell'ordinamento a ogni click
+                ordinaPerDataAttivo = !ordinaPerDataAttivo;
+
+                filtraPromozioni();
+            }
+        });
+    }
+
+    private void associaListenerPulsanteAggiungiPromozione() {
+        pulsanteAggiungiPromozione.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nome = campoNomePromozione.getText();
+                String dataInizio = campoDataInizio.getText();
+                String dataFine = campoDataFine.getText();
+
+                try {
+                    controller.createPromozione(nome, dataInizio, dataFine);
+
+                    campoNomePromozione.setText("");
+                    campoDataInizio.setText("");
+                    campoDataFine.setText("");
+
+                    filtraPromozioni();
+
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
                 }
             }
         });

@@ -41,21 +41,7 @@ public class Controller {
         GenereEnum genereVero = GenereEnum.valueOf(genere);
 
         //cercato su internet
-        //rimuovo gli spazi e controllo se la lunghezza è giusta e se non sono rimasti trattini
-        if (dataNascita.contains("_") || dataNascita.trim().length() < 10)
-            throw new CampoNonValidoException("Inserisci una data di nascita completa!");
-
-        LocalDate dataNascitaVera;
-        try {
-            // Configurazione rigida per evitare date inventate (es. 31 Febbraio)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
-
-            //converto la stringa
-            dataNascitaVera = LocalDate.parse(dataNascita, formatter);
-
-        } catch (DateTimeParseException e) {
-            throw new CampoNonValidoException("La data inserita non esiste nel calendario o non è nel formato dd/MM/yyyy");
-        }
+        LocalDate dataNascitaVera = convertiDataRigida(dataNascita);
 
         //finalmente creo l'oggetto
         Utente utente = new Utente(nome, password, genereVero, email, dataNascitaVera);
@@ -65,6 +51,23 @@ public class Controller {
             utenteDAO.registraUtente(utente);
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+
+    private LocalDate convertiDataRigida(String testoData) throws CampoNonValidoException {
+        if (testoData == null || testoData.contains("_") || testoData.trim().length() < 10) {
+            throw new CampoNonValidoException("Inserisci la data completa!");
+        }
+
+        try {
+            // Configurazione rigida per evitare date inventate (es. 31 Febbraio)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+            return LocalDate.parse(testoData.trim(), formatter);
+
+        } catch (DateTimeParseException e) {
+            throw new CampoNonValidoException("La data inserita non esiste nel calendario!");
         }
     }
 
@@ -510,7 +513,7 @@ public class Controller {
     public String getNomePiattaforma(PiattaformaDiGioco piattaformaDiGioco) { return piattaformaDiGioco.getNome(); }
     public String getProduttorePiattaforma(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.getProduttore();}
     public boolean isPortabile(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.isPortatile();}
-
+    //DA FARE
     public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome, produttore, portabile);
 
@@ -529,6 +532,8 @@ public class Controller {
     public LocalDate getDataRilascioDaFattura(Fattura f) {return f.getGioco().getDataRilascio();}
     public Categoria getCategoriaDaFattura(Fattura f) {return f.getGioco().getGioco().getCategoria();}
     public int getPegiDaFattura(Fattura f) {return f.getGioco().getGioco().getPegi();}
+    public Utente getUtenteDaFattura(Fattura fattura) { return fattura.getUtente(); }
+    public String getNomeUtenteDaFattura(Fattura fattura) { return getUtenteDaFattura(fattura).getNome(); }
     public ArrayList<Genere> getGeneriDaFattura(Fattura f) {return f.getGioco().getGioco().getGeneri();}
     public Sviluppatore getSviluppatoreDaFattura(Fattura f) {return f.getGioco().getGioco().getSviluppatore();}
     public Gioco getGiocoDaFattura(Fattura f) {return f.getGioco().getGioco();}
@@ -539,6 +544,15 @@ public class Controller {
     public LocalDate getDataAcquistoDaFattura(Fattura f){return (f.getDataAcquisto());}
     public String getKeyDaFattura(Fattura f){return f.getKey();}
     public int getPrezzoAcquistoDaFattura(Fattura f){return f.getPrezzoAcquisto();}
+    public ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws CampoNonValidoException {
+        try {
+
+            return recensioneDAO.getRecensioniFiltrateAdmin(testoRicerca);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
 
     public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
         try {
@@ -593,6 +607,34 @@ public class Controller {
             }
         }
         return false;
+    }
+
+    //metodi per prendere dati da promozione
+    public String getNomePromozione(Promozione promozione) { return promozione.getNome(); }
+    public LocalDate getDataInizioPromozione(Promozione promozione) { return promozione.getDataInizio(); }
+    public LocalDate getDataFinePromozione(Promozione promozione) { return promozione.getDataFine(); }
+    public ArrayList<Promozione> getPromozioniFiltrateAdmin(String testoRicerca, boolean ordinaPerData) throws CampoNonValidoException {
+        try {
+
+            return promozioneDAO.getPromozioniFiltrate(testoRicerca, ordinaPerData);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+    public void createPromozione(String nome, String dataInizioStringa, String dataFineStringa) throws CampoNonValidoException {
+        LocalDate dataInizio = convertiDataRigida(dataInizioStringa);
+        LocalDate dataFine = convertiDataRigida(dataFineStringa);
+
+        Promozione promozione = new Promozione(nome, dataInizio, dataFine);
+
+        try {
+
+            promozioneDAO.creaPromozione(promozione.getNome(), promozione.getDataInizio(), promozione.getDataFine());
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
