@@ -123,6 +123,23 @@ public class UtenteDAOPostgres implements UtenteDAO {
     }
 
     @Override
+    void setBannato(int idUtente) throws SQLException{
+        String query = "UPDATE UTENTE SET bannato = ? WHERE idUtente = ?";
+
+        ConnessioneDatabase.getInstance().eseguiUpdate(query,idUtente);
+    }
+
+    @Override
+    public void aggiornaProfiloUtente(Utente utente) throws SQLException {
+
+        String queryAccount = "UPDATE ACCOUNT SET nome = ?, password = ? WHERE idAccount = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(queryAccount, utente.getNome(), utente.getPassword(), utente.getId());
+
+        String queryUtente = "UPDATE UTENTE SET email = ?, genere = ?, dataNascita = ? WHERE idUtente = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(queryUtente, utente.getEmail(), utente.getGenere().name(), java.sql.Date.valueOf(utente.getDataNascita()), utente.getId());
+    }
+
+    @Override
     public ArrayList<Utente> getListaUtenti() throws SQLException {
         ArrayList<Utente> listaUtenti = new ArrayList<>();
         String query = "SELECT a.nome, a.password,a.datacreazione, u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email " +
