@@ -606,7 +606,25 @@ public class Controller {
     public int getPegiDaFattura(Fattura f) {return f.getGioco().getGioco().getPegi();}
     public Utente getUtenteDaFattura(Fattura fattura) { return fattura.getUtente(); }
     public String getNomeUtenteDaFattura(Fattura fattura) { return getUtenteDaFattura(fattura).getNome(); }
-    public ArrayList<Genere> getGeneriDaFattura(Fattura f) {return f.getGioco().getGioco().getGeneri();}
+    public ArrayList<Genere> getGeneriDaFattura(Fattura f) {
+        Gioco gioco = f.getGioco().getGioco();
+
+        // Se la lista è vuota (perché il gioco è stato appena costruito dal DAO), la riempiamo
+        if (gioco.getGeneri() == null || gioco.getGeneri().isEmpty()) {
+            try {
+                ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(gioco);
+                for (Genere g : generiDalDB) {
+                    if (!gioco.getGeneri().contains(g)) {
+                        gioco.getGeneri().add(g);
+                    }
+                }
+            } catch (SQLException | CampoNonValidoException e) {
+                //temporaneo, DA FARE risolvere
+            }
+        }
+
+        return gioco.getGeneri();
+    }
     public Sviluppatore getSviluppatoreDaFattura(Fattura f) {return f.getGioco().getGioco().getSviluppatore();}
     public Gioco getGiocoDaFattura(Fattura f) {return f.getGioco().getGioco();}
     public int getVotoDaFattura(Fattura f) {return f.getRecensione().getVoto();}
@@ -799,14 +817,20 @@ public class Controller {
         for (Fattura f : libreriaUtente) {
             Gioco giocoBase = getGiocoDaFattura(f);
 
-            ArrayList<Genere> generiGioco = giocoBase.getGeneri();
-            if (generiGioco == null || generiGioco.isEmpty()) {
+            //temporaneo DA FARE risolvere
+            if (giocoBase.getGeneri() == null || giocoBase.getGeneri().isEmpty()) {
                 try {
-                    generiGioco = genereDAO.getListaGeneriDaGioco(giocoBase);
+                    ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(giocoBase);
+                    for (Genere g : generiDalDB) {
+                        if (!giocoBase.getGeneri().contains(g)) {
+                            giocoBase.getGeneri().add(g);
+                        }
+                    }
                 } catch (SQLException ex) {
-                    generiGioco = new ArrayList<>();
+                    // temporaneo
                 }
             }
+            ArrayList<Genere> generiGioco = giocoBase.getGeneri();
 
             boolean contieneGenere = (genereFiltro == null);
             if (genereFiltro != null && generiGioco != null) {
@@ -1312,7 +1336,6 @@ public class Controller {
     }
 
     public int getUnitaVenduteDaGioco(Gioco gioco) throws CampoNonValidoException {
-        // Chiama il DAO passandogli il titolo del gioco
         try {
             return giocoDAO.getUnitaVendutePerGioco(gioco.getTitolo());
         } catch (SQLException e) {
@@ -1321,7 +1344,6 @@ public class Controller {
     }
 
     public int getGuadagnoTotaleDaGioco(Gioco gioco) throws CampoNonValidoException {
-        // Chiama il DAO passandogli il titolo del gioco
         try {
             return giocoDAO.getGuadagnoTotalePerGioco(gioco.getTitolo());
         } catch (SQLException e) {
@@ -1376,7 +1398,6 @@ public class Controller {
 
     public ArrayList<Sviluppatore> getListaSviluppatoriLog() throws CampoNonValidoException {
         try {
-            // Chiamiamo il metodo del DAO che hai appena trovato!
             return sviluppatoreDAO.getListaSviluppatori();
 
         } catch (SQLException e) {

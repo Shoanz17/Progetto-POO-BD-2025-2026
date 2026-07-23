@@ -568,7 +568,7 @@ public class HomeSviluppatore {
                     nomiPromozioni = new String[promozioniEsistenti.size()];
 
                     for (int i = 0; i < promozioniEsistenti.size(); i++) {
-                        nomiPromozioni[i] = promozioniEsistenti.get(i).getNome(); // Cambia getNome() se il tuo metodo si chiama diversamente!
+                        nomiPromozioni[i] = promozioniEsistenti.get(i).getNome();
                     }
 
                 } catch (CampoNonValidoException es) {
