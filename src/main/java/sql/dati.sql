@@ -1,44 +1,44 @@
-INSERT INTO account (nome, password) VALUES
+INSERT INTO account (idAccount, nome, password) VALUES
 -- Admin
-('CiroVivenzius', 'BlackOps3@'),
-('AntonioDeCurtis', 'ForzaNapoli10!'),
-('Cristianus', 'Dpfzsvl23#'),
+(1, 'CiroVivenzius', 'BlackOps3@'),
+(2, 'AntonioDeCurtis', 'ForzaNapoli10!'),
+(3, 'Cristianus', 'Dpfzsvl23#'),
 
 -- Sviluppatori
-('Nintendo', 'MarioBros1!'),
-('SEGA', 'SonicFast99@'),
-('Capcom', 'ResidenEvil7!'),
-('SquareEnix', 'KingdomNonHearts1!'),
-('Konami', 'KojimaGod123#'),
-('ATLUS', 'persona5CashCow!'),
-('SandFall Interactive', 'G0TY!!!!'),
-('FromSoftware', 'MiyazakiP0ison!'),
-('NaughtyDog', 'CrashT0Ellie!'),
-('CDProjektRed', 'Witch3rGeralt!'),
-('RockstarGames', 'Gta6When123?'),
-('LarianStudios', 'BearRomance99!'),
+(4, 'Nintendo', 'MarioBros1!'),
+(5, 'SEGA', 'SonicFast99@'),
+(6, 'Capcom', 'ResidenEvil7!'),
+(7, 'SquareEnix', 'KingdomNonHearts1!'),
+(8, 'Konami', 'KojimaGod123#'),
+(9, 'ATLUS', 'persona5CashCow!'),
+(10, 'SandFall Interactive', 'G0TY!!!!'),
+(11, 'FromSoftware', 'MiyazakiP0ison!'),
+(12, 'NaughtyDog', 'CrashT0Ellie!'),
+(13, 'CDProjektRed', 'Witch3rGeralt!'),
+(14, 'RockstarGames', 'Gta6When123?'),
+(15, 'LarianStudios', 'BearRomance99!'),
 
 -- Utente
-('Marc0x', 'MarcoTheBest1!'),
-('Tulliocin', 'PasswordSicura88%'),
-('Giulia', 'SuperGiulia99&'),
-('xxCiroxx', 'Qwerty12345?'),
-('AndreaPignieri', 'Bobbi1926#'),
-('Musella', 'bnlsB56!!!'),
-('MarcoGrim', 'Wdux67????'),
-('JillValentine', 'St4rs!Nemesis'),
-('ChrisRedfield', 'B0ulderPunch!'),
-('AlbertWesker', 'Ur0boros$99'),
-('LeonKennedy', 'R3sidentEvil!'),
-('Lucio', 'passworD111!'),
-('BomberKvara', 'TiroAggi1ro!'),
-('MatadorCavani', 'PallaInRete9!'),
-('GymBro99', 'PancaPiana100$'),
-('PeppeOStort', 'BellaFra123?'),
-('AnnaLaPazza', 'CrazyAnna88*'),
-('FranchinoErCriminale', 'Ciaomondo123!');
+(16, 'Marc0x', 'MarcoTheBest1!'),
+(17, 'Tulliocin', 'PasswordSicura88%'),
+(18, 'Giulia', 'SuperGiulia99&'),
+(19, 'xxCiroxx', 'Qwerty12345?'),
+(20, 'AndreaPignieri', 'Bobbi1926#'),
+(21, 'Musella', 'bnlsB56!!!'),
+(22, 'MarcoGrim', 'Wdux67????'),
+(23, 'JillValentine', 'St4rs!Nemesis'),
+(24, 'ChrisRedfield', 'B0ulderPunch!'),
+(25, 'AlbertWesker', 'Ur0boros$99'),
+(26, 'LeonKennedy', 'R3sidentEvil!'),
+(27, 'Lucio', 'passworD111!'),
+(28, 'BomberKvara', 'TiroAggi1ro!'),
+(29, 'MatadorCavani', 'PallaInRete9!'),
+(30, 'GymBro99', 'PancaPiana100$'),
+(31, 'PeppeOStort', 'BellaFra123?'),
+(32, 'AnnaLaPazza', 'CrazyAnna88*'),
+(33, 'FranchinoErCriminale', 'Ciaomondo123!');
 
-INSERT INTO admin(idadmin) VALUES (1),(2),(3);
+INSERT INTO admin (idadmin) VALUES (1),(2),(3);
 
 INSERT INTO sviluppatore (idSviluppatore, descrizione) VALUES
 (4, 'Giochi adatti a tutte le etá'),
@@ -91,45 +91,45 @@ INSERT INTO amici (idamico1, idamico2) VALUES
 (17, 30),
 (20, 27);
 
-INSERT INTO gioco (titolo, categoria, pegi, idSviluppatore) VALUES
-('Persona 5: The Phantom X', 'AAA', 16, 9),
-('Phoenix Wright: Ace Attorney Trilogy', 'AA', 12, 6),
-('Clair Obscur: Expedition 33', 'AA', 18, 10),
-('Super Mario Odyssey', 'AAA', 3, 4),
-('Metal Gear Solid V', 'AAA', 18, 8),
-('Elden Ring', 'AAA', 16, 11),
-('The Last of Us Part I', 'AAA', 18, 12),
-('The Witcher 3: Wild Hunt', 'AAA', 18, 13),
-('Red Dead Redemption 2', 'AAA', 18, 14),
-('Baldur''s Gate 3', 'AAA', 18, 15),
-('Cyberpunk 2077', 'AAA', 18, 13);
+INSERT INTO gioco (idGioco, titolo, categoria, pegi, idSviluppatore) VALUES
+(1, 'Persona 5: The Phantom X', 'AAA', 16, 9),
+(2, 'Phoenix Wright: Ace Attorney Trilogy', 'AA', 12, 6),
+(3, 'Clair Obscur: Expedition 33', 'AA', 18, 10),
+(4, 'Super Mario Odyssey', 'AAA', 3, 4),
+(5, 'Metal Gear Solid V', 'AAA', 18, 8),
+(6, 'Elden Ring', 'AAA', 16, 11),
+(7, 'The Last of Us Part I', 'AAA', 18, 12),
+(8, 'The Witcher 3: Wild Hunt', 'AAA', 18, 13),
+(9, 'Red Dead Redemption 2', 'AAA', 18, 14),
+(10, 'Baldur''s Gate 3', 'AAA', 18, 15),
+(11, 'Cyberpunk 2077', 'AAA', 18, 13);
 
-INSERT INTO genere (nome) VALUES
-('JRPG'),
-('Visual Novel'),
-('Action RPG'),
-('Platform'),
-('Stealth'),
-('Gacha'),
-('FPS'),
-('TPS'),
-('RPG'),
-('MMORPG'),
-('MOBA'),
-('Picchiaduro'),
-('Corse'),
-('Sport'),
-('Puzzle'),
-('Sandbox'),
-('Survival'),
-('Battle Royale'),
-('Strategia'),
-('Roguelike'),
-('Avventura Grafica'),
-('Azione'),
-('Turn-Based'),
-('Soulslike'),
-('Open World');
+INSERT INTO genere (idGenere, nome) VALUES
+(1, 'JRPG'),
+(2, 'Visual Novel'),
+(3, 'Action RPG'),
+(4, 'Platform'),
+(5, 'Stealth'),
+(6, 'Gacha'),
+(7, 'FPS'),
+(8, 'TPS'),
+(9, 'RPG'),
+(10, 'MMORPG'),
+(11, 'MOBA'),
+(12, 'Picchiaduro'),
+(13, 'Corse'),
+(14, 'Sport'),
+(15, 'Puzzle'),
+(16, 'Sandbox'),
+(17, 'Survival'),
+(18, 'Battle Royale'),
+(19, 'Strategia'),
+(20, 'Roguelike'),
+(21, 'Avventura Grafica'),
+(22, 'Azione'),
+(23, 'Turn-Based'),
+(24, 'Soulslike'),
+(25, 'Open World');
 
 INSERT INTO gioco_genere (idGioco, idGenere) VALUES
 (1, 1),
@@ -161,11 +161,10 @@ INSERT INTO gioco_genere (idGioco, idGenere) VALUES
 (11, 7),
 (11, 25);
 
-INSERT INTO promozione (nome, dataInizio, dataFine) VALUES
-('Saldi Invernali 2026', '2026-12-20', '2027-01-05'),
-('Golden Week', '2026-04-29', '2026-05-06'),
-('Black Friday 2026', '2026-11-23', '2026-11-30');
-
+INSERT INTO promozione (idPromozione, nome, dataInizio, dataFine) VALUES
+(1, 'Saldi Invernali 2026', '2026-12-20', '2027-01-05'),
+(2, 'Golden Week', '2026-04-29', '2026-05-06'),
+(3, 'Black Friday 2026', '2026-11-23', '2026-11-30');
 
 INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
 ('Switch','Nintendo',true),
@@ -184,35 +183,39 @@ INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
 ('3DS','Nintendo',true),
 ('PC','Steam',false);
 
-INSERT INTO edizione_gioco (idGioco, nomePiattaforma, prezzo, dataRilascio) VALUES
-(1, 'PC', 0, '2025-06-26'),
-(2, 'PC', 30, '2019-04-09'),
-(2, 'Switch', 30, '2019-04-09'),
-(3, 'PC', 50, '2025-10-15'),
-(4, 'Switch', 60, '2017-10-27'),
-(5, 'PC', 20, '2015-09-01'),
-(5, 'PlayStation 5', 25, '2015-09-01'),
-(3, 'PlayStation 5', 50, '2025-10-15'),
-(3, 'Xbox Series X|S', 50, '2025-10-15'),
-(6, 'PC', 60, '2022-02-25'),
-(6, 'PlayStation 5', 60, '2022-02-25'),
-(6, 'Xbox Series X|S', 60, '2022-02-25'),
-(7, 'PC', 70, '2022-09-02'),
-(7, 'PlayStation 5', 70, '2022-09-02'),
-(8, 'PC', 30, '2015-05-19'),
-(8, 'PlayStation 5', 30, '2015-05-19'),
-(8, 'Xbox Series X|S', 30, '2015-05-19'),
-(8, 'Switch', 30, '2015-05-19'),
-(9, 'PC', 60, '2018-10-26'),
-(9, 'PlayStation 5', 60, '2018-10-26'),
-(9, 'Xbox Series X|S', 60, '2018-10-26'),
-(10, 'PC', 60, '2023-08-03'),
-(10, 'PlayStation 5', 60, '2023-08-03'),
-(10, 'Xbox Series X|S', 60, '2023-08-03'),
-(11, 'PC', 60, '2020-12-10'),
-(11, 'PlayStation 5', 60, '2020-12-10'),
-(11, 'Xbox Series X|S', 60, '2020-12-10');
+INSERT INTO edizione_gioco (idEdizione, idGioco, nomePiattaforma, prezzo, dataRilascio) VALUES
+(1, 1, 'PC', 0, '2025-06-26'),
+(2, 2, 'PC', 30, '2019-04-09'),
+(3, 2, 'Switch', 30, '2019-04-09'),
+(4, 3, 'PC', 50, '2025-10-15'),
+(5, 4, 'Switch', 60, '2017-10-27'),
+(6, 5, 'PC', 20, '2015-09-01'),
+(7, 5, 'PlayStation 5', 25, '2015-09-01'),
+(8, 3, 'PlayStation 5', 50, '2025-10-15'),
+(9, 3, 'Xbox Series X|S', 50, '2025-10-15'),
+(10, 6, 'PC', 60, '2022-02-25'),
+(11, 6, 'PlayStation 5', 60, '2022-02-25'),
+(12, 6, 'Xbox Series X|S', 60, '2022-02-25'),
+(13, 7, 'PC', 70, '2022-09-02'),
+(14, 7, 'PlayStation 5', 70, '2022-09-02'),
+(15, 8, 'PC', 30, '2015-05-19'),
+(16, 8, 'PlayStation 5', 30, '2015-05-19'),
+(17, 8, 'Xbox Series X|S', 30, '2015-05-19'),
+(18, 8, 'Switch', 30, '2015-05-19'),
+(19, 9, 'PC', 60, '2018-10-26'),
+(20, 9, 'PlayStation 5', 60, '2018-10-26'),
+(21, 9, 'Xbox Series X|S', 60, '2018-10-26'),
+(22, 10, 'PC', 60, '2023-08-03'),
+(23, 10, 'PlayStation 5', 60, '2023-08-03'),
+(24, 10, 'Xbox Series X|S', 60, '2023-08-03'),
+(25, 11, 'PC', 60, '2020-12-10'),
+(26, 11, 'PlayStation 5', 60, '2020-12-10'),
+(27, 11, 'Xbox Series X|S', 60, '2020-12-10');
 
+INSERT INTO gioco_in_promozione (idGioco, idPromozione, percentuale) VALUES
+(2, 1, 50),
+(4, 1, 10),
+(5, 3, 75);
 
 INSERT INTO seguiti(idutente, idsviluppatore) VALUES
 (16, 6),
@@ -231,23 +234,19 @@ INSERT INTO seguiti(idutente, idsviluppatore) VALUES
 (18, 8),
 (16, 7);
 
-INSERT INTO gioco_in_promozione (idGioco, idPromozione, percentuale) VALUES
-(4, 1, 10),
-(5, 3, 75);
-
-INSERT INTO fattura (idUtente, idEdizione, prezzoAcquisto, key, dataAcquisto) VALUES
-(16, 10, 60, '123e4567-e89b-12d3-a456-426614174001', '2022-03-01'),
-(17, 5, 60, '123e4567-e89b-12d3-a456-426614174002', '2018-12-25'),
-(23, 13, 70, '123e4567-e89b-12d3-a456-426614174003', '2022-10-10'),
-(24, 6, 20, '123e4567-e89b-12d3-a456-426614174004', '2016-01-15'),
-(26, 22, 60, '123e4567-e89b-12d3-a456-426614174005', '2023-09-01'),
-(28, 2, 30, '123e4567-e89b-12d3-a456-426614174006', '2020-05-20'),
-(33, 19, 60, '123e4567-e89b-12d3-a456-426614174007', '2019-11-05'),
-(18, 1, 0, '123e4567-e89b-12d3-a456-426614174008', '2025-07-01'),
-(20, 8, 50, '123e4567-e89b-12d3-a456-426614174009', '2025-11-01'),
-(30, 25, 60, '123e4567-e89b-12d3-a456-426614174010', '2021-01-10'),
-(31, 15, 30, '123e4567-e89b-12d3-a456-426614174011', '2016-06-01'),
-(19, 11, 60, '123e4567-e89b-12d3-a456-426614174012', '2022-04-12');
+INSERT INTO fattura (idFattura, idUtente, idEdizione, prezzoAcquisto, key, dataAcquisto) VALUES
+(1, 16, 10, 60, '123e4567-e89b-12d3-a456-426614174001', '2022-03-01'),
+(2, 17, 5, 60, '123e4567-e89b-12d3-a456-426614174002', '2018-12-25'),
+(3, 23, 13, 70, '123e4567-e89b-12d3-a456-426614174003', '2022-10-10'),
+(4, 24, 6, 20, '123e4567-e89b-12d3-a456-426614174004', '2016-01-15'),
+(5, 26, 22, 60, '123e4567-e89b-12d3-a456-426614174005', '2023-09-01'),
+(6, 28, 2, 30, '123e4567-e89b-12d3-a456-426614174006', '2020-05-20'),
+(7, 33, 19, 60, '123e4567-e89b-12d3-a456-426614174007', '2019-11-05'),
+(8, 18, 1, 0, '123e4567-e89b-12d3-a456-426614174008', '2025-07-01'),
+(9, 20, 8, 50, '123e4567-e89b-12d3-a456-426614174009', '2025-11-01'),
+(10, 30, 25, 60, '123e4567-e89b-12d3-a456-426614174010', '2021-01-10'),
+(11, 31, 15, 30, '123e4567-e89b-12d3-a456-426614174011', '2016-06-01'),
+(12, 19, 11, 60, '123e4567-e89b-12d3-a456-426614174012', '2022-04-12');
 
 INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES
 (1, 95, 'Capolavoro assoluto, mi ha fatto esplorare per ore senza mai annoiarmi.', 45),
@@ -263,15 +262,10 @@ INSERT INTO recensione (idFattura, voto, descrizione, differenzaLike) VALUES
 (11, 95, 'Geralt di Rivia non sbaglia un colpo, e le espansioni sono dei capolavori.', 60),
 (12, 92, 'Difficile al punto giusto, ambientazione e direzione artistica incredibili.', 22);
 
-
-
-
-
-
-
-
-
-
-
-
-
+-- Sincronizzazione dei contatori SERIAL dopo l'inserimento manuale degli ID
+SELECT setval(pg_get_serial_sequence('account', 'idaccount'), (SELECT MAX(idaccount) FROM account));
+SELECT setval(pg_get_serial_sequence('gioco', 'idgioco'), (SELECT MAX(idgioco) FROM gioco));
+SELECT setval(pg_get_serial_sequence('genere', 'idgenere'), (SELECT MAX(idgenere) FROM genere));
+SELECT setval(pg_get_serial_sequence('promozione', 'idpromozione'), (SELECT MAX(idpromozione) FROM promozione));
+SELECT setval(pg_get_serial_sequence('edizione_gioco', 'idedizione'), (SELECT MAX(idedizione) FROM edizione_gioco));
+SELECT setval(pg_get_serial_sequence('fattura', 'idfattura'), (SELECT MAX(idfattura) FROM fattura));

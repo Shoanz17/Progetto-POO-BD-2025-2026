@@ -14,7 +14,7 @@ public class ConnessioneDatabase {
     // CREDENZIALI DATABASE ANTONIO
     private String nome = "postgres";
     private String password = "2143";
-    private String url = "jdbc:postgresql://localhost:28481/postgres";
+    private String url = "jdbc:postgresql://localhost:5432/postgres";
     private String driver = "org.postgresql.Driver";
 
     private ConnessioneDatabase() throws SQLException {

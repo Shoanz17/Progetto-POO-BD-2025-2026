@@ -1049,7 +1049,7 @@ public class Controller {
 
                 utenteDAO.eliminaCarrello(utenteLoggato.getId(), giocoAcquistato.getId());
 
-                utenteLoggato.addGioco(nuovaFattura);
+                //utenteLoggato.addGioco(nuovaFattura);
                 utenteLoggato.rimuoviSaldo(nuovaFattura.getPrezzoAcquisto());
 
             } catch (SQLException | CampoNonValidoException e) {
