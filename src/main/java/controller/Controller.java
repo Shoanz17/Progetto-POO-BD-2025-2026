@@ -333,50 +333,12 @@ public class Controller {
     public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
     public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
     public String getNomeSviluppatore(Sviluppatore s) {return s.getNome();}
-    public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
-        if (edizioneGioco == null || edizioneGioco.getGioco() == null) return "Sconosciuto";
-
-        Sviluppatore sviluppatoreGioco = edizioneGioco.getGioco().getSviluppatore();
-        if (sviluppatoreGioco == null) return "Sconosciuto";
-
-        if (sviluppatoreGioco.getNome() == null || sviluppatoreGioco.getNome().trim().isEmpty() || sviluppatoreGioco.getNome().equalsIgnoreCase("Sconosciuto")) {
-            try {
-                ArrayList<Sviluppatore> tuttiSviluppatori = sviluppatoreDAO.getListaSviluppatori();
-                for (Sviluppatore sv : tuttiSviluppatori) {
-                    if (sv.getId() == sviluppatoreGioco.getId()) {
-                        sviluppatoreGioco.setNome(sv.getNome());
-                        return sv.getNome();
-                    }
-                }
-            } catch (SQLException e) {
-                throw new CampoNonValidoException("Operazione Fallita");
-            }
-        }
-        return sviluppatoreGioco.getNome() != null ? sviluppatoreGioco.getNome() : "Sconosciuto";
-    }
+    public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getSviluppatore().getNome();}
 
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPrezzo();}
     public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPiattaforma();}
 
-    public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
-        if (edizioneGioco == null || edizioneGioco.getGioco() == null) return new ArrayList<>();
-
-        Gioco gioco = edizioneGioco.getGioco();
-
-        if (gioco.getGeneri() == null || gioco.getGeneri().isEmpty()) {
-            try {
-                ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(gioco);
-                for (Genere g : generiDalDB) {
-                    if (!gioco.getGeneri().contains(g)) {
-                        gioco.getGeneri().add(g);
-                    }
-                }
-            } catch (SQLException e) {
-                throw new CampoNonValidoException("Operazione Fallita");
-            }
-        }
-        return gioco.getGeneri();
-    }
+    public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getGeneri();}
 
     public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getPegi();}
     public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());}
@@ -607,23 +569,7 @@ public class Controller {
     public Utente getUtenteDaFattura(Fattura fattura) { return fattura.getUtente(); }
     public String getNomeUtenteDaFattura(Fattura fattura) { return getUtenteDaFattura(fattura).getNome(); }
     public ArrayList<Genere> getGeneriDaFattura(Fattura f) {
-        Gioco gioco = f.getGioco().getGioco();
-
-        // Se la lista è vuota (perché il gioco è stato appena costruito dal DAO), la riempiamo
-        if (gioco.getGeneri() == null || gioco.getGeneri().isEmpty()) {
-            try {
-                ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(gioco);
-                for (Genere g : generiDalDB) {
-                    if (!gioco.getGeneri().contains(g)) {
-                        gioco.getGeneri().add(g);
-                    }
-                }
-            } catch (SQLException | CampoNonValidoException e) {
-                //temporaneo, DA FARE risolvere
-            }
-        }
-
-        return gioco.getGeneri();
+        return f.getGioco().getGioco().getGeneri();
     }
     public Sviluppatore getSviluppatoreDaFattura(Fattura f) {return f.getGioco().getGioco().getSviluppatore();}
     public Gioco getGiocoDaFattura(Fattura f) {return f.getGioco().getGioco();}
@@ -689,17 +635,6 @@ public class Controller {
         }
     }
 
-    public ArrayList<EdizioneGioco> getEdizioniGiochi() throws CampoNonValidoException {
-
-        ArrayList<EdizioneGioco> listaEdizioniGiochi;
-        try {
-            listaEdizioniGiochi = edizioneGiocoDAO.getCatalogoCompleto();
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
-        }
-
-        return listaEdizioniGiochi;
-    }
 
     public boolean isInPromozione(EdizioneGioco edizioneGioco) {
         for (GiocoInPromozione p : edizioneGioco.getGioco().getPromozioni()) {
@@ -739,54 +674,26 @@ public class Controller {
         }
     }
 
-    public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, PiattaformaDiGioco piattaformaScelta, Genere genere, Categoria categoria, String pegi, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
+    public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, PiattaformaDiGioco piattaformaScelta, Genere genereScelto, Categoria categoriaScelta, String pegiScelto, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
 
-        ArrayList<EdizioneGioco> listaEdizioniGiochi;
+        ArrayList<EdizioneGioco> catalogoCompleto;
         try {
-            listaEdizioniGiochi = edizioneGiocoDAO.getCatalogoCompleto();
+            catalogoCompleto = edizioneGiocoDAO.getCatalogoCompleto();
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
         }
 
         ArrayList<EdizioneGioco> listaFiltrata = new ArrayList<>();
 
-        for (EdizioneGioco e : listaEdizioniGiochi) {
+        for (EdizioneGioco e : catalogoCompleto) {
             Gioco gioco = e.getGioco();
 
-            if (gioco.getGeneri() == null || gioco.getGeneri().isEmpty()) {
-                try {
-                    ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(gioco);
-                    for (Genere g : generiDalDB) {
-                        if (!gioco.getGeneri().contains(g)) {
-                            gioco.getGeneri().add(g);
-                        }
-                    }
-                } catch (SQLException ex) {
-                    throw new CampoNonValidoException("Operazione Fallita");
-                }
-            }
-
-            if (gioco.getSviluppatore() != null &&
-                    (gioco.getSviluppatore().getNome() == null || gioco.getSviluppatore().getNome().equalsIgnoreCase("Sconosciuto"))) {
-                getNomeSviluppatoreDaEdizioneGioco(e);
-            }
-
-            boolean contieneGenere = (genere == null);
-            if (genere != null && gioco.getGeneri() != null) {
-                for (Genere g : gioco.getGeneri()) {
-                    if (g.getId() == genere.getId()) {
-                        contieneGenere = true;
-                        break;
-                    }
-                }
-            }
-
-            if (gioco.getTitolo().toLowerCase().contains(testoRicerca) &&
+            if (gioco.getTitolo().toLowerCase().contains(testoRicerca.toLowerCase()) &&
                     (prezzoMax == -1 || e.getPrezzo() <= prezzoMax) &&
-                    (piattaformaScelta == null || e.getPiattaforma().equals(piattaformaScelta)) &&
-                    contieneGenere &&
-                    (categoria == null || gioco.getCategoria().equals(categoria)) &&
-                    (pegi == null || pegi.trim().isEmpty() || String.valueOf(gioco.getPegi()).equals(pegi)) &&
+                    (piattaformaScelta == null || e.getPiattaforma().getNome().equalsIgnoreCase(piattaformaScelta.getNome())) &&
+                    (genereScelto == null || gioco.getGeneri().contains(genereScelto)) &&
+                    (categoriaScelta == null || gioco.getCategoria().equals(categoriaScelta)) &&
+                    (pegiScelto == null || pegiScelto.trim().isEmpty() || String.valueOf(gioco.getPegi()).equals(pegiScelto)) &&
                     (!inPromozione || isInPromozione(e)) &&
                     (!traSeguiti || utenteLoggato.getSviluppatoriSeguiti().contains(gioco.getSviluppatore()))) {
 
@@ -803,7 +710,7 @@ public class Controller {
         return listaFiltrata;
     }
 
-    public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereFiltro, Categoria categoriaFiltro, String pegiFiltro, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) throws CampoNonValidoException {
+    public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereScelto, Categoria categoriaScelta, String pegiScelto, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) throws CampoNonValidoException {
         ArrayList<Fattura> libreriaUtente;
 
         try {
@@ -815,54 +722,32 @@ public class Controller {
         ArrayList<Fattura> listaFiltrata = new ArrayList<>();
 
         for (Fattura f : libreriaUtente) {
-            Gioco giocoBase = getGiocoDaFattura(f);
+            Gioco giocoBase = f.getGioco().getGioco();
 
-            //temporaneo DA FARE risolvere
-            if (giocoBase.getGeneri() == null || giocoBase.getGeneri().isEmpty()) {
-                try {
-                    ArrayList<Genere> generiDalDB = genereDAO.getListaGeneriDaGioco(giocoBase);
-                    for (Genere g : generiDalDB) {
-                        if (!giocoBase.getGeneri().contains(g)) {
-                            giocoBase.getGeneri().add(g);
-                        }
-                    }
-                } catch (SQLException ex) {
-                    // temporaneo
-                }
-            }
-            ArrayList<Genere> generiGioco = giocoBase.getGeneri();
-
-            boolean contieneGenere = (genereFiltro == null);
-            if (genereFiltro != null && generiGioco != null) {
-                for (Genere g : generiGioco) {
-                    if (g.getId() == genereFiltro.getId()) {
-                        contieneGenere = true;
-                        break;
-                    }
-                }
-            }
-
-            if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca) &&
-                    contieneGenere &&
-                    (categoriaFiltro == null || giocoBase.getCategoria().equals(categoriaFiltro)) &&
-                    (pegiFiltro == null || pegiFiltro.trim().isEmpty() || String.valueOf(getPegiDaFattura(f)).equals(pegiFiltro))) {
+            if (giocoBase.getTitolo().toLowerCase().contains(testoRicerca.toLowerCase()) &&
+                    (genereScelto == null || giocoBase.getGeneri().contains(genereScelto)) &&
+                    (categoriaScelta == null || giocoBase.getCategoria().equals(categoriaScelta)) &&
+                    (pegiScelto == null || pegiScelto.trim().isEmpty() || String.valueOf(giocoBase.getPegi()).equals(pegiScelto))) {
 
                 listaFiltrata.add(f);
             }
         }
 
+        // Ordinamento Data Rilascio
         if (statoDataRilascio == 1) {
             listaFiltrata.sort((f1, f2) -> f1.getGioco().getDataRilascio().compareTo(f2.getGioco().getDataRilascio()));
         } else if (statoDataRilascio == 2) {
             listaFiltrata.sort((f1, f2) -> f2.getGioco().getDataRilascio().compareTo(f1.getGioco().getDataRilascio()));
         }
 
+        // Ordinamento Prezzo Acquisto
         if (statoPrezzoFiltro == 1) {
             listaFiltrata.sort((f1, f2) -> Integer.compare(f1.getPrezzoAcquisto(), f2.getPrezzoAcquisto()));
         } else if (statoPrezzoFiltro == 2) {
             listaFiltrata.sort((f1, f2) -> Integer.compare(f2.getPrezzoAcquisto(), f1.getPrezzoAcquisto()));
         }
 
+        // Ordinamento Data Acquisto
         if (statoDataAcquisto == 1) {
             listaFiltrata.sort((f1, f2) -> f1.getDataAcquisto().compareTo(f2.getDataAcquisto()));
         } else if (statoDataAcquisto == 2) {
