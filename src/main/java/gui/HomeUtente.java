@@ -374,7 +374,7 @@ public class HomeUtente {
                     JOptionPane.showMessageDialog(homeUtenteFrame, "Gioco aggiunto al carrello", "Successo", JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore aggiunta al carrello", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -384,7 +384,7 @@ public class HomeUtente {
         listaRecensioniCatalogo.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                model.Recensione recensioneSelezionata = (model.Recensione) listaRecensioniCatalogo.getSelectedValue();
+                Recensione recensioneSelezionata = (Recensione) listaRecensioniCatalogo.getSelectedValue();
 
                 if (recensioneSelezionata != null) {
                     descrizioneRecensioneCatalogo.setText(controller.getDescrizioneRecensione(recensioneSelezionata));

@@ -591,20 +591,12 @@ public class Controller {
     }
 
     public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException, SQLException {
-        if (fatturaSelezionata == null) {
-            throw new CampoNonValidoException("Seleziona prima una fattura dalla libreria!");
-        }
             recensioneDAO.creaRecensione(fatturaSelezionata.getId(), voto, testo);
     }
 
-    public boolean haGiaRecensito(Utente utente, Fattura fattura) throws CampoNonValidoException {
-        if (utente == null || fattura == null) return false;
-
-        ArrayList<Recensione> recensioni = getListaRecensioniUtente(utente.getId());
-        for (Recensione r : recensioni) {
-            if (r.getFattura().getId() == fattura.getId()) {
-                return true;
-            }
+    public boolean haGiaRecensito(Fattura fattura) {
+        if (fattura.getRecensione() != null){
+            return true;
         }
         return false;
     }
