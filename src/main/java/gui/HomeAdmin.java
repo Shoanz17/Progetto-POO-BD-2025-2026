@@ -5,6 +5,8 @@ import model.*;
 import model.Recensione;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -88,14 +90,11 @@ public class HomeAdmin {
     private Controller controller;
     private Admin admin;
 
-    //DA FARE:
-    //SVILUPPATORI: listener riempi giochi rilasciati
+    //DA FARE: fai in modo che quando crei un genere con un nome che già esiste esca questo e non "operazione fallita"
     //GIOCHI: aggiustare aggiungi strike
     //aggiustare grandezza lista e il fatto che se le label sono troppo lunghe cambia la lunghezza di tutto
     //aggiustare assolutamente la lista generi che non si svuota ma solo aggiunge spunte e quindi se clicco conferma (alla quale manca un messaggio di conferma) li aggiunge tutti (quindi funziona)
-    //se aggiungo un genere al db non viene aggiunto anche nella lista delle checkbox
     //PIATTAFORME: cambia true e false con si e no
-    //RECENSIONI: rimuovi recensione non aggiorna le liste ma funziona
     //non funziona manco la ricerca
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
@@ -105,6 +104,7 @@ public class HomeAdmin {
         this.admin = admin;
 
         configuraInterfaccia();
+        associaListenerTabbedPane();
 
         //Utenti
         associaListenerCheckBoxBannatiUtenti();
@@ -169,6 +169,21 @@ public class HomeAdmin {
         configuraPannelloRecensioni();
         configuraPannelloPromozioni();
 
+    }
+
+    private void associaListenerTabbedPane(){
+        tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                configuraPannelloUtenti();
+                configuraPannelloSviluppatori();
+                configuraPannelloGiochi();
+                configuraPannelloGeneri();
+                configuraPannelloPiattaforme();
+                configuraPannelloRecensioni();
+                configuraPannelloPromozioni();
+            }
+        });
     }
 
     private void configuraPannelloUtenti(){
@@ -381,6 +396,7 @@ public class HomeAdmin {
                         controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
                         JOptionPane.showMessageDialog(adminFrame, "Recensione rimossa con successo");
                         riempiTabellaRecensioniUtente(idUtente);
+                        //filtraRecensioni(); //aggiorna le recensioni anche nell'altro tab
 
                     } catch (CampoNonValidoException ex) {
                         JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
@@ -463,7 +479,7 @@ public class HomeAdmin {
                         controller.getTitoloDaEdizioneGioco(gioco),
                         controller.getCategoriaDaEdizioneGioco(gioco),
                         controller.getPegiDaEdizioneGioco(gioco),
-                        controller.getGeneriDaEdizioneGioco(gioco), //DA FARE formattare meglio la lista quando sarà funzionante
+                        controller.getGeneriDaGioco(controller.getGiocoDaEdizione(gioco)),
                         controller.getPiattaformaDaEdizioneGioco(gioco)
                 };
                 righe.add(riga);

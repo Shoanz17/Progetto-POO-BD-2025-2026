@@ -335,6 +335,7 @@ public class Controller {
     public String getNomeSviluppatore(Sviluppatore s) {return s.getNome();}
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getSviluppatore().getNome();}
 
+    public Gioco getGiocoDaEdizione(EdizioneGioco edizioneGioco) { return edizioneGioco.getGioco(); }
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPrezzo();}
     public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPiattaforma();}
 
