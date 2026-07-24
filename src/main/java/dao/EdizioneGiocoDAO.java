@@ -12,5 +12,5 @@ public interface EdizioneGiocoDAO {
     ArrayList<EdizioneGioco> getListaGiochiCarrello(int idUtente) throws SQLException;
 
     void inserisciEdizione(EdizioneGioco edizioneGioco)throws SQLException;
-
+    ArrayList<EdizioneGioco> getEdizioniDaGioco(int idGioco) throws SQLException;
 }
