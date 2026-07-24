@@ -244,4 +244,47 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
                 java.sql.Date.valueOf(edizioneGioco.getDataRilascio())
         );
     }
+
+    @Override
+    public ArrayList<EdizioneGioco> getEdizioniDaGioco(int idGioco) throws SQLException {
+        ArrayList<EdizioneGioco> listaEdizioni = new ArrayList<>();
+
+        String query = "SELECT eg.idEdizione, eg.idGioco, eg.nomePiattaforma, eg.prezzo, eg.dataRilascio, " +
+                "g.titolo, g.categoria, g.pegi, g.idSviluppatore " +
+                "FROM edizione_gioco eg " +
+                "JOIN gioco g ON eg.idGioco = g.idGioco " +
+                "WHERE eg.idGioco = ?";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, idGioco);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idEdizione = rs.getInt("idEdizione");
+                    int prezzo = rs.getInt("prezzo");
+                    java.time.LocalDate dataRilascio = rs.getDate("dataRilascio").toLocalDate();
+                    String nomePiattaforma = rs.getString("nomePiattaforma");
+                    String titolo = rs.getString("titolo");
+                    String categoriaString = rs.getString("categoria");
+                    int pegi = rs.getInt("pegi");
+                    int idSviluppatore = rs.getInt("idSviluppatore");
+
+                    Sviluppatore fintoSviluppatore = new Sviluppatore("Sconosciuto", idSviluppatore, "nessuna", java.time.LocalDate.now(), 0, "", 0);
+
+                    try {
+                        PiattaformaDiGioco piattaformaObj = new PiattaformaDiGioco(nomePiattaforma, "Sconosciuto", false);
+                        Gioco fintoGioco = new Gioco(fintoSviluppatore, idGioco, titolo, model.Categoria.valueOf(categoriaString), pegi);
+                        EdizioneGioco edizioneCorrente = new EdizioneGioco(idEdizione, fintoGioco, piattaformaObj, prezzo, dataRilascio);
+
+                        listaEdizioni.add(edizioneCorrente);
+                    } catch (Exception e) {
+                        System.out.println("Errore DB Corrotto: " + e.getMessage());
+                    }
+                }
+            }
+        }
+        return listaEdizioni;
+    }
 }

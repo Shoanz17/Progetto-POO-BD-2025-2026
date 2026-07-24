@@ -988,41 +988,68 @@ public class Controller {
     }
 // metodi per la homeSviluppatore CV
 
-    public String getGenereDaGioco(Gioco gioco) {
+    public String getGenereDaGioco(Gioco gioco){
         String generiUniti = "";
-        for (Genere g : gioco.getGeneri()) {
 
-            if (!generiUniti.isEmpty()) {
-                generiUniti += ",";
+        try {
+            ArrayList<Genere> generiDB = getListaGeneriDaGioco(gioco);
+
+            for (Genere g : generiDB) {
+                if (!generiUniti.isEmpty()) {
+                    generiUniti += ", ";
+                }
+                generiUniti += g.toString();
             }
-            generiUniti += g.toString();
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore nel recupero dei generi: " + e.getMessage());
         }
+
         return generiUniti;
     }
 
     public String getStringPiattaformeDaGioco(Gioco gioco) {
         String piattaformeUnite = "";
-        for (EdizioneGioco ed : gioco.getEdizioni()) {
-            if (!piattaformeUnite.isEmpty()) {
-                piattaformeUnite += ",";
+
+        try {
+            ArrayList<EdizioneGioco> edizioniDB = getEdizioniDaGioco(gioco);
+
+            for (EdizioneGioco ed : edizioniDB) {
+                if (!piattaformeUnite.isEmpty()) {
+                    piattaformeUnite += ", ";
+                }
+                piattaformeUnite += ed.getPiattaforma().getNome();
             }
-
-            piattaformeUnite += ed.getPiattaforma().getNome();
-
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore nel recupero delle piattaforme: " + e.getMessage());
         }
+
         return piattaformeUnite;
     }
 
 
-    public String getPrezzoPrimaEdizioneDaGioco(Gioco gioco) {
-        if (!gioco.getEdizioni().isEmpty()) return String.valueOf(gioco.getEdizioni().get(0).getPrezzo());
+    public String getPrezzoPrimaEdizioneDaGioco(Gioco gioco) throws CampoNonValidoException{
+        try {
+            ArrayList<EdizioneGioco> edizioni = getEdizioniDaGioco(gioco);
+
+            if (!edizioni.isEmpty()) {
+                return String.valueOf(edizioni.getFirst().getPrezzo());
+            }
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore nel caricamento del prezzo: " + e.getMessage());
+        }
         return "";
     }
 
-    public String getDataRilascioPrimaEdizioneFormattata(Gioco gioco) {
-        if (!gioco.getEdizioni().isEmpty()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return gioco.getEdizioni().get(0).getDataRilascio().format(formatter);
+    public String getDataRilascioPrimaEdizioneFormattata(Gioco gioco)throws CampoNonValidoException{
+        try {
+            ArrayList<EdizioneGioco> edizioni = getEdizioniDaGioco(gioco);
+
+            if (!edizioni.isEmpty()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                return edizioni.getFirst().getDataRilascio().format(formatter);
+            }
+        } catch (CampoNonValidoException e) {
+            System.out.println("Errore nel caricamento della data: " + e.getMessage());
         }
         return "";
     }
@@ -1039,12 +1066,22 @@ public class Controller {
         return gioco.getPegi();
     }
 
-    public ArrayList<Genere> getListaGeneriDaGioco(Gioco gioco) {
-        return gioco.getGeneri();
+    public ArrayList<Genere> getListaGeneriDaGioco(Gioco gioco)throws CampoNonValidoException{
+        try {
+            return genereDAO.getListaGeneriDaGioco(gioco);
+        } catch (Exception e) {
+            System.out.println("Errore nel recupero dei generi: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
-    public ArrayList<EdizioneGioco> getEdizioniDaGioco(Gioco gioco) {
-        return gioco.getEdizioni();
+    public ArrayList<EdizioneGioco> getEdizioniDaGioco(Gioco giocoSelezionato) throws CampoNonValidoException{
+        try {
+            return edizioneGiocoDAO.getEdizioniDaGioco(giocoSelezionato.getId());
+        } catch (SQLException e) {
+            System.out.println("Errore nel recupero edizioni: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public void aggiornaProfiloSviluppatore
@@ -1127,15 +1164,6 @@ public class Controller {
     }
 
 
-//    public void caricaPromozioniFittizie() {
-//        try {
-//            listaPromozioni.add(new Promozione("Natale 2026", LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 31)));
-//            listaPromozioni.add(new Promozione("Sconti Estivi", LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 31)));
-//            listaPromozioni.add(new Promozione("Gennaio 1st Week", LocalDate.of(2027, 1, 1), LocalDate.of(2027, 1, 7)));
-//        } catch (CampoNonValidoException e) {
-//            System.out.println("Errore nei dati fittizi");
-//        }
-//    }
 
 
     public ArrayList<Promozione> getListaPromozioni() throws CampoNonValidoException {
@@ -1297,4 +1325,6 @@ public class Controller {
         }
         return null;
     }
+
+
 }

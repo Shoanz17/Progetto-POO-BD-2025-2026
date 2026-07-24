@@ -246,54 +246,56 @@ public class HomeSviluppatore {
                 if (!e.getValueIsAdjusting()) {
                     Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
 
-
                     if (giocoSelezionato != null) {
                         aggModButton.setText("Salva modifiche");
                         textTitolo.setText(controller.getTitoloDaGioco(giocoSelezionato));
                         textPegi.setText(String.valueOf(controller.getPegiDaGioco(giocoSelezionato)));
                         aggCategoria.setSelectedItem(controller.getCategoriaDaGioco(giocoSelezionato));
-                        textPrezzo.setText(String.valueOf(controller.getPrezzoPrimaEdizioneDaGioco(giocoSelezionato)));
-                        textDataRilascio.setText(controller.getDataRilascioPrimaEdizioneFormattata(giocoSelezionato));
-
-
+                        textPrezzo.setFocusable(false);
+                        textPrezzo.setEditable(false);
+                        textDataRilascio.setFocusable(false);
                         for (JCheckBox cb : listaCheckboxGeneri) {
                             cb.setSelected(false);
                         }
 
-                        for (JCheckBox cb : listaCheckboxGeneri) {
-                            for (Genere g : controller.getListaGeneriDaGioco(giocoSelezionato)) {
-                                {
+                        try {
+
+                            textPrezzo.setText(String.valueOf(controller.getPrezzoPrimaEdizioneDaGioco(giocoSelezionato)));
+                            textDataRilascio.setText(controller.getDataRilascioPrimaEdizioneFormattata(giocoSelezionato));
+
+
+
+                            for (JCheckBox cb : listaCheckboxGeneri) {
+                                for (Genere g : controller.getListaGeneriDaGioco(giocoSelezionato)) {
                                     if (cb.getText().equals(g.toString())) {
                                         cb.setSelected(true);
                                     }
                                 }
                             }
+                        } catch (CampoNonValidoException ex) {
+                            System.out.println("Errore nel caricamento del gioco: " + ex.getMessage());
                         }
-
 
                         for (JCheckBox cbP : listaCheckboxPiattaforma) {
                             cbP.setSelected(false);
                             cbP.setEnabled(true);
                         }
 
-                        for (EdizioneGioco edizioneGioco : controller.getEdizioniDaGioco(giocoSelezionato)) {
-                            for (JCheckBox cbP : listaCheckboxPiattaforma) {
-                                if (cbP.getText().equals(controller.getPiattaformaDaEdizioneGioco(edizioneGioco).getNome())) {
-                                    cbP.setSelected(true);
-                                    cbP.setEnabled(false);
+                        try {
+                            for (EdizioneGioco edizioneGioco : controller.getEdizioniDaGioco(giocoSelezionato)) {
+                                for (JCheckBox cbP : listaCheckboxPiattaforma) {
+                                    if (cbP.getText().equals(controller.getPiattaformaDaEdizioneGioco(edizioneGioco).getNome())) {
+                                        cbP.setSelected(true);
+                                        cbP.setEnabled(false);
+                                    }
                                 }
-
                             }
+                        } catch (CampoNonValidoException ex) {
+                            System.out.println("Errore nel caricamento del gioco: " + ex.getMessage());
                         }
-
-
                     }
-
-
                 }
-
             }
-
         });
     }
 
@@ -645,6 +647,9 @@ public class HomeSviluppatore {
         textDataRilascio.setText("GG/MM/AAAA");
         textDataRilascio.setForeground(Color.GRAY);
         aggCategoria.setSelectedIndex(0);
+
+        textPrezzo.setFocusable(true);
+        textDataRilascio.setFocusable(true);
 
         for (JCheckBox campoVuoto : listaCheckboxGeneri) {
             campoVuoto.setSelected(false);
