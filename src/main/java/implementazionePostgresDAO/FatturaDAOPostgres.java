@@ -33,7 +33,9 @@ public class FatturaDAOPostgres implements FatturaDAO {
                 "p.nome AS nomePiattaforma, p.produttore, p.portatile, " +
                 "g.idGioco, g.titolo, g.categoria, g.pegi, " +
                 "s.idSviluppatore, s.strike, s.descrizione, s.fondi, " +
-                "asv.nome AS nomeSviluppatore, asv.password AS passwordSviluppatore, asv.dataCreazione AS dataCreazioneSviluppatore " +
+                "asv.nome AS nomeSviluppatore, asv.password AS passwordSviluppatore, asv.dataCreazione AS dataCreazioneSviluppatore, " +
+                "r.voto, r.descrizione AS recDesc, r.differenzaLike, " +
+                "STRING_AGG(gen.idGenere || ':' || gen.nome, ',') AS generi_concat " +
                 "FROM FATTURA f " +
                 "JOIN UTENTE u ON f.idUtente = u.idUtente " +
                 "JOIN ACCOUNT au ON u.idUtente = au.idAccount " +
@@ -42,7 +44,19 @@ public class FatturaDAOPostgres implements FatturaDAO {
                 "JOIN GIOCO g ON eg.idGioco = g.idGioco " +
                 "JOIN SVILUPPATORE s ON g.idSviluppatore = s.idSviluppatore " +
                 "JOIN ACCOUNT asv ON s.idSviluppatore = asv.idAccount " +
-                "WHERE f.idUtente = ?";
+                "LEFT JOIN GIOCO_GENERE gg ON g.idGioco = gg.idGioco " +
+                "LEFT JOIN GENERE gen ON gg.idGenere = gen.idGenere " +
+                "LEFT JOIN RECENSIONE r ON f.idFattura = r.idFattura " +
+                "WHERE f.idUtente = ? " +
+                "GROUP BY f.idFattura, f.prezzoAcquisto, f.key, f.dataAcquisto, " +
+                "u.idUtente, u.genere, u.saldo, u.bannato, u.dataNascita, u.email, " +
+                "au.nome, au.password, au.dataCreazione, " +
+                "eg.idEdizione, eg.prezzo, eg.dataRilascio, " +
+                "p.nome, p.produttore, p.portatile, " +
+                "g.idGioco, g.titolo, g.categoria, g.pegi, " +
+                "s.idSviluppatore, s.strike, s.descrizione, s.fondi, " +
+                "asv.nome, asv.password, asv.dataCreazione, " +
+                "r.voto, r.descrizione, r.differenzaLike";
 
         Connection conn = ConnessioneDatabase.getInstance().connection;
 
@@ -81,6 +95,18 @@ public class FatturaDAOPostgres implements FatturaDAO {
                             rs.getInt("pegi")
                     );
 
+                    String generiString = rs.getString("generi_concat");
+                    ArrayList<Genere> listaGeneri = new ArrayList<>();
+                    if (generiString != null && !generiString.isEmpty()) {
+                        String[] generiArray = generiString.split(",");
+                        for (String gStr : generiArray) {
+                            String[] parts = gStr.split(":");
+                            Genere gen = new Genere(parts[1]);
+                            listaGeneri.add(gen);
+                        }
+                    }
+                    gioco.setListaGeneri(listaGeneri);
+
                     PiattaformaDiGioco piattaforma = new PiattaformaDiGioco(
                             rs.getString("nomePiattaforma"),
                             rs.getString("produttore"),
@@ -95,7 +121,7 @@ public class FatturaDAOPostgres implements FatturaDAO {
                             rs.getDate("dataRilascio").toLocalDate()
                     );
 
-                    Fattura f = new Fattura(
+                    Fattura fattura = new Fattura(
                             rs.getInt("idFattura"),
                             utente,
                             edizione,
@@ -104,8 +130,12 @@ public class FatturaDAOPostgres implements FatturaDAO {
                             rs.getDate("dataAcquisto").toLocalDate()
                     );
 
-                    libreria.add(f);
+                    if (rs.getObject("voto") != null) {
+                        Recensione recensione = new Recensione(rs.getInt("voto"), rs.getString("recDesc"), (rs.getInt("differenzaLike")), fattura);
+                        fattura.setRecensione(recensione);
+                    }
 
+                    libreria.add(fattura);
                 }
             }
         }

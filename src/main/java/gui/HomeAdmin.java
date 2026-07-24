@@ -10,8 +10,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Array;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class HomeAdmin {
@@ -90,9 +88,15 @@ public class HomeAdmin {
     private Controller controller;
     private Admin admin;
 
-    //DA FARE: ActionListener di Rimborsa e Rimuovi recensione nel tab Utenti
-    //Action Listener del tabbed pane per caricare solo la tab che clicco e non tutto subito
-    //Attento alla grandezza della lista generi
+    //DA FARE:
+    //SVILUPPATORI: listener riempi giochi rilasciati
+    //GIOCHI: aggiustare aggiungi strike
+    //aggiustare grandezza lista e il fatto che se le label sono troppo lunghe cambia la lunghezza di tutto
+    //aggiustare assolutamente la lista generi che non si svuota ma solo aggiunge spunte e quindi se clicco conferma (alla quale manca un messaggio di conferma) li aggiunge tutti (quindi funziona)
+    //se aggiungo un genere al db non viene aggiunto anche nella lista delle checkbox
+    //PIATTAFORME: cambia true e false con si e no
+    //RECENSIONI: rimuovi recensione non aggiorna le liste ma funziona
+    //non funziona manco la ricerca
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
@@ -106,6 +110,7 @@ public class HomeAdmin {
         associaListenerCheckBoxBannatiUtenti();
         associaListenerRicercaUtenti();
         associaListenerTabellaUtenti();
+        associaListenerTabellaRecensioniUtenti();
         associaListenerPulsanteBannaUtenteUtenti();
         associaListenerPulsanteRimuoviRecensioneUtente();
         associaListenerPulsanteRimborsaUtente();
@@ -202,6 +207,8 @@ public class HomeAdmin {
         tabella.setModel(modelloIniziale);
     }
 
+    //PANNELLO UTENTI
+
     private void filtraUtenti() {
         String testoRicerca = ricercaUtenti.getText().toLowerCase().trim();
         boolean flag = checkBoxBannatiUtenti.isSelected();
@@ -261,7 +268,27 @@ public class HomeAdmin {
                     //Utente utente = controller.getUtenteById(selezione);
                     riempiTabellaGiochiUtente(selezione);
                     riempiTabellaRecensioniUtente(selezione);
+                    descrizioneRecensioneUtenti.setText("");
                 }
+
+            }
+        });
+    }
+
+    private void associaListenerTabellaRecensioniUtenti(){
+        tabellaRecensioniUtenti.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int rigaSelezionata = tabellaRecensioniUtenti.getSelectedRow();
+
+                if(rigaSelezionata != -1){
+
+                    Recensione recensione = (Recensione) tabellaRecensioniUtenti.getModel().getValueAt(rigaSelezionata, 3);
+                    descrizioneRecensioneUtenti.setText(controller.getDescrizioneRecensione(recensione));
+
+                }
+                //else || non dovrebbe mai succedere
+                    //JOptionPane.showMessageDialog(adminFrame, "Seleziona una recensione");
 
             }
         });
@@ -346,11 +373,14 @@ public class HomeAdmin {
 
                 if(rigaSelezionata != -1){
 
-                    Recensione recensione = (Recensione) tabellaRecensioniUtenti.getModel().getValueAt(rigaSelezionata, 2);
+                    Recensione recensione = (Recensione) tabellaRecensioniUtenti.getModel().getValueAt(rigaSelezionata, 3);
+                    int idUtente = controller.getIdUtente(controller.getUtenteDaFattura(controller.getFatturaDaRecensione(recensione)));
 
                     try {
 
                         controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
+                        JOptionPane.showMessageDialog(adminFrame, "Recensione rimossa con successo");
+                        riempiTabellaRecensioniUtente(idUtente);
 
                     } catch (CampoNonValidoException ex) {
                         JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
@@ -387,9 +417,9 @@ public class HomeAdmin {
                         } catch (CampoNonValidoException ex) {
                             JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
                         }
-                    } else
-                        JOptionPane.showMessageDialog(adminFrame, "Seleziona un gioco da rimborsare");
-                }
+                    }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Seleziona un gioco da rimborsare");
             }
         });
     }
@@ -442,7 +472,7 @@ public class HomeAdmin {
             JOptionPane.showMessageDialog(adminFrame, e.getMessage());
         }
 
-        aggiornaContenutoTabella(tabellaGiochiUtenti, righe);
+        aggiornaContenutoTabella(tabellaGiochiSviluppatori, righe);
     }
 
     private void associaListenerRicercaSviluppatori(){

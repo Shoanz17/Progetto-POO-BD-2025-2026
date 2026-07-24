@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
@@ -78,14 +79,28 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
     }
 
     @Override
-    public ArrayList<EdizioneGioco> getCatalogoCompleto() throws SQLException {
-
+    public ArrayList<EdizioneGioco> getCatalogoCompleto() throws SQLException, CampoNonValidoException {
         ArrayList<EdizioneGioco> catalogo = new ArrayList<>();
 
-        String query = "SELECT eg.idEdizione, eg.idGioco, eg.nomePiattaforma, eg.prezzo, eg.dataRilascio, " +
-                "g.titolo, g.categoria, g.pegi, g.idSviluppatore " +
-                "FROM edizione_gioco eg " +
-                "JOIN gioco g ON eg.idGioco = g.idGioco";
+        String query =
+                "SELECT eg.idEdizione, eg.prezzo, eg.dataRilascio, " +
+                        "g.idGioco, g.titolo, g.categoria, g.pegi, " +
+                        "p.nome AS platNome, p.produttore AS platProd, p.portatile AS platPortatile, " +
+                        "s.idSviluppatore, s.descrizione AS devDesc, s.strike AS devStrike, s.fondi AS devFondi, " +
+                        "a.nome AS devNome, a.password AS devPass, a.dataCreazione AS devData, " +
+                        "STRING_AGG(gen.idGenere || ':' || gen.nome, ',') AS generi_concat " +
+                        "FROM edizione_gioco eg " +
+                        "JOIN gioco g ON eg.idGioco = g.idGioco " +
+                        "JOIN piattaforma_di_gioco p ON eg.nomePiattaforma = p.nome " +
+                        "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
+                        "JOIN account a ON s.idSviluppatore = a.idAccount " +
+                        "LEFT JOIN gioco_genere gg ON g.idGioco = gg.idGioco " +
+                        "LEFT JOIN genere gen ON gg.idGenere = gen.idGenere " +
+                        "GROUP BY eg.idEdizione, eg.prezzo, eg.dataRilascio, " +
+                        "g.idGioco, g.titolo, g.categoria, g.pegi, " +
+                        "p.nome, p.produttore, p.portatile, " +
+                        "s.idSviluppatore, s.descrizione, s.strike, s.fondi, " +
+                        "a.nome, a.password, a.dataCreazione";
 
         Connection conn = ConnessioneDatabase.getInstance().connection;
 
@@ -93,52 +108,49 @@ public class EdizioneGiocoDAOPostgres implements EdizioneGiocoDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-
                 int idEdizione = rs.getInt("idEdizione");
                 int prezzo = rs.getInt("prezzo");
-                java.time.LocalDate dataRilascio = rs.getDate("dataRilascio").toLocalDate();
-                String nomePiattaforma = rs.getString("nomePiattaforma");
+                LocalDate dataRilascio = rs.getDate("dataRilascio").toLocalDate();
 
                 int idGioco = rs.getInt("idGioco");
                 String titolo = rs.getString("titolo");
                 String categoriaString = rs.getString("categoria");
                 int pegi = rs.getInt("pegi");
-                int idSviluppatore = rs.getInt("idSviluppatore");
 
-                Sviluppatore fintoSviluppatore = new Sviluppatore(
-                        "Sconosciuto",
-                        idSviluppatore,
-                        "nessuna",
-                        java.time.LocalDate.now(),
-                        0,
-                        "",
-                        0
+                PiattaformaDiGioco piattaforma = new PiattaformaDiGioco(
+                        rs.getString("platNome"),
+                        rs.getString("platProd"),
+                        rs.getBoolean("platPortatile")
                 );
 
-                try {
-                    PiattaformaDiGioco piattaformaObj = new PiattaformaDiGioco(nomePiattaforma, "Sconosciuto", false);
+                Sviluppatore sviluppatore = new Sviluppatore(
+                        rs.getString("devNome"),
+                        rs.getInt("idSviluppatore"),
+                        rs.getString("devDesc"),
+                        rs.getDate("devData").toLocalDate(),
+                        rs.getInt("devStrike"),
+                        rs.getString("devPass"),
+                        rs.getInt("devFondi")
+                );
 
-                    Gioco fintoGioco = new Gioco(
-                            fintoSviluppatore,
-                            idGioco,
-                            titolo,
-                            Categoria.valueOf(categoriaString),
-                            pegi
-                    );
+                    Gioco gioco = new Gioco(sviluppatore, idGioco, titolo, Categoria.valueOf(categoriaString), pegi);
 
-                    EdizioneGioco edizioneCorrente = new EdizioneGioco(
-                            idEdizione,
-                            fintoGioco,
-                            piattaformaObj,
-                            prezzo,
-                            dataRilascio
-                    );
+                    String generiString = rs.getString("generi_concat");
+                    ArrayList<Genere> listaGeneri = new ArrayList<>();
+
+                    if (generiString != null && !generiString.isEmpty()) {
+                        String[] generiArray = generiString.split(",");
+                        for (String gStr : generiArray) {
+                            String[] parts = gStr.split(":");
+                            Genere gen = new Genere(parts[1]);
+                            listaGeneri.add(gen);
+                        }
+                    }
+                    gioco.setListaGeneri(listaGeneri);
+
+                    EdizioneGioco edizioneCorrente = new EdizioneGioco(idEdizione, gioco, piattaforma, prezzo, dataRilascio);
 
                     catalogo.add(edizioneCorrente);
-
-                } catch (CampoNonValidoException e) {
-                    System.out.println("Errore DB Corrotto nel caricamento del catalogo: " + e.getMessage());
-                }
             }
         }
 

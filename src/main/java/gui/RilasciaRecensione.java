@@ -45,14 +45,8 @@ public class RilasciaRecensione {
                     int voto = (Integer) spinnerVoto.getValue();
                     String testo = textAreaDescrizione.getText().trim();
 
-                    if (controller.haGiaRecensito(utenteLoggato, fatturaSelezionata)) {
-                        int risposta = JOptionPane.showConfirmDialog(
-                                recensioneFrame,
-                                "Hai già rilasciato una recensione per questo acquisto. Vuoi sovrascriverla?",
-                                "Conferma Sovrascrittura",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE
-                        );
+                    if (controller.haGiaRecensito(fatturaSelezionata)) {
+                        int risposta = JOptionPane.showConfirmDialog(recensioneFrame, "Hai già rilasciato una recensione per questo acquisto. Vuoi sovrascriverla?", "Conferma Sovrascrittura", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
                         if (risposta != JOptionPane.YES_OPTION) {
                             return;
