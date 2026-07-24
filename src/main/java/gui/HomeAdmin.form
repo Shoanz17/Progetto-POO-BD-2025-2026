@@ -153,8 +153,11 @@
                   <component id="9e056" class="javax.swing.JTextArea" binding="descrizioneRecensioneUtenti">
                     <constraints/>
                     <properties>
+                      <columns value="0"/>
                       <editable value="false"/>
                       <font size="18"/>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="false"/>
                     </properties>
                   </component>
                 </children>
@@ -228,7 +231,10 @@
                 <constraints>
                   <grid row="1" column="0" row-span="4" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="81c50" class="javax.swing.JList" binding="listaSviluppatori">
