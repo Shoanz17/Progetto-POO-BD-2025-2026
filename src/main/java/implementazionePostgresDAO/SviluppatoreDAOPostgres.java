@@ -172,4 +172,23 @@ public class SviluppatoreDAOPostgres implements SviluppatoreDAO {
         }
         return 0;
     }
+
+    @Override
+    public int getNumeroSeguaci(int idSviluppatore) throws SQLException {
+        int conteggio = 0;
+
+        String query = "SELECT COUNT(*) AS totale FROM seguiti WHERE idSviluppatore = ?";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, idSviluppatore);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    conteggio = rs.getInt("totale"); // Estrae il risultato del COUNT
+                }
+            }
+        }
+        return conteggio;
+    }
 }

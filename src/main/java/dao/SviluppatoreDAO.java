@@ -18,4 +18,5 @@ public interface SviluppatoreDAO {
     void aggiornaProfilo(Sviluppatore sviluppatore)throws SQLException;
 
     String getGiocoPiuVendutoSviluppatore(int idSviluppatore) throws SQLException;
+    int getNumeroSeguaci(int idSviluppatore) throws SQLException;
 }

@@ -1310,7 +1310,7 @@ public class Controller {
         }
     }
 
-    public PiattaformaDiGioco getPiattaformaDaNome(String nomePiattaforma) {
+    public PiattaformaDiGioco getPiattaformaDaNome(String nomePiattaforma)throws CampoNonValidoException {
         try {
             ArrayList<PiattaformaDiGioco> tutteLePiattaforme = getPiattaformeDiGioco();
 
@@ -1325,5 +1325,21 @@ public class Controller {
         return null;
     }
 
+
+    public String getFondiSviluppatore(Sviluppatore sviluppatore){
+        return String.valueOf(sviluppatore.getFondi());
+    }
+
+
+
+    public String getSeguitiSviluppatore(Sviluppatore sviluppatore) {
+        try {
+            int numeroSeguaci = sviluppatoreDAO.getNumeroSeguaci(sviluppatore.getId());
+            return String.valueOf(numeroSeguaci);
+        } catch (Exception e) {
+            System.out.println("Errore nel conteggio dei seguaci: " + e.getMessage());
+            return "0";
+        }
+    }
 
 }

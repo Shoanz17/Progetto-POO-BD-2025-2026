@@ -56,7 +56,7 @@ public class HomeSviluppatore {
     private JTextField ricercaPannello;
     private JLabel nomeSviluppatore;
     private JLabel descrizioneSviluppatore;
-    private JLabel strike;
+    private JLabel stabilita;
     private JTextArea descrizioneArea;
     private JButton gestioneProfilo;
     private JLabel seguitiSvilup;
@@ -68,6 +68,7 @@ public class HomeSviluppatore {
     private JTextArea areaRecensioni;
     private JPanel informazioniGioco;
     private JButton pulsanteLogout;
+    private JLabel strikeSvilupp;
     private JComboBox modificaCategoriaCombo;
 
     private List<JCheckBox> listaCheckboxGeneri = new ArrayList<>();
@@ -254,6 +255,7 @@ public class HomeSviluppatore {
                         textPrezzo.setFocusable(false);
                         textPrezzo.setEditable(false);
                         textDataRilascio.setFocusable(false);
+                        textDataRilascio.setEditable(false);
                         for (JCheckBox cb : listaCheckboxGeneri) {
                             cb.setSelected(false);
                         }
@@ -308,6 +310,8 @@ public class HomeSviluppatore {
     private void inizializzaGraficaControllo() {
         // carica i valori dell'enum Categoria dentro la ComboBox dal controller
         aggCategoria.setModel(new DefaultComboBoxModel<>(controller.getCategorie().toArray()));
+
+        textPrezzo.setForeground(Color.GRAY);
 
         textDataRilascio.setText("GG/MM/AAAA");
         textDataRilascio.setForeground(Color.GRAY);
@@ -474,6 +478,11 @@ public class HomeSviluppatore {
         descrizioneArea.setWrapStyleWord(true);
         descrizioneArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         descrizioneArea.setFocusable(false);
+
+        fondiSvilup.setText("Fondi: " + controller.getFondiSviluppatore(sviluppatoreCorrente) + "€");
+        strikeSvilupp.setText("Strike: " + controller.getStrikeSviluppatore(sviluppatoreCorrente));
+        seguitiSvilup.setText("Seguiti: " + controller.getSeguitiSviluppatore(sviluppatoreCorrente));
+
     }
 
 
@@ -649,11 +658,13 @@ public class HomeSviluppatore {
         aggCategoria.setSelectedIndex(0);
 
         textPrezzo.setFocusable(true);
+        textPrezzo.setEditable(true);
         textDataRilascio.setFocusable(true);
+        textDataRilascio.setEditable(true);
 
         for (JCheckBox campoVuoto : listaCheckboxGeneri) {
             campoVuoto.setSelected(false);
-        }// deseleziona la checkbox dopo che l' utente fa "aggiungi gioco"
+        }
 
         for (JCheckBox campoVuotoP : listaCheckboxPiattaforma) {
             campoVuotoP.setSelected(false);
