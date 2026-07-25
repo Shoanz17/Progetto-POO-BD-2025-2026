@@ -229,11 +229,11 @@
               </component>
               <scrollpane id="9c99d">
                 <constraints>
-                  <grid row="1" column="0" row-span="4" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="4" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <horizontalScrollBarPolicy value="31"/>
-                  <verticalScrollBarPolicy value="22"/>
+                  <verticalScrollBarPolicy value="20"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -392,9 +392,11 @@
               </component>
               <scrollpane id="61d6d">
                 <constraints>
-                  <grid row="1" column="0" row-span="5" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="5" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                </properties>
                 <border type="none"/>
                 <children>
                   <component id="e6c0f" class="javax.swing.JList" binding="listaGiochi">
@@ -435,16 +437,6 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="f622c" class="javax.swing.JList" binding="listaGeneri">
-                <constraints>
-                  <grid row="2" column="0" row-span="4" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <font size="18"/>
-                </properties>
-              </component>
               <component id="9c0d9" class="javax.swing.JLabel" binding="nomeGenere">
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -488,6 +480,23 @@
                   <grid row="0" column="1" row-span="2" col-span="3" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
+              <scrollpane id="dd705">
+                <constraints>
+                  <grid row="2" column="0" row-span="4" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="f622c" class="javax.swing.JList" binding="listaGeneri">
+                    <constraints/>
+                    <properties>
+                      <font size="18"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="ca194" binding="piattaforme" layout-manager="GridLayoutManager" row-count="5" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -662,6 +671,7 @@
                     <properties>
                       <editable value="false"/>
                       <font size="18"/>
+                      <lineWrap value="true"/>
                     </properties>
                   </component>
                 </children>

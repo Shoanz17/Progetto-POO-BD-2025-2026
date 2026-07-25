@@ -248,10 +248,13 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
                 "JOIN gioco g ON eg.idGioco = g.idGioco " +
                 "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
                 "JOIN account a_s ON s.idSviluppatore = a_s.idAccount " +
-                "WHERE LOWER(r.descrizione) LIKE LOWER(?)";
+                "WHERE LOWER(a_u.nome) LIKE LOWER(?) OR LOWER(g.titolo) LIKE LOWER(?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setString(1, "%" + testoRicerca.trim() + "%");
+            String filtro = "%" + testoRicerca.trim() + "%";
+            pstmt.setString(1, filtro);
+            pstmt.setString(2, filtro);
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     String strGenere = rs.getString("u_genere");

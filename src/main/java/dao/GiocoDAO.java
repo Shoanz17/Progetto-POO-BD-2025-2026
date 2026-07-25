@@ -1,5 +1,6 @@
 package dao;
 
+import model.CampoNonValidoException;
 import model.EdizioneGioco;
 import model.Genere;
 import model.Gioco;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public interface GiocoDAO {
 
-    ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws SQLException;
+    ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws SQLException, CampoNonValidoException;
 
     void updateTitolo(int idGioco, String titolo) throws SQLException;
     void updateCategoriaGioco(int idGioco, String nomeCategoria) throws SQLException;

@@ -90,12 +90,8 @@ public class HomeAdmin {
     private Controller controller;
     private Admin admin;
 
-    //DA FARE: fai in modo che quando crei un genere con un nome che già esiste esca questo e non "operazione fallita"
-    //GIOCHI: aggiustare aggiungi strike
-    //aggiustare grandezza lista e il fatto che se le label sono troppo lunghe cambia la lunghezza di tutto
-    //aggiustare assolutamente la lista generi che non si svuota ma solo aggiunge spunte e quindi se clicco conferma (alla quale manca un messaggio di conferma) li aggiunge tutti (quindi funziona)
-    //PIATTAFORME: cambia true e false con si e no
-    //non funziona manco la ricerca
+    //DA FARE: aggiusta ordina per data
+    //ogni aggiunta che fa l'admin va controllato se quello che si vuole inserire già esiste
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
@@ -388,18 +384,21 @@ public class HomeAdmin {
 
                 if(rigaSelezionata != -1){
 
-                    Recensione recensione = (Recensione) tabellaRecensioniUtenti.getModel().getValueAt(rigaSelezionata, 3);
-                    int idUtente = controller.getIdUtente(controller.getUtenteDaFattura(controller.getFatturaDaRecensione(recensione)));
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Vuoi rimuovere la recensione?", "Conferma", JOptionPane.YES_NO_OPTION);
 
-                    try {
+                    if(risposta == JOptionPane.YES_OPTION){
+                        Recensione recensione = (Recensione) tabellaRecensioniUtenti.getModel().getValueAt(rigaSelezionata, 3);
+                        int idUtente = controller.getIdUtente(controller.getUtenteDaFattura(controller.getFatturaDaRecensione(recensione)));
 
-                        controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
-                        JOptionPane.showMessageDialog(adminFrame, "Recensione rimossa con successo");
-                        riempiTabellaRecensioniUtente(idUtente);
-                        //filtraRecensioni(); //aggiorna le recensioni anche nell'altro tab
+                        try {
 
-                    } catch (CampoNonValidoException ex) {
-                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                            controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
+                            riempiTabellaRecensioniUtente(idUtente);
+                            descrizioneRecensioneUtenti.setText("");
+
+                        } catch (CampoNonValidoException ex) {
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                        }
                     }
 
                 } else
@@ -536,19 +535,24 @@ public class HomeAdmin {
                 Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
 
                 if(sviluppatoreSelezionato != null){
-                    try {
 
-                        controller.addStrikeSviluppatore(sviluppatoreSelezionato);
-                        aggiornaStrike(sviluppatoreSelezionato);
-                        filtraSviluppatori();
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Vuoi aggiungere uno strike?", "Conferma", JOptionPane.YES_NO_OPTION);
 
-                    } catch (CampoNonValidoException ex) {
+                    if(risposta == JOptionPane.YES_OPTION){
+                        try {
 
-                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                            controller.addStrikeSviluppatore(sviluppatoreSelezionato);
+                            aggiornaStrike(sviluppatoreSelezionato);
+                            filtraSviluppatori();
 
+                        } catch (CampoNonValidoException ex) {
+
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                        }
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato");
             }
         });
     }
@@ -572,7 +576,7 @@ public class HomeAdmin {
 
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato");
             }
         });
     }
@@ -662,8 +666,7 @@ public class HomeAdmin {
                 if (componente instanceof JCheckBox) {
                     JCheckBox casella = (JCheckBox) componente;
 
-                    if (nomiGeneriGioco.contains(casella.getText()))
-                        casella.setSelected(true);
+                    casella.setSelected(nomiGeneriGioco.contains(casella.getText()));
                 }
             }
         } catch (CampoNonValidoException e) {
@@ -705,17 +708,22 @@ public class HomeAdmin {
                 Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
 
                 if(giocoSelezionato != null){
-                    try {
 
-                        controller.addStrikeSviluppatoreDaGioco(giocoSelezionato);
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Vuoi aggiungere uno strike?", "Conferma", JOptionPane.YES_NO_OPTION);
 
-                    } catch (CampoNonValidoException ex) {
+                    if(risposta == JOptionPane.YES_OPTION){
+                        try {
 
-                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                            controller.addStrikeSviluppatoreDaGioco(giocoSelezionato);
 
+                        } catch (CampoNonValidoException ex) {
+
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                        }
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
             }
         });
     }
@@ -727,10 +735,7 @@ public class HomeAdmin {
                 Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
 
                 if(giocoSelezionato != null){
-                    String nuovoTitolo = JOptionPane.showInputDialog(adminFrame,
-                            "Inserisci il nuovo titolo del gioco:",
-                            "Modifica Titolo",
-                            JOptionPane.PLAIN_MESSAGE);
+                    String nuovoTitolo = JOptionPane.showInputDialog(adminFrame, "Inserisci il nuovo titolo del gioco:", "Modifica Titolo", JOptionPane.PLAIN_MESSAGE);
 
                     if(nuovoTitolo != null && !nuovoTitolo.trim().isEmpty()){
                         try {
@@ -744,7 +749,7 @@ public class HomeAdmin {
                         }
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
             }
         });
     }
@@ -760,11 +765,7 @@ public class HomeAdmin {
 
                 JComboBox<Categoria> comboCategoria = new JComboBox<>(arrayCategorie);
 
-                int risposta = JOptionPane.showConfirmDialog(adminFrame,
-                        comboCategoria,
-                        "Seleziona la nuova categoria",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                int risposta = JOptionPane.showConfirmDialog(adminFrame, comboCategoria, "Seleziona la nuova categoria", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
                 if (risposta == JOptionPane.OK_OPTION) {
 
@@ -782,7 +783,7 @@ public class HomeAdmin {
                     }
                 }
             } else
-                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
         });
     }
 
@@ -796,11 +797,7 @@ public class HomeAdmin {
                 SpinnerNumberModel modelloSpinner = new SpinnerNumberModel(controller.getPegiGioco(giocoSelezionato), 3, 18, 1);
                 JSpinner spinnerPegi = new JSpinner(modelloSpinner);
 
-                int risposta = JOptionPane.showConfirmDialog(adminFrame,
-                        spinnerPegi, //passo lo spinner
-                        "Imposta il nuovo limite PEGI",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                int risposta = JOptionPane.showConfirmDialog(adminFrame, spinnerPegi, "Imposta il nuovo limite PEGI", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
                 if (risposta == JOptionPane.OK_OPTION) {
                     int nuovoPegi = (int) spinnerPegi.getValue();
@@ -815,7 +812,7 @@ public class HomeAdmin {
                     }
                 }
             } else
-                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
         });
     }
 
@@ -825,7 +822,7 @@ public class HomeAdmin {
             Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
 
             if (giocoSelezionato == null) {
-                JOptionPane.showMessageDialog(adminFrame, "Seleziona un gioco dalla lista prima di confermare le modifiche!");
+                JOptionPane.showMessageDialog(adminFrame, "Seleziona prima un gioco dalla lista");
                 return; //interrompe l'esecuzione del metodo
             }
 
@@ -890,6 +887,18 @@ public class HomeAdmin {
         pulsanteAggiungiGenere.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String nuovoGenere = campoNomeGenere.getText().trim();
+
+                ListModel<Genere> modelloLista = listaGeneri.getModel();
+                for(int i = 0; i < modelloLista.getSize(); i++) {
+                    Genere genere = modelloLista.getElementAt(i);
+
+                    if(controller.getNomeGenere(genere).equalsIgnoreCase(nuovoGenere)) {
+                        JOptionPane.showMessageDialog(adminFrame, "Esiste già un genere con questo nome");
+                        return;
+                    }
+                }
+
                 try {
 
                     controller.createGenere(campoNomeGenere.getText());
@@ -904,7 +913,7 @@ public class HomeAdmin {
 
     //PANNELLO PIATTAFORME
     private void configuraPannelloPiattaforme(){
-        String[] colonnePiattaforme = {"Nome", "Produttore", "Portabilità"};
+        String[] colonnePiattaforme = {"Nome", "Produttore", "Portatile"};
         configuraTabella(colonnePiattaforme, tabellaPiattaforme);
         filtraPiattaforme();
 
@@ -919,10 +928,12 @@ public class HomeAdmin {
 
         try {
             for(PiattaformaDiGioco piattaforma : controller.getPiattaformeFiltrate(testoRicerca)){
+
+                String portabile = (controller.isPortabile(piattaforma)) ? "Sì" : "No";
                 Object[] riga = {
                         controller.getNomePiattaforma(piattaforma),
                         controller.getProduttorePiattaforma(piattaforma),
-                        controller.isPortabile(piattaforma)
+                        portabile
                 };
                 righe.add(riga);
             }
@@ -1035,15 +1046,22 @@ public class HomeAdmin {
 
                 if(rigaSelezionata != -1){
 
-                    Recensione recensione = (Recensione) tabellaRecensioni.getModel().getValueAt(rigaSelezionata, 4);
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Vuoi rimuovere la recensione?", "Conferma", JOptionPane.YES_NO_OPTION);
 
-                    try{
+                    if(risposta == JOptionPane.YES_OPTION){
+                        Recensione recensione = (Recensione) tabellaRecensioni.getModel().getValueAt(rigaSelezionata, 4);
 
-                        controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
+                        try{
 
-                    } catch (CampoNonValidoException ex) {
-                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                            controller.rimuoviRecensioneSelezionataDaFattura(controller.getFatturaDaRecensione(recensione));
+                            filtraRecensioni();
+                            descrizioneRecensioneRecensioni.setText("");
+
+                        } catch (CampoNonValidoException ex) {
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                        }
                     }
+
                 } else
                     JOptionPane.showMessageDialog(adminFrame, "Seleziona prima una recensione");
             }
@@ -1065,13 +1083,14 @@ public class HomeAdmin {
 
                             Fattura fattura = controller.getFatturaDaRecensione((Recensione) tabellaRecensioni.getModel().getValueAt(rigaSelezionata, 4));
                             Utente utente = controller.getUtenteDaFattura(fattura);
-                            controller.setBannatoUtente(utente);
+                            controller.setBannatoUtente(utente); //banna sempre l'utente anche se è già bannato perché non volevo complicare il codice per verificare prima se era bannato solo per mandare un messaggio a schermo
 
                         } catch (CampoNonValidoException ex) {
                             JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
                         }
                     }
-                }
+                } else
+                    JOptionPane.showMessageDialog(adminFrame, "Seleziona prima un utente");
             }
         });
     }
@@ -1109,7 +1128,6 @@ public class HomeAdmin {
         ArrayList<Object[]> righe = new ArrayList<>();
 
         try {
-            //il controller restituirà la lista filtrata per testo e ordinata (o meno) per data
             for (Promozione promozione : controller.getPromozioniFiltrateAdmin(testoRicerca, ordinaPerDataAttivo)) {
                 Object[] riga = {
                         controller.getNomePromozione(promozione),

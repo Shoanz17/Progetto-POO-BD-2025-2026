@@ -65,7 +65,7 @@ public class PiattaformaDiGiocoDAOPostgres implements PiattaformaDiGiocoDAO {
     }
 
     @Override
-    public ArrayList<PiattaformaDiGioco> getPiattaformeFiltrate(String testoRicerca) throws SQLException {
+    public ArrayList<PiattaformaDiGioco> getPiattaformeFiltrate(String testoRicerca) throws SQLException, CampoNonValidoException {
         ArrayList<PiattaformaDiGioco> listaPiattaforme = new ArrayList<>();
 
         // Cerca sia sul nome della piattaforma sia sul nome del produttore
@@ -82,16 +82,12 @@ public class PiattaformaDiGiocoDAOPostgres implements PiattaformaDiGiocoDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    try {
-                        String nome = rs.getString("nome");
-                        String produttore = rs.getString("produttore");
-                        boolean portatile = rs.getBoolean("portatile");
+                    String nome = rs.getString("nome");
+                    String produttore = rs.getString("produttore");
+                    boolean portatile = rs.getBoolean("portatile");
 
-                        PiattaformaDiGioco p = new PiattaformaDiGioco(nome, produttore, portatile);
-                        listaPiattaforme.add(p);
-                    } catch (CampoNonValidoException e) {
-                        throw new SQLException("Errore nel ripristino della piattaforma filtrata: " + e.getMessage(), e);
-                    }
+                    PiattaformaDiGioco p = new PiattaformaDiGioco(nome, produttore, portatile);
+                    listaPiattaforme.add(p);
                 }
             }
         }
