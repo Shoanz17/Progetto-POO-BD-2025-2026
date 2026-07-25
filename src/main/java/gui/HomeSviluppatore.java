@@ -76,7 +76,7 @@ public class HomeSviluppatore {
 
     private DefaultListModel<Gioco> modelPannelloControllo;
     private DefaultListModel<Gioco> modelLibreria;
-    ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
+//    ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
     private Controller controller;
     private Sviluppatore sviluppatoreCorrente;
     private JFrame sviluppatoreFrame;
@@ -114,7 +114,7 @@ public class HomeSviluppatore {
         sviluppatoreFrame = new JFrame("HomeSviluppatore");
         sviluppatoreFrame.setContentPane(homeSviluppatore);
         sviluppatoreFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        sviluppatoreFrame.setSize(1155, 700);
+        sviluppatoreFrame.setSize(1155, 750);
         sviluppatoreFrame.setLocationRelativeTo(null);
         sviluppatoreFrame.setVisible(true);
     }
@@ -131,7 +131,7 @@ public class HomeSviluppatore {
                     for (Gioco gioco : tuttiIGiochi) {
                         modelLibreria.addElement(gioco);
                         modelPannelloControllo.addElement(gioco);
-                        listaCompletaGiochi.add(gioco);
+//                        listaCompletaGiochi.add(gioco);
                     }
                 }
 
@@ -143,27 +143,21 @@ public class HomeSviluppatore {
         }
     }
 
-    private void filtraLista(String testoCercato, DefaultListModel<Gioco> modelloDestinazione) {
-        modelloDestinazione.clear();
-
-
-        for (Gioco gioco : listaCompletaGiochi) {
-            String titolo = controller.getTitoloDaGioco(gioco).toLowerCase();
-
-
-            if (titolo.contains(testoCercato)) {
-                modelloDestinazione.addElement(gioco);
-            }
-        }
-    }
-
-
     private void ricercaListaLib() {
         barraRicerca.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
+                String testoCercato = barraRicerca.getText();
+                try {
 
-                String testoCercato = barraRicerca.getText().toLowerCase();
-                filtraLista(testoCercato, modelLibreria);
+                    ArrayList<Gioco> giochiFiltrati = controller.cercaGiochiSviluppatore(sviluppatoreCorrente, testoCercato);
+
+                    modelLibreria.clear();
+                    for (Gioco g : giochiFiltrati) {
+                        modelLibreria.addElement(g);
+                    }
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(null, "Errore durante la ricerca: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -172,12 +166,23 @@ public class HomeSviluppatore {
         ricercaPannello.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                String testoCercato = ricercaPannello.getText().toLowerCase();
-                filtraLista(testoCercato, modelPannelloControllo);
+                String testoCercato = ricercaPannello.getText();
+                try {
+                    ArrayList<Gioco> giochiFiltrati = controller.cercaGiochiSviluppatore(sviluppatoreCorrente, testoCercato);
+
+                    modelPannelloControllo.clear();
+                    for (Gioco g : giochiFiltrati) {
+                        modelPannelloControllo.addElement(g);
+                    }
+                } catch (CampoNonValidoException ex) {
+                    JOptionPane.showMessageDialog(null, "Errore durante la ricerca: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
-
     }
+
+
+
 
 
     private void selezioneListaLibreria() {
@@ -246,6 +251,8 @@ public class HomeSviluppatore {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     Gioco giocoSelezionato = listaGiochiAggiunti.getSelectedValue();
+                    textPrezzo.setForeground(Color.BLACK);
+
 
                     if (giocoSelezionato != null) {
                         aggModButton.setText("Salva modifiche");
@@ -254,6 +261,8 @@ public class HomeSviluppatore {
                         aggCategoria.setSelectedItem(controller.getCategoriaDaGioco(giocoSelezionato));
                         textPrezzo.setFocusable(false);
                         textPrezzo.setEditable(false);
+                        textPrezzo.setForeground(Color.GRAY);
+
                         textDataRilascio.setFocusable(false);
                         textDataRilascio.setEditable(false);
                         for (JCheckBox cb : listaCheckboxGeneri) {
@@ -311,7 +320,6 @@ public class HomeSviluppatore {
         // carica i valori dell'enum Categoria dentro la ComboBox dal controller
         aggCategoria.setModel(new DefaultComboBoxModel<>(controller.getCategorie().toArray()));
 
-        textPrezzo.setForeground(Color.GRAY);
 
         textDataRilascio.setText("GG/MM/AAAA");
         textDataRilascio.setForeground(Color.GRAY);
@@ -375,6 +383,7 @@ public class HomeSviluppatore {
             String prezzoStr = textPrezzo.getText().trim();
             String dataRilascio = textDataRilascio.getText().trim();
 
+
             // controlliamo che anche la data sia compilata
             if (titolo.isEmpty() ||
                     pegiStr.isEmpty() || prezzoStr.isEmpty() || dataRilascio.isEmpty() || dataRilascio.equals("GG/MM/AAAA")) {
@@ -428,7 +437,7 @@ public class HomeSviluppatore {
 
                     modelPannelloControllo.addElement(nuovoGioco);
                     modelLibreria.addElement(nuovoGioco);
-                    listaCompletaGiochi.add(nuovoGioco);
+//                    listaCompletaGiochi.add(nuovoGioco);
                     JOptionPane.showMessageDialog(null, "Gioco ed Edizione inseriti con successo!");
 
                 }
@@ -503,21 +512,23 @@ public class HomeSviluppatore {
                 finestraGestione.add(new JLabel("Nome:", SwingConstants.CENTER));
                 finestraGestione.add(pannelloNome);
 
-
                 JPasswordField campoPass = new JPasswordField(15);
                 JPanel pannelloPass = new JPanel(new GridBagLayout());
                 pannelloPass.add(campoPass);
                 finestraGestione.add(new JLabel("Nuova password:", SwingConstants.CENTER));
                 finestraGestione.add(pannelloPass);
 
-
                 JTextArea campoDescrizione = new JTextArea(controller.getDescrizioneSviluppatore(sviluppatoreCorrente), 4, 20);
-                JPanel pannelloDescrizione = new JPanel();
+                campoDescrizione.setLineWrap(true);
+                campoDescrizione.setWrapStyleWord(true);
+                JPanel pannelloDescrizione = new JPanel(new BorderLayout());
+//                pannelloDescrizione.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 JScrollPane scrollDescrizione = new JScrollPane(campoDescrizione);
-                pannelloDescrizione.add(scrollDescrizione);
+                scrollDescrizione.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                scrollDescrizione.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                pannelloDescrizione.add(scrollDescrizione, BorderLayout.CENTER);
                 finestraGestione.add(new JLabel("Nuova descrizione:", SwingConstants.CENTER));
                 finestraGestione.add(pannelloDescrizione);
-
 
                 JPanel pannelloSalva = new JPanel(new GridBagLayout());
                 JButton pulsanteSalva = new JButton("Salva");
@@ -529,21 +540,40 @@ public class HomeSviluppatore {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try {
+                            String nuovoNome = campoNome.getText().trim();
+                            String nuovaDescrizione = campoDescrizione.getText().trim();
+                            String nuovaPassword = new String(campoPass.getPassword());
 
-                            String nome = campoNome.getText();
-                            String descrizione = campoDescrizione.getText();
-                            String password = new String(campoPass.getPassword());
+                            String vecchioNome = sviluppatoreCorrente.getNome();
+                            String vecchiaDescrizione = sviluppatoreCorrente.getDescrizione();
+                            String vecchiaPassword = sviluppatoreCorrente.getPassword();
 
-                            controller.aggiornaProfiloSviluppatore(sviluppatoreCorrente, nome, descrizione, password);
+                            controller.aggiornaProfiloSviluppatore(sviluppatoreCorrente, nuovoNome, nuovaDescrizione, nuovaPassword);
+
+                            String messaggiSuccesso = "";
+
+                            if (!nuovoNome.equals(vecchioNome)) {
+                                messaggiSuccesso += "Nome aggiornato con successo!\n";
+                            }
+                            if (!nuovaDescrizione.equals(vecchiaDescrizione)) {
+                                messaggiSuccesso += "Descrizione aggiornata con successo!\n";
+                            }
+                            if (!nuovaPassword.isEmpty() && !nuovaPassword.equals(vecchiaPassword)) {
+                                messaggiSuccesso += "Password modificata con successo!\n";
+                            }
+
+                            if (messaggiSuccesso.isEmpty()) {
+                                JOptionPane.showMessageDialog(null, "Nessun dato è stato modificato.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(null, messaggiSuccesso, "Aggiornamento completato", JOptionPane.INFORMATION_MESSAGE);
+                            }
 
                             finestraGestione.dispose();
                         } catch (CampoNonValidoException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                         }
-
                     }
                 });
-
 
                 finestraGestione.setVisible(true);
                 profilo(sviluppatoreCorrente);
