@@ -417,21 +417,11 @@ public class Controller {
     }
 
     public void rimuoviRecensioneSelezionataDaFattura(Fattura fattura) throws CampoNonValidoException {
-        if (fattura == null) {
-            throw new CampoNonValidoException("Seleziona prima una recensione dalla tabella!");
-        }
-
         try {
             recensioneDAO.eliminaRecensione(fattura.getId());
+            fattura.setRecensione(null);
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
-        }
-
-        try {
-            if (fattura.getRecensione() != null) {
-                fattura.setRecensione(null);
-            }
-        } catch (Exception e) {
         }
     }
 

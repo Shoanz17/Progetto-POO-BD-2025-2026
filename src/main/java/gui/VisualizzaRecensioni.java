@@ -97,7 +97,9 @@ public class VisualizzaRecensioni {
 
                         JOptionPane.showMessageDialog(visualizzaRecensioniFrame, "Recensione rimossa con successo!", "Successo", JOptionPane.INFORMATION_MESSAGE);
                         textDescrizione.setText("");
-                        configuraInterfacciaRecensioni(); // Ricarica la tabella aggiornata
+
+                        acquistiUtenteConRecensione.remove(rigaSelezionata);
+                        ((DefaultTableModel) tabellaRecensioni.getModel()).removeRow(rigaSelezionata);
 
                     } catch (CampoNonValidoException ex) {
                         JOptionPane.showMessageDialog(visualizzaRecensioniFrame, ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
