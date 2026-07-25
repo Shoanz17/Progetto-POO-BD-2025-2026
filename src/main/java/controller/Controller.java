@@ -132,7 +132,11 @@ public class Controller {
     }
 
     public int getNumeroRecensioniUtente(Utente utenteLoggato) throws CampoNonValidoException {
-        return getListaRecensioniUtente(utenteLoggato.getId()).size();
+        try {
+            return recensioneDAO.getNumeroRecensioni(utenteLoggato.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
@@ -235,8 +239,11 @@ public class Controller {
     public int getIdUtente(Utente u) {return u.getId();}
 
     public int getNumeroGiochiAcquistatiUtente(Utente u) throws CampoNonValidoException {
-        if (u == null) return 0;
-        return getLibreriaUtente(u.getId()).size();
+        try {
+            return fatturaDAO.getNumeroGiochiAcquistati(u.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
+        }
     }
 
     public GenereEnum getGenereUtente(Utente u) {
@@ -294,23 +301,19 @@ public class Controller {
     }
 
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
-        utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
-
         try {
             utenteDAO.inserisciSviluppatoreSeguito(utenteloggato.getId(), sviluppatoreSelezionato.getId());
+            utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
         } catch (SQLException e) {
-            utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
     public void rimuoviSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
-        utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
-
         try {
             utenteDAO.eliminaSviluppatoreSeguito(utenteloggato.getId(), sviluppatoreSelezionato.getId());
+            utenteloggato.removeSviluppatoreSeguito(sviluppatoreSelezionato);
         } catch (SQLException e) {
-            utenteloggato.addSviluppatoreSeguito(sviluppatoreSelezionato);
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
@@ -998,7 +1001,10 @@ public class Controller {
     public String getGiocoPiuVendutoSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         try {
             String titolo = sviluppatoreDAO.getGiocoPiuVendutoSviluppatore(sviluppatore.getId());
-            return (titolo != null) ? titolo : "Nessuno";
+            if (titolo == null){
+                return titolo = "Nessuno";
+            }
+            return titolo;
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }

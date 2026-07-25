@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public interface FatturaDAO {
     ArrayList<Fattura> getLibreriaUtente(int idUtente) throws SQLException, CampoNonValidoException;
 
+    int getNumeroGiochiAcquistati(int idUtente) throws SQLException;
+
     void inserisciFattura(Fattura fattura) throws SQLException;
 
     void effettuaRimborso(int idFattura, int idUtente, int importo) throws SQLException;

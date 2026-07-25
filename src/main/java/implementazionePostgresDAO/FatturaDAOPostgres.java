@@ -143,6 +143,22 @@ public class FatturaDAOPostgres implements FatturaDAO {
         return libreria;
     }
 
+    public int getNumeroGiochiAcquistati(int idUtente) throws SQLException {
+        String query = "SELECT COUNT(*) AS totale FROM FATTURA WHERE idUtente = ?";
+
+        Connection conn = ConnessioneDatabase.getInstance().connection;
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, idUtente);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totale");
+                }
+            }
+        }
+        return 0;
+    }
+
     @Override
     public void inserisciFattura(Fattura fattura) throws SQLException {
         String query = "INSERT INTO FATTURA (idUtente, idEdizione, prezzoAcquisto, key, dataAcquisto) VALUES (?, ?, ?, ?, ?)";

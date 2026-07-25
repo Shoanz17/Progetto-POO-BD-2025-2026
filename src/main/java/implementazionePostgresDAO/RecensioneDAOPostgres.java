@@ -369,6 +369,22 @@ public class RecensioneDAOPostgres implements RecensioneDAO {
         return 0;
     }
 
+    public int getNumeroRecensioni(int idUtente) throws SQLException {
+        String query = "SELECT COUNT(*) AS totale FROM recensione r " +
+                "JOIN fattura f ON r.idFattura = f.idFattura " +
+                "WHERE f.idUtente = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, idUtente);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totale");
+                }
+            }
+        }
+        return 0;
+    }
+
     @Override
     public void aggiornaDifferenzaLike(int idFattura, int differenza) throws SQLException {
         String query = "UPDATE recensione SET differenzaLike = ? WHERE idFattura = ?";

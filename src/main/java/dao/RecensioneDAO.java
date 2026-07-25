@@ -19,6 +19,7 @@ public interface RecensioneDAO {
     int getMediaVotiEdizioneGioco(int idEdizioneGioco) throws SQLException;
     void aggiornaDifferenzaLike(int idFattura, int differenza) throws SQLException;
 
+    int getNumeroRecensioni(int idUtente) throws SQLException;
     ArrayList<Recensione> getRecensioniPerGioco(int idGioco) throws SQLException, CampoNonValidoException;
 
 }
