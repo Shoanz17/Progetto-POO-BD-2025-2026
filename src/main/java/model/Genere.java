@@ -57,36 +57,6 @@ public class Genere {
         this.nome = nome;
     }
 
-    /**
-     * Associa un gioco a questo genere.
-     *
-     * @param gioco L'oggetto {@link Gioco} da aggiungere.
-     * @throws CampoNonValidoException Se il gioco è nullo o se risulta già associato a questo genere.
-     */
-    public void addGioco(Gioco gioco) throws CampoNonValidoException
-    {
-        if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
-
-        if (listaGiochi.contains(gioco))
-            throw new CampoNonValidoException("il gioco già appartiene a questo genere");
-        this.listaGiochi.add(gioco);
-    }
-
-    /**
-     * Rimuove l'associazione di un gioco da questo genere.
-     *
-     * @param gioco L'oggetto {@link Gioco} da rimuovere.
-     * @throws CampoNonValidoException Se il gioco è nullo o se non è presente all'interno del genere.
-     */
-    public void removeGioco(Gioco gioco) throws CampoNonValidoException
-    {
-        if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
-
-        if (!listaGiochi.contains(gioco))
-            throw new CampoNonValidoException("il gioco non appartiene a questo genere");
-        this.listaGiochi.remove(gioco);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

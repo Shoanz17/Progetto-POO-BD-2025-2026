@@ -1317,7 +1317,7 @@ public class Controller {
             utenteLoggato.getCarrello().svuotaCarrello();
 
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita: impossibile completare l'acquisto.");
+            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
