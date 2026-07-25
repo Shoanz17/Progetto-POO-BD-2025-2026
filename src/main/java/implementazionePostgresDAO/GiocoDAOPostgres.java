@@ -21,12 +21,16 @@ public class GiocoDAOPostgres implements GiocoDAO {
     }
 
     @Override
-    public ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws SQLException {
+    public ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws SQLException, CampoNonValidoException {
         ArrayList<Gioco> giochiFiltrati = new ArrayList<>();
 
-        String query = "SELECT idGioco, titolo, categoria, pegi, idSviluppatore " +
-                "FROM gioco " +
-                "WHERE titolo ILIKE ?";
+        String query = "SELECT g.idGioco, g.titolo, g.categoria, g.pegi, " +
+                "s.idSviluppatore, s.strike, s.descrizione, s.fondi, " +
+                "a.nome, a.password, a.dataCreazione " +
+                "FROM gioco g " +
+                "JOIN sviluppatore s ON g.idSviluppatore = s.idSviluppatore " +
+                "JOIN account a ON s.idSviluppatore = a.idAccount " +
+                "WHERE g.titolo ILIKE ?";
 
         Connection conn = ConnessioneDatabase.getInstance().connection;
 
@@ -37,20 +41,23 @@ public class GiocoDAOPostgres implements GiocoDAO {
             try (ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    try {
+                    int idSviluppatore = rs.getInt("idSviluppatore");
+                    String nome = rs.getString("nome");
+                    String password = rs.getString("password");
+                    LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                    int strike = rs.getInt("strike");
+                    String descrizione = rs.getString("descrizione");
+                    int fondi = rs.getInt("fondi");
 
-                        int idSviluppatore = rs.getInt("idSviluppatore");
-                        Sviluppatore sviluppatore = new Sviluppatore("Sconosciuto", idSviluppatore, "dummyPassword", LocalDate.now(), 0, "N/A", 0);
-                        int idGioco = rs.getInt("idGioco");
-                        String titolo = rs.getString("titolo");
-                        Categoria categoria = Categoria.valueOf(rs.getString("categoria"));
-                        int pegi = rs.getInt("pegi");
-                        Gioco gioco = new Gioco(sviluppatore, idGioco, titolo, categoria, pegi);
-                        giochiFiltrati.add(gioco);
+                    Sviluppatore sviluppatore = new Sviluppatore(nome, idSviluppatore, password, dataCreazione, strike, descrizione, fondi);
 
-                    } catch (CampoNonValidoException ex) {
-                        System.err.println("Errore caricamento gioco filtrato (ID " + rs.getInt("idGioco") + "): " + ex.getMessage());
-                    }
+                    int idGioco = rs.getInt("idGioco");
+                    String titolo = rs.getString("titolo");
+                    Categoria categoria = Categoria.valueOf(rs.getString("categoria"));
+                    int pegi = rs.getInt("pegi");
+
+                    Gioco gioco = new Gioco(sviluppatore, idGioco, titolo, categoria, pegi);
+                    giochiFiltrati.add(gioco);
                 }
             }
         }

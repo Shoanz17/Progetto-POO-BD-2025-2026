@@ -91,11 +91,8 @@ public class HomeAdmin {
     private Admin admin;
 
     //DA FARE: fai in modo che quando crei un genere con un nome che già esiste esca questo e non "operazione fallita"
-    //GIOCHI: aggiustare aggiungi strike
-    //aggiustare grandezza lista e il fatto che se le label sono troppo lunghe cambia la lunghezza di tutto
-    //aggiustare assolutamente la lista generi che non si svuota ma solo aggiunge spunte e quindi se clicco conferma (alla quale manca un messaggio di conferma) li aggiunge tutti (quindi funziona)
     //PIATTAFORME: cambia true e false con si e no
-    //non funziona manco la ricerca
+    //RECENSIONI: non funziona la ricerca
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
@@ -536,16 +533,21 @@ public class HomeAdmin {
                 Sviluppatore sviluppatoreSelezionato = (Sviluppatore) listaSviluppatori.getSelectedValue();
 
                 if(sviluppatoreSelezionato != null){
-                    try {
 
-                        controller.addStrikeSviluppatore(sviluppatoreSelezionato);
-                        aggiornaStrike(sviluppatoreSelezionato);
-                        filtraSviluppatori();
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Vuoi aggiungere uno strike?", "Conferma", JOptionPane.YES_NO_OPTION);
 
-                    } catch (CampoNonValidoException ex) {
+                    if(risposta == JOptionPane.YES_OPTION){
+                        try {
 
-                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                            controller.addStrikeSviluppatore(sviluppatoreSelezionato);
+                            aggiornaStrike(sviluppatoreSelezionato);
+                            filtraSviluppatori();
 
+                        } catch (CampoNonValidoException ex) {
+
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                        }
                     }
                 } else
                     JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
@@ -662,8 +664,7 @@ public class HomeAdmin {
                 if (componente instanceof JCheckBox) {
                     JCheckBox casella = (JCheckBox) componente;
 
-                    if (nomiGeneriGioco.contains(casella.getText()))
-                        casella.setSelected(true);
+                    casella.setSelected(nomiGeneriGioco.contains(casella.getText()));
                 }
             }
         } catch (CampoNonValidoException e) {
@@ -705,14 +706,19 @@ public class HomeAdmin {
                 Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
 
                 if(giocoSelezionato != null){
-                    try {
 
-                        controller.addStrikeSviluppatoreDaGioco(giocoSelezionato);
+                    int risposta = JOptionPane.showConfirmDialog(adminFrame, "Vuoi aggiungere uno strike?", "Conferma", JOptionPane.YES_NO_OPTION);
 
-                    } catch (CampoNonValidoException ex) {
+                    if(risposta == JOptionPane.YES_OPTION){
+                        try {
 
-                        JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                            controller.addStrikeSviluppatoreDaGioco(giocoSelezionato);
 
+                        } catch (CampoNonValidoException ex) {
+
+                            JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+
+                        }
                     }
                 } else
                     JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
