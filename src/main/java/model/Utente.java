@@ -119,7 +119,7 @@ public class Utente extends Account {
     public void addAmico(Utente nuovoAmico) throws CampoNonValidoException {
         //check di validità
         if(nuovoAmico == null) throw new CampoNonValidoException("Mi dispiace ma gli amici immaginari non valgono");
-        if(this.equals(nuovoAmico)) throw new CampoNonValidoException("Non puoi far amicizia con te stesso (che cosa triste...)");
+        if (this.getId() == nuovoAmico.getId()) throw new CampoNonValidoException("Non puoi far amicizia con te stesso (che cosa triste...)");
         if(this.listaAmici.contains(nuovoAmico)) throw new CampoNonValidoException("Sei già amico con questo utente");
 
         this.listaAmici.add(nuovoAmico);

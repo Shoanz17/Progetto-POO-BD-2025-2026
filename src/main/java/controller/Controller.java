@@ -511,11 +511,12 @@ public class Controller {
      * @throws CampoNonValidoException Se l'inserimento nel Database fallisce.
      */
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
+        utenteLoggato.addAmico(utenteSelezionato);
         try {
             utenteDAO.inserisciAmico(utenteLoggato.getId(), utenteSelezionato.getId());
-            utenteLoggato.addAmico(utenteSelezionato);
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
+            utenteLoggato.removeAmico(utenteSelezionato);
+            throw new CampoNonValidoException("Operazione Fallita sul DB");
         }
     }
 
@@ -527,10 +528,11 @@ public class Controller {
      * @throws CampoNonValidoException Se l'eliminazione nel Database fallisce.
      */
     public void rimuoviAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
+        utenteLoggato.removeAmico(utenteSelezionato);
         try {
             utenteDAO.eliminaAmico(utenteLoggato.getId(), utenteSelezionato.getId());
-            utenteLoggato.removeAmico(utenteSelezionato);
         } catch (SQLException e) {
+            utenteLoggato.addAmico(utenteSelezionato);
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
@@ -1089,7 +1091,7 @@ public class Controller {
 
         ArrayList<Utente> listaFinale = new ArrayList<>();
         for (Utente u : listaFiltrata) {
-            if (u != utenteLoggato && u.getNome().toLowerCase().contains(testoRicerca)) {
+            if (u.getId() != utenteLoggato.getId() && u.getNome().toLowerCase().contains(testoRicerca)) {
                 listaFinale.add(u);
             }
         }
@@ -1329,7 +1331,7 @@ public class Controller {
     public void effettuaRimborso(Fattura fattura, Utente utente) throws CampoNonValidoException {
         try {
 
-            fatturaDAO.effettuaRimborso(fattura.getId(), utente.getId(), fattura.getPrezzoAcquisto());
+            fatturaDAO.effettuaRimborso(fattura.getId(), utente.getId(), fattura.getPrezzoAcquisto(), fattura.getGioco().getGioco().getSviluppatore().getId());
 
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");

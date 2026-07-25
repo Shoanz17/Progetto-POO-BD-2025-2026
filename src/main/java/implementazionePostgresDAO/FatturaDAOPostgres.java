@@ -166,10 +166,12 @@ public class FatturaDAOPostgres implements FatturaDAO {
         ConnessioneDatabase.getInstance().eseguiUpdate(query, fattura.getUtente().getId(), fattura.getGioco().getId(), fattura.getPrezzoAcquisto(), fattura.getKey(), java.sql.Date.valueOf(fattura.getDataAcquisto()));
     }
 
-    @Override
-    public void effettuaRimborso(int idFattura, int idUtente, int importo) throws SQLException {
-        String querySaldo = "UPDATE UTENTE SET saldo = saldo + ? WHERE idUtente = ?";
-        ConnessioneDatabase.getInstance().eseguiUpdate(querySaldo, importo, idUtente);
+    public void effettuaRimborso(int idFattura, int idUtente, int idSviluppatore, int importo) throws SQLException {
+        String querySaldoUtente = "UPDATE UTENTE SET saldo = saldo + ? WHERE idUtente = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(querySaldoUtente, importo, idUtente);
+
+        String querySaldoDev = "UPDATE SVILUPPATORE SET saldo = saldo - ? WHERE idSviluppatore = ?";
+        ConnessioneDatabase.getInstance().eseguiUpdate(querySaldoDev, importo, idSviluppatore);
 
         String queryEliminaFattura = "DELETE FROM FATTURA WHERE idFattura = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(queryEliminaFattura, idFattura);
