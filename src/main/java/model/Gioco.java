@@ -108,7 +108,6 @@ public class Gioco {
         generi.add(genere);
     }
 
-
     /**
      * Associa una nuova copia vendibile (edizione) al gioco base.
      *
@@ -125,11 +124,6 @@ public class Gioco {
         edizioni.add(edizione);
     }
 
-    public void setListaGeneri(ArrayList<Genere> generi) throws CampoNonValidoException {
-        if(generi == null || generi.isEmpty()) throw new CampoNonValidoException("Non esiste gioco senza generi");
-
-        this.generi = generi;
-    }
     //metodi per admin
     public void removeEdizione(EdizioneGioco edizione) throws CampoNonValidoException {
         if (edizione == null) {
@@ -162,39 +156,17 @@ public class Gioco {
     }
 
     //Lista di get
-    public String getTitolo() {
-        return titolo;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public int getPegi() {
-        return pegi;
-    }
-
-    public Sviluppatore getSviluppatore() {
-        return sviluppatore;
-    }
-
-    public ArrayList<Genere> getGeneri() {
-        return generi;
-    }
-
-    public ArrayList<EdizioneGioco> getEdizioni() {
-        return edizioni;
-    }
-
-    public ArrayList<GiocoInPromozione> getPromozioni() {
-        return promozioni;
-    }
-
-    public int getId() {
-        return id;
-    }
+    public String getTitolo() {return titolo;}
+    public Categoria getCategoria() {return categoria;}
+    public int getPegi() {return pegi;}
+    public Sviluppatore getSviluppatore() {return sviluppatore;}
+    public ArrayList<Genere> getGeneri() {return new ArrayList<>(generi);}
+    public ArrayList<EdizioneGioco> getEdizioni() {return new ArrayList<>(edizioni);}
+    public ArrayList<GiocoInPromozione> getPromozioni() {return new ArrayList<>(promozioni);}
+    public int getId() {return id;}
 
     //Lista di set
+
     /**
      * Imposta il titolo del gioco verificandone la lunghezza.
      *
@@ -243,7 +215,6 @@ public class Gioco {
 
     @Override
     public String toString() {
-        return this.titolo;
+        return titolo;
     }
-
 }
