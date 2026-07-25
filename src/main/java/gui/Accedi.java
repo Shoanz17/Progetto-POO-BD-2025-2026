@@ -60,8 +60,9 @@ public class Accedi {
                         JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
 
                         //apri form utente
+                        accediFrame.setVisible(false);
                         HomeUtente homeUtente = new HomeUtente(controller, accediFrame, (Utente) accountLoggato);
-                        accediFrame.setVisible(false); //potrei fare dispose per risparmiare quei preziosissimi kb di ram e far chiamare il costruttore di questa form al tasto logout
+                         //potrei fare dispose per risparmiare quei preziosissimi kb di ram e far chiamare il costruttore di questa form al tasto logout
                         //cancello i dati per evitare che quando faccio logout siano ancora scritti
                         nomeTextBox.setText("");
                         passwordTextBox.setText("");
@@ -69,8 +70,8 @@ public class Accedi {
                     else if(accountLoggato instanceof Sviluppatore){
                         JOptionPane.showMessageDialog(accediFrame, "Accesso eseguito, benvenuto " + controller.getNomeAccount(accountLoggato), "Benvenuto!", JOptionPane.INFORMATION_MESSAGE);
                         //apri form sviluppatore
-                        HomeSviluppatore homeSviluppatore = new HomeSviluppatore(controller, accediFrame, (Sviluppatore) accountLoggato);
                         accediFrame.setVisible(false);
+                        HomeSviluppatore homeSviluppatore = new HomeSviluppatore(controller, accediFrame, (Sviluppatore) accountLoggato);
                         nomeTextBox.setText("");
                         passwordTextBox.setText("");
                     }

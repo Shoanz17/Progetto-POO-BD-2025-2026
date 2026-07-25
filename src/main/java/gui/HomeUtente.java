@@ -125,6 +125,14 @@ public class HomeUtente {
 
         //metodi base per il funzionamento
         configuraInterfaccia();
+
+        if (controller.isUtenteBannato(utenteLoggato)){
+            JOptionPane.showMessageDialog(homeUtenteFrame,"Sei bannato, impossibile eseguire l'accesso");
+            homeUtenteFrame.dispose();
+            accediGUI.setVisible(true);
+            return;
+        }
+
         associaListenerLogout(accediGUI);
         associaListenerTabbedPane();
 
