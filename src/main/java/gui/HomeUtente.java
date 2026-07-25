@@ -1099,7 +1099,7 @@ public class HomeUtente {
         listaLibreria.setModel(modelloFiltrato);
     }
 
-    private void configuraInterfacciaProfilo() {
+    void configuraInterfacciaProfilo() {
         configuraTestoInformazioniPersonali();
         configuraTestoSaldo();
 

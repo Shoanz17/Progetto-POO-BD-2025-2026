@@ -192,24 +192,46 @@ public class Controller {
         }
     }
 
-    public void salvaModificheProfilo(Utente utenteLoggato) throws CampoNonValidoException {
-        try {
-            utenteDAO.aggiornaProfiloUtente(utenteLoggato);
-        } catch (SQLException e) {
-            annullaModifiche(utenteLoggato);
-            throw new CampoNonValidoException("Operazione fallita: controlla che l'email non sia già in uso o che i dati siano corretti.");
-        }
-    }
+    public void salvaModificheProfilo(Utente utenteLoggato, String nuovoNome, String nuovaPassword, String nuovaEmail, GenereEnum nuovoGenere, String nuovaData) throws CampoNonValidoException {
 
-    public void annullaModifiche(Utente utenteLoggato) {
+        String nomeFinale = utenteLoggato.getNome();
+        if (!nuovoNome.isEmpty()) {
+            nomeFinale = nuovoNome;
+        }
+
+        String passFinale = utenteLoggato.getPassword();
+        if (!nuovaPassword.isEmpty()) {
+            passFinale = nuovaPassword;
+        }
+
+        String emailFinale = utenteLoggato.getEmail();
+        if (!nuovaEmail.isEmpty()) {
+            emailFinale = nuovaEmail;
+        }
+
+        GenereEnum genereFinale = utenteLoggato.getGenere();
+        if (nuovoGenere != null) {
+            genereFinale = nuovoGenere;
+        }
+
+        LocalDate dataFinale = utenteLoggato.getDataNascita();
+        if (!nuovaData.isEmpty()) {
+            dataFinale = convertiDataRigida(nuovaData);
+        }
+
+        Utente clonePerDB = new Utente(utenteLoggato.getId(), nomeFinale, passFinale, utenteLoggato.getDataCreazione(), genereFinale, emailFinale, dataFinale, utenteLoggato.getSaldo(), utenteLoggato.isBannato());
+
         try {
-            Utente utenteOriginale = utenteDAO.getUtenteById(utenteLoggato.getId());
-            utenteLoggato.setNome(utenteOriginale.getNome());
-            utenteLoggato.setEmail(utenteOriginale.getEmail());
-            utenteLoggato.setPassword(utenteOriginale.getPassword());
-            utenteLoggato.setDataNascita(utenteOriginale.getDataNascita());
-            utenteLoggato.setGenere(utenteOriginale.getGenere());
-        } catch (SQLException | CampoNonValidoException e) {
+            utenteDAO.aggiornaProfiloUtente(clonePerDB);
+
+            utenteLoggato.setNome(nomeFinale);
+            utenteLoggato.setPassword(passFinale);
+            utenteLoggato.setEmail(emailFinale);
+            utenteLoggato.setGenere(genereFinale);
+            utenteLoggato.setDataNascita(dataFinale);
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
@@ -234,6 +256,16 @@ public class Controller {
     }
     public int getSaldoUtente(Utente u) {
         return u.getSaldo();
+    }
+
+    public ArrayList<GenereEnum> getListaGeneriEnum (){
+        ArrayList<GenereEnum> listaGeneriEnum = new ArrayList<>();
+
+        for (GenereEnum genere : GenereEnum.values()) {
+            listaGeneriEnum.add(genere);
+        }
+
+        return listaGeneriEnum;
     }
 
     public ArrayList<Fattura> getLibreriaUtente(int idUtente) throws CampoNonValidoException {

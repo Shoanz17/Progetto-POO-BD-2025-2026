@@ -39,38 +39,26 @@ public class ModificaInformazioni {
         associaListenerModificaInformazioni();
 
         mostraForm(homeUtente.homeUtenteFrame);
-
     }
 
     private void associaListenerModificaInformazioni() {
-        //Pulsante Modifica informazioni
         pulsanteModificaInformazioni.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String password = new String(passwordFieldPassword.getPassword());
-                    if (!textFieldNome.getText().trim().isEmpty()) {
-                        controller.setNomeUtente(textFieldNome.getText(), utenteLoggato);
-                    }
-                    if (!password.trim().isEmpty()) {
-                        controller.setPasswordUtente(password, utenteLoggato);
-                    }
-                    if (!textFieldEmail.getText().trim().isEmpty()) {
-                        controller.setEmailUtente(textFieldEmail.getText(), utenteLoggato);
-                    }
-                    if (comboBoxGenere.getSelectedItem() != null) {
-                        controller.setGenereUtente((GenereEnum) comboBoxGenere.getSelectedItem(), utenteLoggato);
-                    }
-                    if (!textFieldDataDiNascita.getText().trim().isEmpty()) {
-                        controller.setDataDiNascitaUtente(textFieldDataDiNascita.getText(), utenteLoggato);
-                    }
+                    String nome = textFieldNome.getText().trim();
+                    String password = new String(passwordFieldPassword.getPassword()).trim();
+                    String email = textFieldEmail.getText().trim();
+                    GenereEnum genere = (GenereEnum) comboBoxGenere.getSelectedItem();
+                    String dataNascita = textFieldDataDiNascita.getText().trim();
 
-                    controller.salvaModificheProfilo(utenteLoggato);
+                    controller.salvaModificheProfilo(utenteLoggato, nome, password, email, genere, dataNascita);
 
-                    homeUtente.configuraTestoInformazioniPersonali();
+                    homeUtente.configuraInterfacciaProfilo();
                     modificaInformazioniFrame.dispose();
+                    JOptionPane.showMessageDialog(modificaInformazioniFrame, "Profilo aggiornato con successo!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+
                 } catch (CampoNonValidoException ex) {
-                    controller.annullaModifiche(utenteLoggato);
                     JOptionPane.showMessageDialog(modificaInformazioniFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -87,9 +75,7 @@ public class ModificaInformazioni {
 
     private void configuraComboBoxGenere() {
         DefaultComboBoxModel<GenereEnum> modelGenere = new DefaultComboBoxModel<>();
-        for (GenereEnum genere : GenereEnum.values()) {
-            modelGenere.addElement(genere);
-        }
+        modelGenere.addAll(controller.getListaGeneriEnum());
         comboBoxGenere.setModel(modelGenere);
         comboBoxGenere.setSelectedIndex(-1);
     }
