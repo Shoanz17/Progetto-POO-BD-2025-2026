@@ -756,6 +756,18 @@ public class Controller {
         return listaFiltrata;
     }
 
+    //CV
+
+    /**
+     * Recupera una lista di utenti filtrata in base a una chiave di ricerca testuale.
+     * Permette di limitare la ricerca ai soli amici dell'utente loggato, escludendo sempre se stessi dai risultati.
+     *
+     * @param checkBoxAmici Se true, la ricerca avviene solo tra gli amici; se false, si estende a tutti gli iscritti.
+     * @param testoRicerca La stringa da cercare nel nome utente.
+     * @param utenteLoggato L'{@link Utente} che sta effettuando la ricerca.
+     * @return Una lista di {@link Utente} corrispondente ai criteri.
+     * @throws CampoNonValidoException Se l'interrogazione al database fallisce.
+     */
     public ArrayList<Utente> getUtentiFiltrati(boolean checkBoxAmici, String testoRicerca, Utente utenteLoggato) throws CampoNonValidoException {
         ArrayList<Utente> listaFiltrata;
 
@@ -783,6 +795,16 @@ public class Controller {
         return listaFinale;
     }
 
+    /**
+     * Recupera una lista di sviluppatori filtrata in base a una chiave testuale.
+     * Offre la possibilità di cercare solo tra le software house attualmente seguite dall'utente.
+     *
+     * @param checkBoxSviluppatore Se true, filtra solo tra i seguiti; se false, cerca tra tutti gli sviluppatori.
+     * @param testoRicerca La stringa da cercare nel nome dello sviluppatore.
+     * @param utenteLoggato L'{@link Utente} che sta effettuando la ricerca.
+     * @return La lista degli {@link Sviluppatore} trovati.
+     * @throws CampoNonValidoException Se la query fallisce.
+     */
     public ArrayList<Sviluppatore> getSviluppatoriFiltrati(boolean checkBoxSviluppatore, String testoRicerca, Utente utenteLoggato) throws CampoNonValidoException {
         ArrayList<Sviluppatore> listaFiltrata;
 
@@ -809,6 +831,14 @@ public class Controller {
         return listaFinale;
     }
 
+    /**
+     * Inserisce una copia del gioco all'interno del {@link Carrello} dell'utente.
+     * Esegue i controlli anti-doppione: blocca l'inserimento se l'utente possiede già il gioco o se l'ha già messo nel carrello.
+     *
+     * @param utenteLoggato L'{@link Utente} acquirente.
+     * @param edizioneGiocoSelezionata L'{@link EdizioneGioco} da acquistare.
+     * @throws CampoNonValidoException Se i controlli di possesso falliscono o se il database rifiuta l'inserimento.
+     */
     public void aggiungiAlCarrello(Utente utenteLoggato, EdizioneGioco edizioneGiocoSelezionata) throws CampoNonValidoException {
         if (edizioneGiocoSelezionata == null) {
             throw new CampoNonValidoException("Selezionare prima un gioco dal catalogo!");
@@ -852,6 +882,14 @@ public class Controller {
     public int getVotoRecensione(Recensione recensione){return recensione.getVoto();}
     public int getDifferenzaLikeRecensione(Recensione recensione){return recensione.getDifferenzaLike();}
 
+    /**
+     * Aggiunge un voto positivo a una specifica recensione.
+     * Aggiorna prima la RAM e tenta il salvataggio sul DB; in caso di errore esegue un rollback manuale.
+     *
+     * @param recensione La {@link Recensione} da valutare.
+     * @param utenteLoggato L'{@link Utente} che sta votando.
+     * @throws CampoNonValidoException Se l'aggiornamento sul database fallisce.
+     */
     public void mettiLikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
         recensione.addLike();
 
@@ -863,6 +901,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Aggiunge un voto negativo a una specifica recensione, con rollback automatico in caso di errore SQL.
+     *
+     * @param recensione La {@link Recensione} da valutare.
+     * @param utenteLoggato L'{@link Utente} che sta votando.
+     * @throws CampoNonValidoException Se l'aggiornamento sul database fallisce.
+     */
     public void mettiDislikeRecensione(Recensione recensione, Utente utenteLoggato) throws CampoNonValidoException {
         recensione.addDislike();
         try {
@@ -900,6 +945,13 @@ public class Controller {
         return 0;
     }
 
+    /**
+     * Rimuove una copia del gioco dal carrello, eliminandola sia dalla memoria locale che dalla tabella del database.
+     *
+     * @param utenteLoggato L'utente proprietario del carrello.
+     * @param edizioneGioco L'edizione da scartare.
+     * @throws CampoNonValidoException Se l'operazione di DELETE fallisce sul DB.
+     */
     public void rimuoviDalCarrello(Utente utenteLoggato, EdizioneGioco edizioneGioco) throws CampoNonValidoException {
         try {
             utenteDAO.eliminaCarrello(utenteLoggato.getId(), edizioneGioco.getId());
@@ -917,6 +969,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Finalizza il checkout per tutti i giochi presenti nel carrello.
+     * Verifica la disponibilità dei fondi, scala il saldo,
+     * genera e salva le singole ricevute ({@link Fattura}) e infine svuota il carrello.
+     *
+     * @param utenteLoggato L'{@link Utente} che effettua il pagamento.
+     * @throws CampoNonValidoException Se il carrello è vuoto, il saldo è insufficiente o la transazione sul DB fallisce.
+     */
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
 
         if (utenteLoggato.getCarrello() == null || utenteLoggato.getCarrello().getListaGiochi().isEmpty()) {
@@ -947,6 +1007,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Avvia la procedura di rimborso delegando al DAO l'eliminazione della fattura e il riaccredito dei fondi.
+     *
+     * @param fattura La ricevuta d'acquisto da annullare.
+     * @param utente L'utente che riceverà il rimborso.
+     * @throws CampoNonValidoException Se l'operazione sul database fallisce.
+     */
     public void effettuaRimborso(Fattura fattura, Utente utente) throws CampoNonValidoException {
         try {
 
@@ -968,8 +1035,16 @@ public class Controller {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
-// metodi per la homeSviluppatore CV
 
+    // metodi per la homeSviluppatore CV
+
+    /**
+     * Formatta l'elenco dei generi di un videogioco unendoli in un'unica stringa separata da virgole (es. "Azione, Avventura").
+     * Ideale per la visualizzazione compatta all'interno delle tabelle GUI.
+     *
+     * @param gioco Il {@link Gioco} di riferimento.
+     * @return La stringa concatenata dei generi.
+     */
     public String getGenereDaGioco(Gioco gioco){
         String generiUniti = "";
 
@@ -989,6 +1064,12 @@ public class Controller {
         return generiUniti;
     }
 
+    /**
+     * Restituisce una stringa riassuntiva contenente i nomi di tutte le console su cui il gioco è disponibile (es. "PC, Xbox").
+     *
+     * @param gioco Il videogioco in esame.
+     * @return I nomi delle piattaforme concatenati da virgole.
+     */
     public String getStringPiattaformeDaGioco(Gioco gioco) {
         String piattaformeUnite = "";
 
@@ -1008,7 +1089,13 @@ public class Controller {
         return piattaformeUnite;
     }
 
-
+    /**
+     * Recupera il prezzo di lancio associato alla prima edizione fisica o digitale del videogioco.
+     *
+     * @param gioco Il gioco di riferimento.
+     * @return Il prezzo come stringa, oppure una stringa vuota in caso di assenza di edizioni.
+     * @throws CampoNonValidoException Se l'interrogazione fallisce.
+     */
     public String getPrezzoPrimaEdizioneDaGioco(Gioco gioco) throws CampoNonValidoException{
         try {
             ArrayList<EdizioneGioco> edizioni = getEdizioniDaGioco(gioco);
@@ -1066,8 +1153,17 @@ public class Controller {
         }
     }
 
+    /**
+     * Sovrascrive i dati anagrafici (inclusa la password se fornita) dello sviluppatore.
+     *
+     * @param sviluppatore Lo {@link Sviluppatore} che effettua la modifica.
+     * @param nuovoNome Il nuovo nome della software house.
+     * @param nuovaDescrizione La nuova presentazione per la vetrina.
+     * @param nuovaPassword La nuova password (se vuota, non viene modificata).
+     * @throws CampoNonValidoException Se l'aggiornamento sul database fallisce.
+     */
     public void aggiornaProfiloSviluppatore
-            (Sviluppatore sviluppatore, String nuovoNome, String nuovaDescrizione, String nuovaPassword) throws
+    (Sviluppatore sviluppatore, String nuovoNome, String nuovaDescrizione, String nuovaPassword) throws
             CampoNonValidoException {
         sviluppatore.setNome(nuovoNome);
         sviluppatore.setDescrizione(nuovaDescrizione);
@@ -1085,6 +1181,20 @@ public class Controller {
 
     }
 
+    /**
+     * Applica modifiche globali a un videogioco già esistente. Oltre ad aggiornare le informazioni base (Titolo, PEGI),
+     * riallinea le dipendenze per i Generi e genera automaticamente nuove {@link EdizioneGioco} se vengono fornite piattaforme non ancora pubblicate.
+     *
+     * @param gioco L'istanza base da aggiornare.
+     * @param titolo Il nuovo titolo.
+     * @param pegi Il nuovo limite di età.
+     * @param categoria La nuova scala produttiva.
+     * @param generi L'intera lista di generi (che sovrascriverà quella vecchia).
+     * @param piattaforme La lista delle console in cui il gioco deve figurare.
+     * @param prezzo Il prezzo base da assegnare alle eventuali nuove edizioni.
+     * @param dataRilascio La data in cui usciranno i nuovi porting.
+     * @throws CampoNonValidoException Se una qualsiasi operazione SQL del processo fallisce.
+     */
     public void modificaGiocoEsistente(Gioco gioco, String titolo, int pegi, Categoria categoria,
                                        ArrayList<Genere> generi, ArrayList<PiattaformaDiGioco> piattaforme,
                                        double prezzo, LocalDate dataRilascio) throws CampoNonValidoException {
@@ -1117,6 +1227,21 @@ public class Controller {
         updateGeneriGioco(gioco, generi);
     }
 
+    /**
+     * Pubblica un videogioco ex novo sulla piattaforma. Esegue in blocco la registrazione dell'entità genitore,
+     * il collegamento con la tabella generi e l'istanziazione di tutte le edizioni (sulle varie console selezionate).
+     *
+     * @param titolo Il nome del gioco.
+     * @param pegi La classificazione dell'età.
+     * @param categoria La categoria (es. Tripla A).
+     * @param generi Le etichette identificative del gioco.
+     * @param piattaforme Le console per il quale uscirà al D1.
+     * @param prezzo Il prezzo di listino.
+     * @param dataRilascio La data di commercializzazione.
+     * @param autore Lo {@link Sviluppatore} che finanzia la pubblicazione.
+     * @return L'istanza completa del {@link Gioco} appena caricato a sistema.
+     * @throws CampoNonValidoException Se l'elaborazione di uno di questi record fallisce lato database.
+     */
     public Gioco creaNuovoGioco(String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
                                 ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio, Sviluppatore autore) throws CampoNonValidoException {
 
@@ -1148,9 +1273,6 @@ public class Controller {
         }
     }
 
-
-
-
     public ArrayList<Promozione> getListaPromozioni() throws CampoNonValidoException {
         try {
             return promozioneDAO.getTuttePromozioni();
@@ -1159,6 +1281,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Iscrive formalmente un gioco a un evento promozionale definendo il margine di sconto.
+     *
+     * @param gioco Il videogioco in esame.
+     * @param promozione La sessione di sconti scelta.
+     * @param percentualeSconto Il valore dello sconto, che deve rientrare tra 1 e 100.
+     * @throws CampoNonValidoException Se le soglie di sconto non sono rispettate o se il DAO fallisce l'inserimento.
+     */
     public void partecipaAPromozione(Gioco gioco, Promozione promozione, int percentualeSconto) throws
             CampoNonValidoException {
 
@@ -1174,6 +1304,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Restituisce una vista testuale comprensiva di tutte le promozioni a cui il gioco partecipa.
+     *
+     * @param giocoScelto Il videogioco di riferimento.
+     * @return Una stringa formattata (es. "Saldi Invernali (-30%), Saldi Estivi (-50%)").
+     * @throws CampoNonValidoException Se l'interrogazione al database fallisce.
+     */
     public String getStringaPromozioniPerGioco(Gioco giocoScelto) throws CampoNonValidoException {
         String risultato = "";
 
@@ -1212,6 +1349,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Applica forzatamente la sospensione (ban) sull'account di un utente, con fallback in caso di anomalia SQL.
+     *
+     * @param utente L'{@link Utente} da bannare.
+     * @throws CampoNonValidoException Se il ban non viene accettato dal DB.
+     */
     public void setBannatoUtente(Utente utente) throws CampoNonValidoException {
         boolean flag = utente.isBannato();
         utente.setBannato(true);
@@ -1251,6 +1394,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Formatta l'intero catalogo di recensioni associate a un videogioco in una lunga stringa
+     * pronta per essere impaginata dentro un'area di testo nella View dello sviluppatore.
+     *
+     * @param giocoScelto Il videogioco recensito.
+     * @return Il blocco di testo contenente tutti i giudizi e i voti della community.
+     * @throws CampoNonValidoException Se la raccolta dati dal DB fallisce.
+     */
     public String getStringaRecensioniPerGioco(Gioco giocoScelto) throws CampoNonValidoException {
 
         String risultato = "";
@@ -1287,15 +1438,6 @@ public class Controller {
     }
 
 
-    public ArrayList<Sviluppatore> getListaSviluppatoriLog() throws CampoNonValidoException {
-        try {
-            return sviluppatoreDAO.getListaSviluppatori();
-
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Errore di connessione: impossibile caricare la lista degli sviluppatori dal server.");
-        }
-    }
-
     public PiattaformaDiGioco getPiattaformaDaNome(String nomePiattaforma)throws CampoNonValidoException {
         try {
             ArrayList<PiattaformaDiGioco> tutteLePiattaforme = getPiattaformeDiGioco();
@@ -1328,6 +1470,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Effettua una ricerca testuale rapida (solo in memoria RAM) tra i giochi pubblicati da un determinato sviluppatore.
+     *
+     * @param sviluppatore La casa produttrice di cui filtrare il catalogo.
+     * @param testoCercato Il titolo del gioco da cercare.
+     * @return L'elenco dei {@link Gioco} corrispondenti.
+     * @throws CampoNonValidoException Se l'interrogazione propedeutica della libreria giochi fallisce.
+     */
     public ArrayList<Gioco> cercaGiochiSviluppatore(Sviluppatore sviluppatore, String testoCercato) throws CampoNonValidoException {
         ArrayList<Gioco> tuttiIGiochi = getListaGiochiSviluppatore(sviluppatore);
         ArrayList<Gioco> risultati = new ArrayList<>();
