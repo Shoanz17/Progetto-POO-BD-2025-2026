@@ -380,23 +380,19 @@ public class Controller {
 
 
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
-        utenteLoggato.addAmico(utenteSelezionato);
-
         try {
             utenteDAO.inserisciAmico(utenteLoggato.getId(), utenteSelezionato.getId());
+            utenteLoggato.addAmico(utenteSelezionato);
         } catch (SQLException e) {
-            utenteLoggato.removeAmico(utenteSelezionato);
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
     public void rimuoviAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
-        utenteLoggato.removeAmico(utenteSelezionato);
-
         try {
             utenteDAO.eliminaAmico(utenteLoggato.getId(), utenteSelezionato.getId());
+            utenteLoggato.removeAmico(utenteSelezionato);
         } catch (SQLException e) {
-            utenteLoggato.addAmico(utenteSelezionato);
             throw new CampoNonValidoException("Operazione Fallita");
         }
 
