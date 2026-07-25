@@ -454,7 +454,34 @@ public class Controller {
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getSviluppatore().getNome();}
 
     public Gioco getGiocoDaEdizione(EdizioneGioco edizioneGioco) { return edizioneGioco.getGioco(); }
-    public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPrezzo();}
+
+    /**
+     * Recupera il prezzo di una specifica edizione di gioco, applicando automaticamente
+     * lo sconto percentuale se il gioco è attualmente in promozione.
+     *
+     * @param edizioneGioco L'oggetto {@link EdizioneGioco}.
+     * @return Il prezzo finale in formato intero (scontato o di listino).
+     */
+    public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
+        int prezzoBase = edizioneGioco.getPrezzo();
+
+        try {
+            ArrayList<GiocoInPromozione> promozioniDelGioco = giocoInPromozioneDAO.getPromozioniPerGioco(edizioneGioco.getGioco());
+
+            for (GiocoInPromozione p : promozioniDelGioco) {
+                if (!p.getPromozione().getDataFine().isBefore(LocalDate.now())) {
+
+                    int percentualeSconto = p.getPercentuale();
+                    return prezzoBase - (prezzoBase * percentualeSconto / 100);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Operazione Fallita");
+        }
+
+        return prezzoBase;
+    }
+
     public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPiattaforma();}
     public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getGeneri();}
     public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getPegi();}
@@ -465,7 +492,13 @@ public class Controller {
      * @return La media dei voti in formato intero.
      * @throws SQLException Se si verifica un errore durante il calcolo nel Database.
      */
-    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());}
+    public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
+        try {
+            return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita");
+        }
+    }
 
     public Categoria getCategoriaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getCategoria();}
     public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getDataRilascio();}
@@ -836,15 +869,21 @@ public class Controller {
      * @param edizioneGioco L'oggetto {@link EdizioneGioco} da controllare.
      * @return true se è presente almeno una promozione in corso, false altrimenti.
      */
-    public boolean isInPromozione(EdizioneGioco edizioneGioco) {
-        for (GiocoInPromozione p : edizioneGioco.getGioco().getPromozioni()) {
-            if (p.getPromozione().getDataFine().isAfter(LocalDate.now())) {
-                return true;
+    public boolean isInPromozione(EdizioneGioco edizioneGioco) throws CampoNonValidoException {
+        try {
+            ArrayList<GiocoInPromozione> promozioniDelGioco = giocoInPromozioneDAO.getPromozioniPerGioco(edizioneGioco.getGioco());
+
+            for (GiocoInPromozione p : promozioniDelGioco) {
+                if (!p.getPromozione().getDataFine().isBefore(LocalDate.now())) {
+                    return true;
+                }
             }
+        } catch (SQLException e) {
+            System.out.println("Operazione Fallita");
         }
+
         return false;
     }
-
     //metodi per prendere dati da promozione
     public String getNomePromozione(Promozione promozione) { return promozione.getNome(); }
     public LocalDate getDataInizioPromozione(Promozione promozione) { return promozione.getDataInizio(); }
@@ -1201,13 +1240,20 @@ public class Controller {
         return edizioneGioco.getGioco().getTitolo();
     }
 
-    public int getPrezzoCarrello(Utente utenteLoggato) {
-        if (utenteLoggato.getCarrello() != null) {
-            return utenteLoggato.getCarrello().getTotale();
-        }
-        return 0;
-    }
+    /**
+     * Calcola il prezzo totale del carrello tenendo conto delle promozioni attive.
+     */
+    public int getPrezzoCarrello(Utente utenteLoggato) throws CampoNonValidoException {
+        int totale = 0;
 
+        if (utenteLoggato.getCarrello() != null && utenteLoggato.getCarrello().getListaGiochi() != null) {
+            for (EdizioneGioco edizione : utenteLoggato.getCarrello().getListaGiochi()) {
+                totale += getPrezzoDaEdizioneGioco(edizione);
+            }
+        }
+
+        return totale;
+    }
     /**
      * Rimuove una copia del gioco dal carrello, eliminandola sia dalla memoria locale che dalla tabella del database.
      *
@@ -1246,15 +1292,19 @@ public class Controller {
             throw new CampoNonValidoException("Il carrello è vuoto!");
         }
 
+        int veroTotale = getPrezzoCarrello(utenteLoggato);
 
-        if (utenteLoggato.getSaldo() < utenteLoggato.getCarrello().getTotale()) {
-            throw new CampoNonValidoException("Saldo insufficiente! Il totale è di " + utenteLoggato.getCarrello().getTotale() + "€, ma hai solo " + utenteLoggato.getSaldo() + "€.");
+        if (utenteLoggato.getSaldo() < veroTotale) {
+            throw new CampoNonValidoException("Saldo insufficiente! Il totale è di " + veroTotale + "€, ma hai solo " + utenteLoggato.getSaldo() + "€.");
         }
 
         ArrayList<EdizioneGioco> giochiInCarrello = utenteLoggato.getCarrello().getListaGiochi();
         try {
             for (EdizioneGioco gioco: giochiInCarrello) {
-                Fattura nuovaFattura = new Fattura(utenteLoggato, gioco, gioco.getPrezzo());
+
+                int prezzoFattura = getPrezzoDaEdizioneGioco(gioco);
+
+                Fattura nuovaFattura = new Fattura(utenteLoggato, gioco, prezzoFattura);
 
                 fatturaDAO.inserisciFattura(nuovaFattura);
 
@@ -1262,7 +1312,6 @@ public class Controller {
             }
 
             utenteDAO.svuotaCarrello(utenteLoggato.getId());
-
             utenteLoggato.getCarrello().svuotaCarrello();
 
         } catch (SQLException e) {

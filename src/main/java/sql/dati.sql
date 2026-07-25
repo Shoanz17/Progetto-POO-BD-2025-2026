@@ -161,10 +161,6 @@ INSERT INTO gioco_genere (idGioco, idGenere) VALUES
 (11, 7),
 (11, 25);
 
-INSERT INTO promozione (idPromozione, nome, dataInizio, dataFine) VALUES
-(1, 'Saldi Invernali 2026', '2026-12-20', '2027-01-05'),
-(2, 'Golden Week', '2026-04-29', '2026-05-06'),
-(3, 'Black Friday 2026', '2026-11-23', '2026-11-30');
 
 INSERT INTO piattaforma_di_gioco(nome, produttore, portatile) VALUES
 ('Switch','Nintendo',true),
@@ -212,10 +208,6 @@ INSERT INTO edizione_gioco (idEdizione, idGioco, nomePiattaforma, prezzo, dataRi
 (26, 11, 'PlayStation 5', 60, '2020-12-10'),
 (27, 11, 'Xbox Series X|S', 60, '2020-12-10');
 
-INSERT INTO gioco_in_promozione (idGioco, idPromozione, percentuale) VALUES
-(2, 1, 50),
-(4, 1, 10),
-(5, 3, 75);
 
 INSERT INTO seguiti(idutente, idsviluppatore) VALUES
 (16, 6),

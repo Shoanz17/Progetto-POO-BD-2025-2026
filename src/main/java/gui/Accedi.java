@@ -26,10 +26,6 @@ public class Accedi {
     private static JFrame accediFrame;
     private final Controller controller = new Controller();
 
-    public static void main(String[] args) {
-        new Accedi();
-    }
-
     public Accedi() {
         configuraInterfaccia();
 
