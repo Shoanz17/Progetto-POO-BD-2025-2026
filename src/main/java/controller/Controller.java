@@ -928,59 +928,32 @@ public class Controller {
     }
 
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
-        if (utenteLoggato == null) {
-            throw new CampoNonValidoException("Utente non valido!");
-        }
 
-        ArrayList<Fattura> libreriaDalDB = getLibreriaUtente(utenteLoggato.getId());
-
-        ArrayList<EdizioneGioco> giochiInCarrello = getGiochiCarrello(utenteLoggato);
-
-        if (giochiInCarrello == null || giochiInCarrello.isEmpty()) {
+        if (utenteLoggato.getCarrello() == null || utenteLoggato.getCarrello().getListaGiochi().isEmpty()) {
             throw new CampoNonValidoException("Il carrello è vuoto!");
         }
 
-        for (EdizioneGioco giocoInCarrello : giochiInCarrello) {
-            for (Fattura f : libreriaDalDB) {
-                if (f.getGioco() != null && f.getGioco().getId() == giocoInCarrello.getId()) {
-                    throw new CampoNonValidoException("Impossibile procedere: possiedi già \""
-                            + giocoInCarrello.getGioco().getTitolo() + "\" ("
-                            + giocoInCarrello.getPiattaforma().getNome() + ") in libreria!");
-                }
-            }
+
+        if (utenteLoggato.getSaldo() < utenteLoggato.getCarrello().getTotale()) {
+            throw new CampoNonValidoException("Saldo insufficiente! Il totale è di " + utenteLoggato.getCarrello().getTotale() + "€, ma hai solo " + utenteLoggato.getSaldo() + "€.");
         }
 
-        int totale = 0;
-        for (EdizioneGioco e : giochiInCarrello) {
-            totale += e.getPrezzo();
-        }
+        ArrayList<EdizioneGioco> giochiInCarrello = utenteLoggato.getCarrello().getListaGiochi();
+        try {
+            for (EdizioneGioco gioco: giochiInCarrello) {
+                Fattura nuovaFattura = new Fattura(utenteLoggato, gioco, gioco.getPrezzo());
 
-        if (utenteLoggato.getSaldo() < totale) {
-            throw new CampoNonValidoException("Saldo insufficiente! Il totale è di " + totale + "€, ma hai solo " + utenteLoggato.getSaldo() + "€.");
-        }
-
-        for (EdizioneGioco giocoAcquistato : giochiInCarrello) {
-            Fattura nuovaFattura = new Fattura(utenteLoggato, giocoAcquistato, giocoAcquistato.getPrezzo());
-
-            try {
                 fatturaDAO.inserisciFattura(nuovaFattura);
 
-                utenteDAO.eliminaCarrello(utenteLoggato.getId(), giocoAcquistato.getId());
-
-                //utenteLoggato.addGioco(nuovaFattura);
                 utenteLoggato.rimuoviSaldo(nuovaFattura.getPrezzoAcquisto());
-
-            } catch (SQLException | CampoNonValidoException e) {
-                throw new CampoNonValidoException("Operazione Fallita: " + e.getMessage());
             }
-        }
 
-        try {
             utenteDAO.svuotaCarrello(utenteLoggato.getId());
-            if (utenteLoggato.getCarrello() != null) {
-                utenteLoggato.getCarrello().svuotaCarrello();
-            }
+
+            utenteLoggato.getCarrello().svuotaCarrello();
+
         } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione Fallita: impossibile completare l'acquisto.");
         }
     }
 

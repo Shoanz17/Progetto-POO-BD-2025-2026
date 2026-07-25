@@ -884,6 +884,7 @@ public class HomeUtente {
                     configuraInterfacciaCarrello();
                     configuraTestoSaldo();
                     configuraInterfacciaLibreria();
+
                 } catch (CampoNonValidoException ex) {
                     JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
