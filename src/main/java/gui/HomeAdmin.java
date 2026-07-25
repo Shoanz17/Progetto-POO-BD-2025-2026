@@ -90,7 +90,7 @@ public class HomeAdmin {
     private Controller controller;
     private Admin admin;
 
-    //DA FARE: controllare tutti i messaggi delle eccezioni
+    //DA FARE: aggiusta ordina per data
     //ogni aggiunta che fa l'admin va controllato se quello che si vuole inserire già esiste
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
@@ -552,7 +552,7 @@ public class HomeAdmin {
                         }
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato");
             }
         });
     }
@@ -576,7 +576,7 @@ public class HomeAdmin {
 
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno sviluppatore selezionato");
             }
         });
     }
@@ -723,7 +723,7 @@ public class HomeAdmin {
                         }
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
             }
         });
     }
@@ -749,7 +749,7 @@ public class HomeAdmin {
                         }
                     }
                 } else
-                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                    JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
             }
         });
     }
@@ -783,7 +783,7 @@ public class HomeAdmin {
                     }
                 }
             } else
-                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
         });
     }
 
@@ -812,7 +812,7 @@ public class HomeAdmin {
                     }
                 }
             } else
-                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato!");
+                JOptionPane.showMessageDialog(adminFrame, "Nessuno gioco selezionato");
         });
     }
 
@@ -822,7 +822,7 @@ public class HomeAdmin {
             Gioco giocoSelezionato = (Gioco) listaGiochi.getSelectedValue();
 
             if (giocoSelezionato == null) {
-                JOptionPane.showMessageDialog(adminFrame, "Seleziona un gioco dalla lista prima di confermare le modifiche!");
+                JOptionPane.showMessageDialog(adminFrame, "Seleziona prima un gioco dalla lista");
                 return; //interrompe l'esecuzione del metodo
             }
 
