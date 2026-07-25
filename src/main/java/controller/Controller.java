@@ -537,7 +537,7 @@ public class Controller {
     /**
      * Recupera la lista di tutti i generi videoludici disponibili.
      *
-     * @return Un'{@link ArrayList} di tutti gli oggetti {@link Genere}.
+     * @return Un'ArrayList di tutti gli oggetti {@link Genere}.
      * @throws CampoNonValidoException Se il recupero dei dati fallisce.
      */
     public ArrayList<Genere> getGeneri() throws CampoNonValidoException {
@@ -552,7 +552,7 @@ public class Controller {
      * Recupera una lista di generi filtrata in base a una stringa di ricerca.
      *
      * @param testoRicerca La stringa da cercare nei nomi dei generi.
-     * @return Un'{@link ArrayList} di {@link Genere} corrispondenti.
+     * @return Un'ArrayList di {@link Genere} corrispondenti.
      * @throws CampoNonValidoException Se il recupero dei dati fallisce.
      */
     public ArrayList<Genere> getGeneriFiltrati(String testoRicerca) throws CampoNonValidoException {
@@ -566,7 +566,7 @@ public class Controller {
     /**
      * Genera e restituisce una lista contenente tutte le categorie enumerabili disponibili.
      *
-     * @return Un'{@link ArrayList} di {@link Categoria}.
+     * @return Un'ArrayList di {@link Categoria}.
      */
     public ArrayList<Categoria> getCategorie() {
         ArrayList<Categoria> categorie = new ArrayList<>();
@@ -581,7 +581,7 @@ public class Controller {
      * Recupera una lista di giochi filtrata in base a una stringa di ricerca nel titolo.
      *
      * @param testoRicerca La stringa da cercare.
-     * @return Un'{@link ArrayList} di {@link Gioco} corrispondenti.
+     * @return Un'ArrayList di {@link Gioco} corrispondenti.
      * @throws CampoNonValidoException Se il recupero dal Database fallisce.
      */
     public ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws CampoNonValidoException {
@@ -657,7 +657,7 @@ public class Controller {
      * Aggiorna i generi associati a un gioco nel Database.
      *
      * @param gioco L'oggetto {@link Gioco} da aggiornare.
-     * @param generi Un'{@link ArrayList} contenente i nuovi {@link Genere}.
+     * @param generi Un'ArrayList contenente i nuovi {@link Genere}.
      * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
      */
     public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException {
@@ -764,7 +764,7 @@ public class Controller {
      * Recupera una lista di recensioni filtrate tramite una stringa di ricerca, utile per gli Admin.
      *
      * @param testoRicerca La stringa da cercare nelle recensioni.
-     * @return Un'{@link ArrayList} di {@link Recensione} filtrate.
+     * @return Un'ArrayList di {@link Recensione} filtrate.
      * @throws CampoNonValidoException Se il recupero dal Database fallisce.
      */
     public ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws CampoNonValidoException {
@@ -805,7 +805,7 @@ public class Controller {
      * Recupera una lista di piattaforme filtrata in base a una stringa di ricerca.
      *
      * @param testoRicerca La stringa da cercare tra le piattaforme.
-     * @return Un'{@link ArrayList} di {@link PiattaformaDiGioco} filtrate.
+     * @return Un'ArrayList di {@link PiattaformaDiGioco} filtrate.
      * @throws CampoNonValidoException Se il recupero dal Database fallisce.
      */
     public ArrayList<PiattaformaDiGioco> getPiattaformeFiltrate(String testoRicerca) throws CampoNonValidoException {
@@ -819,7 +819,7 @@ public class Controller {
     /**
      * Recupera la lista completa di tutte le piattaforme di gioco registrate.
      *
-     * @return Un'{@link ArrayList} di tutte le {@link PiattaformaDiGioco}.
+     * @return Un'ArrayList di tutte le {@link PiattaformaDiGioco}.
      * @throws CampoNonValidoException Se il recupero fallisce.
      */
     public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() throws CampoNonValidoException {
@@ -855,7 +855,7 @@ public class Controller {
      *
      * @param testoRicerca Il testo da cercare nel nome della promozione.
      * @param ordinaPerData true se i risultati devono essere ordinati cronologicamente.
-     * @return Un'{@link ArrayList} di {@link Promozione} filtrate.
+     * @return Un'ArrayList di {@link Promozione} filtrate.
      * @throws CampoNonValidoException Se la query al Database fallisce.
      */
     public ArrayList<Promozione> getPromozioniFiltrateAdmin(String testoRicerca, boolean ordinaPerData) throws CampoNonValidoException {
@@ -918,7 +918,7 @@ public class Controller {
      * @param traSeguiti true se si vogliono mostrare solo giochi creati dagli sviluppatori seguiti.
      * @param utenteLoggato L'oggetto {@link Utente} correntemente loggato per il controllo dei seguiti.
      * @param ordinamentoData Intero che indica l'ordinamento (1 crescente, 2 decrescente).
-     * @return Un'{@link ArrayList} di {@link EdizioneGioco} che soddisfano i criteri imposti.
+     * @return Un'ArrayList di {@link EdizioneGioco} che soddisfano i criteri imposti.
      * @throws CampoNonValidoException Se il recupero del catalogo completo genera errori nel Database.
      */
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, PiattaformaDiGioco piattaformaScelta, Genere genereScelto, Categoria categoriaScelta, String pegiScelto, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
@@ -969,7 +969,7 @@ public class Controller {
      * @param statoDataRilascio Valore di ordinamento per data di rilascio (1 crescente, 2 decrescente).
      * @param statoPrezzoFiltro Valore di ordinamento per prezzo di acquisto (1 crescente, 2 decrescente).
      * @param statoDataAcquisto Valore di ordinamento per data di acquisto (1 crescente, 2 decrescente).
-     * @return Un'{@link ArrayList} di {@link Fattura} che compongono la libreria filtrata e ordinata.
+     * @return Un'ArrayList di {@link Fattura} che compongono la libreria filtrata e ordinata.
      * @throws CampoNonValidoException Se il recupero della libreria fallisce.
      */
     public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereScelto, Categoria categoriaScelta, String pegiScelto, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) throws CampoNonValidoException {
