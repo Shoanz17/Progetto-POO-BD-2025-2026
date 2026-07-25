@@ -91,8 +91,7 @@ public class HomeAdmin {
     private Admin admin;
 
     //DA FARE: fai in modo che quando crei un genere con un nome che già esiste esca questo e non "operazione fallita"
-    //PIATTAFORME: cambia true e false con si e no
-    //RECENSIONI: non funziona la ricerca
+    //RECENSIONI: non funziona la ricerca e quando rimuovo la recensione non c'è conferma e non si aggiorna la pagina
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
@@ -910,7 +909,7 @@ public class HomeAdmin {
 
     //PANNELLO PIATTAFORME
     private void configuraPannelloPiattaforme(){
-        String[] colonnePiattaforme = {"Nome", "Produttore", "Portabilità"};
+        String[] colonnePiattaforme = {"Nome", "Produttore", "Portatile"};
         configuraTabella(colonnePiattaforme, tabellaPiattaforme);
         filtraPiattaforme();
 
@@ -925,10 +924,12 @@ public class HomeAdmin {
 
         try {
             for(PiattaformaDiGioco piattaforma : controller.getPiattaformeFiltrate(testoRicerca)){
+
+                String portabile = (controller.isPortabile(piattaforma)) ? "Sì" : "No";
                 Object[] riga = {
                         controller.getNomePiattaforma(piattaforma),
                         controller.getProduttorePiattaforma(piattaforma),
-                        controller.isPortabile(piattaforma)
+                        portabile
                 };
                 righe.add(riga);
             }
