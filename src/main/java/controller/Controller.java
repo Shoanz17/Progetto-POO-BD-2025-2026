@@ -11,6 +11,11 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 
+/**
+ * Controller principale dell'applicazione.
+ * Gestisce la logica di business e funge da intermediario tra il livello visivo (GUI)
+ * e il livello di persistenza dei dati (DAO).
+ */
 public class Controller {
     private final AccountDAO accountDAO;
     private final UtenteDAO utenteDAO;
@@ -24,6 +29,10 @@ public class Controller {
     private final PromozioneDAO promozioneDAO;
     private final GiocoInPromozioneDAO giocoInPromozioneDAO;
 
+    /**
+     * Costruisce il Controller inizializzando tutte le interfacce DAO
+     * con le relative implementazioni concrete per PostgreSQL.
+     */
     public Controller() {
         this.accountDAO = new AccountDAOPostgres();
         this.utenteDAO = new UtenteDAOPostgres();
@@ -41,6 +50,16 @@ public class Controller {
     public String getNomeAccount(Account account) {return account.getNome();}
     public String getNomeGenereEnum(GenereEnum genere){return genere.name();}
 
+    /**
+     * Registra un nuovo utente nel sistema validando prima i dati inseriti.
+     *
+     * @param nome Il nome dell'utente.
+     * @param password La password scelta.
+     * @param genere Il genere sotto forma di stringa.
+     * @param email L'indirizzo email.
+     * @param dataNascita La data di nascita formattata testualmente.
+     * @throws CampoNonValidoException Se uno o più parametri non rispettano i vincoli o se il DAO fallisce.
+     */
     public void registraUtente(String nome, String password, String genere, String email, String dataNascita) throws CampoNonValidoException {
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
@@ -65,6 +84,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Converte in modo rigoroso una stringa in un oggetto {@link LocalDate}, impedendo date inesistenti (es. 31 Febbraio).
+     *
+     * @param testoData La data in formato "dd/MM/uuuu".
+     * @return L'oggetto LocalDate risultante dalla conversione.
+     * @throws CampoNonValidoException Se la data è incompleta o non valida per il calendario gregoriano.
+     */
     private LocalDate convertiDataRigida(String testoData) throws CampoNonValidoException {
         if (testoData == null || testoData.contains("_") || testoData.trim().length() < 10) {
             throw new CampoNonValidoException("Inserisci la data completa!");
@@ -82,6 +108,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Registra un nuovo account sviluppatore nel sistema.
+     *
+     * @param nome Il nome dello sviluppatore.
+     * @param password La password scelta.
+     * @param descrizione La descrizione del profilo sviluppatore.
+     * @throws CampoNonValidoException Se i parametri non sono validi o se l'inserimento DAO fallisce.
+     */
     public void registraSviluppatore(String nome, String password, String descrizione) throws CampoNonValidoException {
         Sviluppatore sviluppatore = new Sviluppatore(nome, password, descrizione);
 
@@ -92,7 +126,14 @@ public class Controller {
         }
     }
 
-    //controllare anche se quando ci si registra l'account già esiste
+    /**
+     * Gestisce il processo di login, verificando il formato delle credenziali prima di interrogare il DB.
+     *
+     * @param nome Il nome dell'account inserito.
+     * @param password La password inserita.
+     * @return L'{@link Account} loggato se le credenziali sono corrette.
+     * @throws CampoNonValidoException Se il formato è errato o se l'account non viene trovato.
+     */
     public Account accedi(String nome, String password) throws CampoNonValidoException {
         Account.verificaFormatoNome(nome);
         Account.verificaFormatoPassword(password);
@@ -111,26 +152,40 @@ public class Controller {
         }
     }
 
+    /**
+     * Cerca gli utenti nel sistema applicando un filtro sul nome e sullo stato di ban (Admin).
+     * @param testoRicerca Il testo da cercare nel nome.
+     * @param statoBan Booleano che indica se cercare tra i bannati o meno.
+     * @return Lista degli {@link Utente} corrispondenti ai filtri.
+     * @throws CampoNonValidoException In caso di errore DAO.
+     */
     public ArrayList<Utente> getUtentiFiltratiAdmin(String testoRicerca, boolean statoBan) throws CampoNonValidoException{
         try{
-
             return utenteDAO.getUtentiFiltratiAdmin(testoRicerca, statoBan);
-
         } catch (SQLException e){
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Cerca gli sviluppatori filtrandoli per nome testuale.
+     * @param testoRicerca Il testo da ricercare.
+     * @return Lista di {@link Sviluppatore} filtrata.
+     * @throws CampoNonValidoException In caso di errore DAO.
+     */
     public ArrayList<Sviluppatore> getListaSviluppatoriFiltrati(String testoRicerca) throws CampoNonValidoException{
         try {
-
             return sviluppatoreDAO.getListaSviluppatoriFiltrati(testoRicerca);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Restituisce il numero totale di recensioni rilasciate da un utente.
+     * @param utenteLoggato L'{@link Utente} di cui calcolare le recensioni.
+     * @return Numero di recensioni scritte.
+     */
     public int getNumeroRecensioniUtente(Utente utenteLoggato) throws CampoNonValidoException {
         try {
             return recensioneDAO.getNumeroRecensioni(utenteLoggato.getId());
@@ -139,6 +194,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Aggiunge fondi al portafoglio dell'utente passando l'intero numerico.
+     * @param utenteLoggato L'{@link Utente} loggato.
+     * @param saldo Valore intero da aggiungere.
+     */
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
         try {
             utenteDAO.aggiungiSaldo(utenteLoggato.getId(), saldo);
@@ -148,12 +208,17 @@ public class Controller {
         }
     }
 
+    /**
+     * Aggiunge fondi al portafoglio dell'utente effettuando prima il parsing della stringa testuale.
+     * @param utenteLoggato L'{@link Utente} loggato.
+     * @param saldoTesto Importo digitato in formato testuale.
+     * @throws CampoNonValidoException Se l'input non è un numero valido.
+     */
     public void aggiungiSaldo(Utente utenteLoggato, String saldoTesto) throws CampoNonValidoException {
         try {
             if (saldoTesto == null || saldoTesto.trim().isEmpty()) {
                 throw new CampoNonValidoException("Scrivere quanto si vuole aggiungere");
             }
-
             int saldo = Integer.parseInt(saldoTesto.trim());
 
             utenteDAO.aggiungiSaldo(utenteLoggato.getId(),saldo);
@@ -166,6 +231,15 @@ public class Controller {
         }
     }
 
+    /**
+     * Aggiorna e salva le modifiche al profilo utente solo per i campi che sono stati modificati.
+     * @param utenteLoggato L'oggetto {@link Utente} attuale.
+     * @param nuovoNome Il nuovo nome (vuoto per non modificare).
+     * @param nuovaPassword La nuova password (vuoto per non modificare).
+     * @param nuovaEmail La nuova email (vuoto per non modificare).
+     * @param nuovoGenere Il nuovo {@link GenereEnum} (vuoto per non modificare).
+     * @param nuovaData La nuova data (vuota per non modificare).
+     */
     public void salvaModificheProfilo(Utente utenteLoggato, String nuovoNome, String nuovaPassword, String nuovaEmail, GenereEnum nuovoGenere, String nuovaData) throws CampoNonValidoException {
 
         String nomeFinale = utenteLoggato.getNome();
@@ -219,60 +293,46 @@ public class Controller {
         }
     }
 
-    public GenereEnum getGenereUtente(Utente u) {
-        return u.getGenere();
-    }
-    public String getNomeUtente(Utente u) {
-        return u.getNome();
-    }
-    public String getEmailUtente(Utente u) {
-        return u.getEmail();
-    }
-    public LocalDate getDataDiNascitaUtente(Utente u) {
-        return u.getDataNascita();
-    }
-    public int getSaldoUtente(Utente u) {
-        return u.getSaldo();
-    }
+    public GenereEnum getGenereUtente(Utente u) { return u.getGenere(); }
+    public String getNomeUtente(Utente u) { return u.getNome(); }
+    public String getEmailUtente(Utente u) { return u.getEmail(); }
+    public LocalDate getDataDiNascitaUtente(Utente u) { return u.getDataNascita(); }
+    public int getSaldoUtente(Utente u) { return u.getSaldo(); }
 
+    /**
+     * Restituisce la lista di tutti i generi personali selezionabili.
+     * @return Lista dei {@link GenereEnum}.
+     */
     public ArrayList<GenereEnum> getListaGeneriEnum (){
         ArrayList<GenereEnum> listaGeneriEnum = new ArrayList<>();
 
         for (GenereEnum genere : GenereEnum.values()) {
             listaGeneriEnum.add(genere);
         }
-
         return listaGeneriEnum;
     }
 
+    /**
+     * Recupera lo storico degli acquisti (libreria/fatture) dell'utente specificato.
+     * @param idUtente L'id dell'utente.
+     * @return Lista di {@link Fattura}.
+     */
     public ArrayList<Fattura> getLibreriaUtente(int idUtente) throws CampoNonValidoException {
         try {
             return fatturaDAO.getLibreriaUtente(idUtente);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
     public LocalDate getDataCreazioneAccountUtente(Utente u) {return u.getDataCreazione();}
-
     public boolean isUtenteBannato(Utente u) {return u.isBannato();}
 
-    public Utente getUtenteById(int idUtente) throws CampoNonValidoException {
-        try {
-            Utente utenteTrovato = utenteDAO.getUtenteById(idUtente);
-
-            if (utenteTrovato == null) {
-                throw new CampoNonValidoException("Nessun utente trovato con questo ID");
-            }
-
-            return utenteTrovato;
-
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione fallita");
-        }
-    }
-
+    /**
+     * Registra l'operazione in cui un utente inizia a seguire uno sviluppatore.
+     * @param utenteloggato L'utente che compie l'azione.
+     * @param sviluppatoreSelezionato Lo sviluppatore da seguire.
+     */
     public void aggiungiSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         try {
             utenteDAO.inserisciSviluppatoreSeguito(utenteloggato.getId(), sviluppatoreSelezionato.getId());
@@ -282,6 +342,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Rimuove uno sviluppatore dalla lista dei seguiti di un utente e aggiorna il Database.
+     *
+     * @param utenteloggato L'{@link Utente} che compie l'azione.
+     * @param sviluppatoreSelezionato Lo {@link Sviluppatore} da smettere di seguire.
+     * @throws CampoNonValidoException Se l'operazione nel Database fallisce.
+     */
     public void rimuoviSviluppatoreSeguito(Utente utenteloggato, Sviluppatore sviluppatoreSelezionato) throws CampoNonValidoException {
         try {
             utenteDAO.eliminaSviluppatoreSeguito(utenteloggato.getId(), sviluppatoreSelezionato.getId());
@@ -291,18 +358,36 @@ public class Controller {
         }
     }
 
+    /**
+     * Recupera la descrizione di uno sviluppatore.
+     *
+     * @param s L'oggetto {@link Sviluppatore}.
+     * @return La stringa contenente la descrizione dello sviluppatore.
+     */
     public String getDescrizioneSviluppatore(Sviluppatore s) {return s.getDescrizione();}
 
+    /**
+     * Recupera tutte le edizioni di giochi pubblicate da uno specifico sviluppatore.
+     *
+     * @param sviluppatore L'oggetto {@link Sviluppatore} di cui cercare i giochi.
+     * @return Un' ArrayList di {@link EdizioneGioco} appartenenti allo sviluppatore.
+     * @throws CampoNonValidoException Se il recupero dal Database fallisce.
+     */
     public ArrayList<EdizioneGioco> getListaEdizioniSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         try {
-
             return edizioneGiocoDAO.getListaEdizioniSviluppatore(sviluppatore.getId());
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Recupera il numero totale di giochi rilasciati da uno sviluppatore.
+     *
+     * @param s L'oggetto {@link Sviluppatore}.
+     * @return Il numero intero di giochi rilasciati.
+     * @throws CampoNonValidoException Se la query al Database fallisce.
+     */
     public int getNumeroGiochiRilasciatiSviluppatore(Sviluppatore s) throws CampoNonValidoException {
         try {
             return sviluppatoreDAO.getNumeroGiochiRilasciati(s.getId());
@@ -311,11 +396,22 @@ public class Controller {
         }
     }
 
+    /**
+     * Verifica se uno sviluppatore è attualmente bannato.
+     *
+     * @param sviluppatore L'oggetto {@link Sviluppatore} da controllare.
+     * @return true se lo sviluppatore è bannato, false altrimenti.
+     */
     public boolean isSviluppatoreBannato(Sviluppatore sviluppatore) {return sviluppatore.isBannato();}
 
+    /**
+     * Aggiunge uno "strike" allo sviluppatore e aggiorna il Database.
+     *
+     * @param sviluppatore L'oggetto {@link Sviluppatore} da penalizzare.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void addStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         sviluppatore.addStrike();
-
         try {
             sviluppatoreDAO.aggiungiStrike(sviluppatore.getId());
         } catch (SQLException e) {
@@ -324,9 +420,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Rimuove uno "strike" allo sviluppatore e aggiorna il Database.
+     *
+     * @param sviluppatore L'oggetto {@link Sviluppatore} a cui rimuovere la penalità.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void removeStrikeSviluppatore(Sviluppatore sviluppatore) throws CampoNonValidoException {
         sviluppatore.removeStrike();
-
         try {
             sviluppatoreDAO.rimuoviStrike(sviluppatore.getId());
         } catch (SQLException e) {
@@ -335,7 +436,19 @@ public class Controller {
         }
     }
 
+    /**
+     * Recupera il numero attuale di strike accumulati da uno sviluppatore.
+     *
+     * @param sviluppatore L'oggetto {@link Sviluppatore}.
+     * @return Il numero intero di strike.
+     */
     public int getStrikeSviluppatore(Sviluppatore sviluppatore) {return sviluppatore.getStrike();}
+    /**
+     * Aggiunge uno strike allo sviluppatore partendo da un suo gioco specifico.
+     *
+     * @param gioco L'oggetto {@link Gioco} il cui sviluppatore subirà lo strike.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void addStrikeSviluppatoreDaGioco(Gioco gioco) throws CampoNonValidoException {addStrikeSviluppatore(gioco.getSviluppatore());}
     public String getNomeSviluppatore(Sviluppatore s) {return s.getNome();}
     public String getNomeSviluppatoreDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getSviluppatore().getNome();}
@@ -343,15 +456,27 @@ public class Controller {
     public Gioco getGiocoDaEdizione(EdizioneGioco edizioneGioco) { return edizioneGioco.getGioco(); }
     public int getPrezzoDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPrezzo();}
     public PiattaformaDiGioco getPiattaformaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getPiattaforma();}
-
     public ArrayList<Genere> getGeneriDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getGeneri();}
-
     public int getPegiDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getPegi();}
+    /**
+     * Calcola la media voti delle recensioni associate a una specifica edizione di gioco.
+     *
+     * @param edizioneGioco L'oggetto {@link EdizioneGioco}.
+     * @return La media dei voti in formato intero.
+     * @throws SQLException Se si verifica un errore durante il calcolo nel Database.
+     */
     public int getMediaVotiEdizioneGioco(EdizioneGioco edizioneGioco) throws SQLException {return recensioneDAO.getMediaVotiEdizioneGioco(edizioneGioco.getId());}
+
     public Categoria getCategoriaDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getGioco().getCategoria();}
     public LocalDate getDataDiRilascioDaEdizioneGioco(EdizioneGioco edizioneGioco) {return edizioneGioco.getDataRilascio();}
 
-
+    /**
+     * Collega un utente come amico di un altro nel Database e nel Model.
+     *
+     * @param utenteLoggato L'{@link Utente} che invia o conferma l'amicizia.
+     * @param utenteSelezionato L'{@link Utente} da aggiungere agli amici.
+     * @throws CampoNonValidoException Se l'inserimento nel Database fallisce.
+     */
     public void aggiungiAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         try {
             utenteDAO.inserisciAmico(utenteLoggato.getId(), utenteSelezionato.getId());
@@ -361,6 +486,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Scioglie il legame d'amicizia tra due utenti.
+     *
+     * @param utenteLoggato L'{@link Utente} che rimuove l'amicizia.
+     * @param utenteSelezionato L'{@link Utente} da rimuovere dalla lista amici.
+     * @throws CampoNonValidoException Se l'eliminazione nel Database fallisce.
+     */
     public void rimuoviAmico(Utente utenteLoggato, Utente utenteSelezionato) throws CampoNonValidoException {
         try {
             utenteDAO.eliminaAmico(utenteLoggato.getId(), utenteSelezionato.getId());
@@ -368,23 +500,31 @@ public class Controller {
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
         }
-
     }
 
+    /**
+     * Recupera tutte le recensioni rilasciate da uno specifico utente.
+     *
+     * @param idUtente L'identificativo dell'{@link Utente}.
+     * @return Un'ArrayList di {@link Recensione} scritte dall'utente.
+     * @throws CampoNonValidoException Se il recupero dei dati fallisce.
+     */
     public ArrayList<Recensione> getListaRecensioniUtente(int idUtente) throws CampoNonValidoException {
         try {
-
             return recensioneDAO.getListaRecensioniUtente(idUtente);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
-    public Fattura getFatturaDaRecensione(Recensione r) {
-        return r.getFattura();
-    }
+    public Fattura getFatturaDaRecensione(Recensione r) { return r.getFattura(); }
 
+    /**
+     * Elimina una recensione associata a una determinata fattura di acquisto.
+     *
+     * @param fattura L'oggetto {@link Fattura} di cui eliminare la recensione.
+     * @throws CampoNonValidoException Se l'eliminazione nel Database fallisce.
+     */
     public void rimuoviRecensioneSelezionataDaFattura(Fattura fattura) throws CampoNonValidoException {
         try {
             recensioneDAO.eliminaRecensione(fattura.getId());
@@ -394,38 +534,42 @@ public class Controller {
         }
     }
 
+    /**
+     * Recupera la lista di tutti i generi videoludici disponibili.
+     *
+     * @return Un'{@link ArrayList} di tutti gli oggetti {@link Genere}.
+     * @throws CampoNonValidoException Se il recupero dei dati fallisce.
+     */
     public ArrayList<Genere> getGeneri() throws CampoNonValidoException {
         try {
-
             return genereDAO.getListaGeneri();
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
-    public void addEdizioneALDB(EdizioneGioco ed) throws CampoNonValidoException {
-        try {
-            edizioneGiocoDAO.inserisciEdizione(ed);
-
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Impossibile salvare l'edizione nel database: " + e.getMessage());
-        }
-    }
-
+    /**
+     * Recupera una lista di generi filtrata in base a una stringa di ricerca.
+     *
+     * @param testoRicerca La stringa da cercare nei nomi dei generi.
+     * @return Un'{@link ArrayList} di {@link Genere} corrispondenti.
+     * @throws CampoNonValidoException Se il recupero dei dati fallisce.
+     */
     public ArrayList<Genere> getGeneriFiltrati(String testoRicerca) throws CampoNonValidoException {
         try {
-
             return genereDAO.getGeneriFiltrati(testoRicerca);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Genera e restituisce una lista contenente tutte le categorie enumerabili disponibili.
+     *
+     * @return Un'{@link ArrayList} di {@link Categoria}.
+     */
     public ArrayList<Categoria> getCategorie() {
         ArrayList<Categoria> categorie = new ArrayList<>();
-
         for (Categoria c : Categoria.values()) {
             categorie.add(c);
         }
@@ -433,21 +577,18 @@ public class Controller {
     }
 
     //metodi per prendere dati da un gioco
+    /**
+     * Recupera una lista di giochi filtrata in base a una stringa di ricerca nel titolo.
+     *
+     * @param testoRicerca La stringa da cercare.
+     * @return Un'{@link ArrayList} di {@link Gioco} corrispondenti.
+     * @throws CampoNonValidoException Se il recupero dal Database fallisce.
+     */
     public ArrayList<Gioco> getGiochiFiltrati(String testoRicerca) throws CampoNonValidoException {
         try {
-
             return giocoDAO.getGiochiFiltrati(testoRicerca);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
-        }
-    }
-
-    public ArrayList<Gioco> getListaGiochi() throws CampoNonValidoException {
-        try {
-            return giocoDAO.getListaGiochi();
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
         }
     }
 
@@ -457,53 +598,71 @@ public class Controller {
 
     public ArrayList<Genere> getGeneriDaGioco(Gioco gioco) throws CampoNonValidoException {
         try {
-
             return genereDAO.getListaGeneriDaGioco(gioco);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
     //metodi per modificare un gioco
+    /**
+     * Aggiorna il titolo di un gioco sia nel Model che nel Database.
+     *
+     * @param gioco L'oggetto {@link Gioco} da aggiornare.
+     * @param titolo Il nuovo titolo da impostare.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void updateTitoloGioco(Gioco gioco, String titolo) throws CampoNonValidoException {
         try {
-
             giocoDAO.updateTitolo(gioco.getId(), titolo);
             gioco.setTitolo(titolo);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Aggiorna la categoria di un gioco sia nel Model che nel Database.
+     *
+     * @param gioco L'oggetto {@link Gioco} da aggiornare.
+     * @param categoria La nuova {@link Categoria} da impostare.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void updateCategoriaGioco(Gioco gioco, Categoria categoria) throws CampoNonValidoException {
         try {
-
             giocoDAO.updateCategoriaGioco(gioco.getId(), categoria.name());
             gioco.setCategoria(categoria);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Aggiorna il PEGI di un gioco sia nel Model che nel Database.
+     *
+     * @param gioco L'oggetto {@link Gioco} da aggiornare.
+     * @param pegi Il nuovo valore intero del PEGI.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void updatePegiGioco(Gioco gioco, int pegi) throws CampoNonValidoException {
         try {
-
             giocoDAO.updatePegiGioco(gioco.getId(), pegi);
             gioco.setPegi(pegi);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Aggiorna i generi associati a un gioco nel Database.
+     *
+     * @param gioco L'oggetto {@link Gioco} da aggiornare.
+     * @param generi Un'{@link ArrayList} contenente i nuovi {@link Genere}.
+     * @throws CampoNonValidoException Se l'aggiornamento nel Database fallisce.
+     */
     public void updateGeneriGioco(Gioco gioco, ArrayList<Genere> generi) throws CampoNonValidoException {
         try {
-
             giocoDAO.updateGeneriGioco(gioco.getId(), generi);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
@@ -511,26 +670,35 @@ public class Controller {
 
     //metodi per prendere dati dei generi
     public String getNomeGenere(Genere genere) {return genere.getNome();}
-    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) throws CampoNonValidoException { //DA FARE con implementazione
-        try {
 
+    /**
+     * Converte un ArrayList testuale con i nomi dei generi in un ArrayList di oggetti {@link Genere}.
+     *
+     * @param listaNomi Un'ArrayList di stringhe rappresentanti i nomi dei generi.
+     * @return Un'ArrayList di oggetti {@link Genere} estratti dal Database.
+     * @throws CampoNonValidoException Se l'operazione nel Database fallisce.
+     */
+    public ArrayList<Genere> getGeneriDaListaNomi(ArrayList<String> listaNomi) throws CampoNonValidoException {
+        try {
             if(listaNomi == null || listaNomi.isEmpty())
                 return new ArrayList<>();
 
             return genereDAO.getGeneriDaListaNomi(listaNomi);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Crea un nuovo genere e lo inserisce nel Database.
+     *
+     * @param nome Il nome del nuovo genere da creare.
+     * @throws CampoNonValidoException Se l'inserimento fallisce o se il nome non è valido.
+     */
     public void createGenere(String nome) throws CampoNonValidoException {
         Genere genere = new Genere(nome);
-
         try {
-
             genereDAO.creaGenere(genere);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
@@ -540,6 +708,15 @@ public class Controller {
     public String getNomePiattaforma(PiattaformaDiGioco piattaformaDiGioco) { return piattaformaDiGioco.getNome(); }
     public String getProduttorePiattaforma(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.getProduttore();}
     public boolean isPortabile(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.isPortatile();}
+
+    /**
+     * Crea una nuova piattaforma validando l'assenza di doppioni prima di salvarla nel DB.
+     *
+     * @param nome Il nome della nuova piattaforma.
+     * @param produttore Il produttore della piattaforma.
+     * @param portabile true se portatile, false altrimenti.
+     * @throws CampoNonValidoException Se la piattaforma esiste già o se l'inserimento fallisce.
+     */
     public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
         controlloNomePiattaforma(nome);
         PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome.trim(), produttore, portabile);
@@ -551,6 +728,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Controlla se esiste già una piattaforma registrata con il nome fornito.
+     *
+     * @param nome Il nome da verificare.
+     * @throws CampoNonValidoException Se la piattaforma risulta già presente nel sistema.
+     */
     private void controlloNomePiattaforma(String nome) throws CampoNonValidoException {
         ArrayList<PiattaformaDiGioco> piattaforme = getPiattaformeDiGioco();
         for (PiattaformaDiGioco p : piattaforme) {
@@ -570,28 +753,47 @@ public class Controller {
     public String getNomeUtenteDaFattura(Fattura fattura) { return getUtenteDaFattura(fattura).getNome(); }
     public ArrayList<Genere> getGeneriDaFattura(Fattura f) {return f.getGioco().getGioco().getGeneri();}
     public Sviluppatore getSviluppatoreDaFattura(Fattura f) {return f.getGioco().getGioco().getSviluppatore();}
-    public Gioco getGiocoDaFattura(Fattura f) {return f.getGioco().getGioco();}
     public int getVotoDaFattura(Fattura f) {return f.getRecensione().getVoto();}
     public int getDifferenzaLikeDaFattura(Fattura f) {return f.getRecensione().getDifferenzaLike();}
-    public Recensione getRecensioneDaFattura(Fattura f) {return f.getRecensione();}
     public String getDescrizioneRecensioneDaFattura(Fattura f) {return f.getRecensione().getDescrizione();}
     public LocalDate getDataAcquistoDaFattura(Fattura f){return (f.getDataAcquisto());}
     public String getKeyDaFattura(Fattura f){return f.getKey();}
     public int getPrezzoAcquistoDaFattura(Fattura f){return f.getPrezzoAcquisto();}
+
+    /**
+     * Recupera una lista di recensioni filtrate tramite una stringa di ricerca, utile per gli Admin.
+     *
+     * @param testoRicerca La stringa da cercare nelle recensioni.
+     * @return Un'{@link ArrayList} di {@link Recensione} filtrate.
+     * @throws CampoNonValidoException Se il recupero dal Database fallisce.
+     */
     public ArrayList<Recensione> getRecensioniFiltrateAdmin(String testoRicerca) throws CampoNonValidoException {
         try {
-
             return recensioneDAO.getRecensioniFiltrateAdmin(testoRicerca);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Crea e registra una nuova recensione associandola alla fattura d'acquisto.
+     *
+     * @param voto Il voto assegnato (da 1 a 100).
+     * @param testo La descrizione testuale della recensione.
+     * @param fatturaSelezionata L'oggetto {@link Fattura} per cui si sta recensendo.
+     * @throws CampoNonValidoException Se la validazione fallisce.
+     * @throws SQLException Se l'inserimento nel Database fallisce.
+     */
     public void rilasciaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException, SQLException {
-            recensioneDAO.creaRecensione(fatturaSelezionata.getId(), voto, testo);
+        recensioneDAO.creaRecensione(fatturaSelezionata.getId(), voto, testo);
     }
 
+    /**
+     * Controlla se per un determinato acquisto è già stata rilasciata una recensione.
+     *
+     * @param fattura L'oggetto {@link Fattura} di acquisto.
+     * @return true se la recensione esiste già, false altrimenti.
+     */
     public boolean haGiaRecensito(Fattura fattura) {
         if (fattura.getRecensione() != null){
             return true;
@@ -599,24 +801,27 @@ public class Controller {
         return false;
     }
 
-    public void aggiornaRecensione(int voto, String testo, Fattura fatturaSelezionata) throws CampoNonValidoException {
-        try {
-            recensioneDAO.aggiornaRecensione(fatturaSelezionata.getId(), voto, testo);
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione Fallita");
-        }
-    }
-
+    /**
+     * Recupera una lista di piattaforme filtrata in base a una stringa di ricerca.
+     *
+     * @param testoRicerca La stringa da cercare tra le piattaforme.
+     * @return Un'{@link ArrayList} di {@link PiattaformaDiGioco} filtrate.
+     * @throws CampoNonValidoException Se il recupero dal Database fallisce.
+     */
     public ArrayList<PiattaformaDiGioco> getPiattaformeFiltrate(String testoRicerca) throws CampoNonValidoException {
         try {
-
             return piattaformaDiGiocoDAO.getPiattaformeFiltrate(testoRicerca);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Recupera la lista completa di tutte le piattaforme di gioco registrate.
+     *
+     * @return Un'{@link ArrayList} di tutte le {@link PiattaformaDiGioco}.
+     * @throws CampoNonValidoException Se il recupero fallisce.
+     */
     public ArrayList<PiattaformaDiGioco> getPiattaformeDiGioco() throws CampoNonValidoException {
         try {
             return piattaformaDiGiocoDAO.getListaPiattaforme();
@@ -625,7 +830,12 @@ public class Controller {
         }
     }
 
-
+    /**
+     * Verifica se una determinata edizione di gioco possiede una promozione correntemente attiva.
+     *
+     * @param edizioneGioco L'oggetto {@link EdizioneGioco} da controllare.
+     * @return true se è presente almeno una promozione in corso, false altrimenti.
+     */
     public boolean isInPromozione(EdizioneGioco edizioneGioco) {
         for (GiocoInPromozione p : edizioneGioco.getGioco().getPromozioni()) {
             if (p.getPromozione().getDataFine().isAfter(LocalDate.now())) {
@@ -639,16 +849,29 @@ public class Controller {
     public String getNomePromozione(Promozione promozione) { return promozione.getNome(); }
     public LocalDate getDataInizioPromozione(Promozione promozione) { return promozione.getDataInizio(); }
     public LocalDate getDataFinePromozione(Promozione promozione) { return promozione.getDataFine(); }
+
+    /**
+     * Recupera una lista di promozioni filtrata (usato dall'Admin) con opzione di ordinamento per data.
+     *
+     * @param testoRicerca Il testo da cercare nel nome della promozione.
+     * @param ordinaPerData true se i risultati devono essere ordinati cronologicamente.
+     * @return Un'{@link ArrayList} di {@link Promozione} filtrate.
+     * @throws CampoNonValidoException Se la query al Database fallisce.
+     */
     public ArrayList<Promozione> getPromozioniFiltrateAdmin(String testoRicerca, boolean ordinaPerData) throws CampoNonValidoException {
         try {
-
             return promozioneDAO.getPromozioniFiltrate(testoRicerca, ordinaPerData);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
 
+    /**
+     * Controlla se esiste già nel sistema una promozione con il nome inserito.
+     *
+     * @param nome Il nome della promozione da controllare.
+     * @throws CampoNonValidoException Se il nome è già in uso.
+     */
     private void controlloNomePromozione(String nome) throws CampoNonValidoException {
         ArrayList<Promozione> promozioni = getListaPromozioni();
         for (Promozione p : promozioni) {
@@ -658,6 +881,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Crea e registra una nuova promozione nel sistema effettuando il parsing delle date fornite.
+     *
+     * @param nome Il nome della campagna promozionale.
+     * @param dataInizioStringa La data di inizio in formato testuale.
+     * @param dataFineStringa La data di fine (scadenza) in formato testuale.
+     * @throws CampoNonValidoException Se i formati data sono invalidi, se il nome esiste o se il DB fallisce.
+     */
     public void createPromozione(String nome, String dataInizioStringa, String dataFineStringa) throws CampoNonValidoException {
         controlloNomePromozione(nome);
 
@@ -673,6 +904,23 @@ public class Controller {
         }
     }
 
+    /**
+     * Compone i filtri applicati dall'utente ed estrae un
+     * sottoinsieme dal catalogo totale. Supporta l'ordinamento dinamico per data di rilascio.
+     *
+     * @param testoRicerca Il testo da cercare nel titolo del gioco.
+     * @param prezzoMax Il prezzo massimo consentito per il filtro (-1 per indicare nessun limite).
+     * @param piattaformaScelta L'oggetto {@link PiattaformaDiGioco} da filtrare (null per ignorare).
+     * @param genereScelto L'oggetto {@link Genere} da filtrare (null per ignorare).
+     * @param categoriaScelta La {@link Categoria} da filtrare (null per ignorare).
+     * @param pegiScelto Il PEGI scelto tramite interfaccia (formato stringa, o null per ignorare).
+     * @param inPromozione true se si vogliono mostrare esclusivamente giochi con promozione attiva.
+     * @param traSeguiti true se si vogliono mostrare solo giochi creati dagli sviluppatori seguiti.
+     * @param utenteLoggato L'oggetto {@link Utente} correntemente loggato per il controllo dei seguiti.
+     * @param ordinamentoData Intero che indica l'ordinamento (1 crescente, 2 decrescente).
+     * @return Un'{@link ArrayList} di {@link EdizioneGioco} che soddisfano i criteri imposti.
+     * @throws CampoNonValidoException Se il recupero del catalogo completo genera errori nel Database.
+     */
     public ArrayList<EdizioneGioco> getCatalogoFiltrato(String testoRicerca, int prezzoMax, PiattaformaDiGioco piattaformaScelta, Genere genereScelto, Categoria categoriaScelta, String pegiScelto, boolean inPromozione, boolean traSeguiti, Utente utenteLoggato, int ordinamentoData) throws CampoNonValidoException {
 
         ArrayList<EdizioneGioco> catalogoCompleto;
@@ -709,6 +957,21 @@ public class Controller {
         return listaFiltrata;
     }
 
+    /**
+     * Applica i criteri di ricerca alla libreria personale dell'utente,
+     * filtrandoli per generi, PEGI, e categorie, e supportando tre diverse tipologie di ordinamento.
+     *
+     * @param testoRicerca Il testo cercato nel titolo del gioco.
+     * @param utenteLoggato L'oggetto {@link Utente} di cui si sta guardando la libreria.
+     * @param genereScelto L'oggetto {@link Genere} scelto (null per nessun filtro di genere).
+     * @param categoriaScelta La {@link Categoria} scelta (null per nessuna categoria).
+     * @param pegiScelto Il valore PEGI scelto (in formato stringa).
+     * @param statoDataRilascio Valore di ordinamento per data di rilascio (1 crescente, 2 decrescente).
+     * @param statoPrezzoFiltro Valore di ordinamento per prezzo di acquisto (1 crescente, 2 decrescente).
+     * @param statoDataAcquisto Valore di ordinamento per data di acquisto (1 crescente, 2 decrescente).
+     * @return Un'{@link ArrayList} di {@link Fattura} che compongono la libreria filtrata e ordinata.
+     * @throws CampoNonValidoException Se il recupero della libreria fallisce.
+     */
     public ArrayList<Fattura> getLibreriaFiltrata(String testoRicerca, Utente utenteLoggato, Genere genereScelto, Categoria categoriaScelta, String pegiScelto, int statoDataRilascio, int statoPrezzoFiltro, int statoDataAcquisto) throws CampoNonValidoException {
         ArrayList<Fattura> libreriaUtente;
 
