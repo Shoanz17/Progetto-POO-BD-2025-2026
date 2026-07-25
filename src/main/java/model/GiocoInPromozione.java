@@ -15,7 +15,7 @@ public class GiocoInPromozione {
 
     //costruttore normale e per DAO
     /**
-     * Costruttore utilizzato dalla GUI per associare un gioco a una promozione specificando la percentuale di sconto.
+     * Costruttore utilizzato dalla GUI e DAO per associare un gioco a una promozione specificando la percentuale di sconto.
      *
      * @param percentuale La percentuale di sconto da applicare.
      * @param gioco L'oggetto {@link Gioco} oggetto dello sconto.
