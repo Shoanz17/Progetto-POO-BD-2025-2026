@@ -14,6 +14,11 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Schermata principale dedicata allo {@link Sviluppatore} all'interno della piattaforma.
+ * Gestisce la libreria dei giochi pubblicati, il pannello di controllo per le modifiche,
+ * l'inserimento di nuovi titoli, la partecipazione alle promozioni e la gestione del profilo tramite il {@link Controller}.
+ */
 public class HomeSviluppatore {
     private JPanel homeSviluppatore;
     private JTabbedPane finestre;

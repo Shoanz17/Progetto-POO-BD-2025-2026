@@ -9,6 +9,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Schermata per la modifica delle informazioni personali dell'{@link Utente}.
+ * Permette di aggiornare nome, password, email, genere e data di nascita tramite il {@link Controller}.
+ */
 public class ModificaInformazioni {
     private JPanel modificaInformazioniPanel;
     private JTextField textFieldNome;

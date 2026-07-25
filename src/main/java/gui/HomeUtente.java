@@ -11,6 +11,11 @@ import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Schermata principale dedicata all'{@link Utente} all'interno della piattaforma.
+ * Gestisce il catalogo dei giochi, la libreria personale degli acquisti, il carrello,
+ * la community e le informazioni del profilo.
+ */
 public class HomeUtente {
     private JPanel homeUtentePanel;
     private JTabbedPane tabbedPane;
