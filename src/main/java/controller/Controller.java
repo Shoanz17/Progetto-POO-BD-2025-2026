@@ -136,13 +136,10 @@ public class Controller {
     }
 
     public void aggiungiSaldo(Utente utenteLoggato, int saldo) throws CampoNonValidoException {
-
-        utenteLoggato.aggiungiSaldo(saldo);
-
         try {
             utenteDAO.aggiungiSaldo(utenteLoggato.getId(), saldo);
+            utenteLoggato.aggiungiSaldo(saldo);
         } catch (SQLException e) {
-            utenteLoggato.rimuoviSaldo(saldo);
             throw new CampoNonValidoException("Operazione fallita");
         }
     }
@@ -154,9 +151,9 @@ public class Controller {
             }
 
             int saldo = Integer.parseInt(saldoTesto.trim());
-            utenteLoggato.aggiungiSaldo(saldo);
 
             utenteDAO.aggiungiSaldo(utenteLoggato.getId(),saldo);
+            utenteLoggato.aggiungiSaldo(saldo);
 
         } catch (NumberFormatException e) {
             throw new CampoNonValidoException("Inserire un numero");
