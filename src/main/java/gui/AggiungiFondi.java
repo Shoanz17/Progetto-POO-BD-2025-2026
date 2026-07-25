@@ -8,6 +8,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Schermata di ricarica del saldo per l'{@link Utente} all'interno della piattaforma.
+ * Permette di aggiungere importi predefiniti o personalizzati interagendo con il {@link Controller}
+ * e aggiornando la schermata {@link HomeUtente}.
+ */
 public class AggiungiFondi {
 
     private JPanel aggiungiFondiPanel;

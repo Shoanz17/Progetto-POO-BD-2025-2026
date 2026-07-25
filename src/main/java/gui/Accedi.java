@@ -7,6 +7,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Schermata di autenticazione iniziale dell'applicazione.
+ * Gestisce l'accesso al sistema tramite il {@link Controller} per i diversi tipi di account
+ * ({@link Utente}, {@link Sviluppatore}, {@link Admin}) e reindirizza alla registrazione.
+ */
 public class Accedi {
     private JPanel accediPanel;
     private JTextField nomeTextBox;
