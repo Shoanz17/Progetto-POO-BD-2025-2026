@@ -569,9 +569,7 @@ public class Controller {
     public int getPegiDaFattura(Fattura f) {return f.getGioco().getGioco().getPegi();}
     public Utente getUtenteDaFattura(Fattura fattura) { return fattura.getUtente(); }
     public String getNomeUtenteDaFattura(Fattura fattura) { return getUtenteDaFattura(fattura).getNome(); }
-    public ArrayList<Genere> getGeneriDaFattura(Fattura f) {
-        return f.getGioco().getGioco().getGeneri();
-    }
+    public ArrayList<Genere> getGeneriDaFattura(Fattura f) {return f.getGioco().getGioco().getGeneri();}
     public Sviluppatore getSviluppatoreDaFattura(Fattura f) {return f.getGioco().getGioco().getSviluppatore();}
     public Gioco getGiocoDaFattura(Fattura f) {return f.getGioco().getGioco();}
     public int getVotoDaFattura(Fattura f) {return f.getRecensione().getVoto();}

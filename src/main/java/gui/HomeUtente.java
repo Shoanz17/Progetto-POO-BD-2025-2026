@@ -618,6 +618,10 @@ public class HomeUtente {
                 prezzoAcquistoFiltro.setText("Prezzo");
                 dataAcquistoFiltro.setText("DataAcquisto");
 
+                statoPrezzoFiltro = 0;
+                statoDataAcquisto = 0;
+                statoDataRilascio = 0;
+
                 filtraLibreria();
             }
         });
