@@ -253,14 +253,14 @@ public class HomeUtente {
                 if (edizioneGiocoSelezionata != null) {
                     sviluppatoreCatalogo.setText("Sviluppatore: " + controller.getNomeSviluppatoreDaEdizioneGioco(edizioneGiocoSelezionata));
                     genereCatalogo.setText("Generi: " + controller.getGeneriDaEdizioneGioco(edizioneGiocoSelezionata));
-                    prezzoCatalogo.setText("Prezzo: " + controller.getPrezzoDaEdizioneGioco(edizioneGiocoSelezionata) + "€");
                     piattaformaCatalogo.setText("Piattaforma: " + controller.getPiattaformaDaEdizioneGioco(edizioneGiocoSelezionata));
                     pegiCatalogo.setText("Pegi: " + controller.getPegiDaEdizioneGioco(edizioneGiocoSelezionata));
                     categoriaCatalogo.setText("Categoria: " + controller.getCategoriaDaEdizioneGioco(edizioneGiocoSelezionata));
                     try {
+                        prezzoCatalogo.setText("Prezzo: " + controller.getPrezzoDaEdizioneGioco(edizioneGiocoSelezionata) + "€");
                         testoMediaVoti.setText("Media voti: " + controller.getMediaVotiEdizioneGioco(edizioneGiocoSelezionata));
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(homeUtenteFrame, "Operazione Fallita");
+                    } catch (CampoNonValidoException ex) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage());
                     }
 
                     dataDiRilascioCatalogo.setText("Data di rilascio: " + controller.getDataDiRilascioDaEdizioneGioco(edizioneGiocoSelezionata));
@@ -1173,18 +1173,27 @@ public class HomeUtente {
 
             if (giochiNelCarrello != null) {
                 for (EdizioneGioco ed : giochiNelCarrello) {
-                    Object[] riga = {
-                            controller.getTitoloDaEdizioneGioco(ed),
-                            controller.getPiattaformaDaEdizioneGioco(ed),
-                            controller.getPrezzoDaEdizioneGioco(ed) + "€"
-                    };
+                    Object[] riga = null;
+                    try {
+                        riga = new Object[]{
+                                controller.getTitoloDaEdizioneGioco(ed),
+                                controller.getPiattaformaDaEdizioneGioco(ed),
+                                controller.getPrezzoDaEdizioneGioco(ed) + "€"
+                        };
+                    } catch (CampoNonValidoException e) {
+                        JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+                    }
                     tabellaCarrello.addRow(riga);
                 }
             }
         }
 
         tabellaGiochiCarrello.setModel(tabellaCarrello);
-        testoTotaleCarrello.setText(String.valueOf(controller.getPrezzoCarrello(utenteLoggato)) + "€");
+        try {
+            testoTotaleCarrello.setText(String.valueOf(controller.getPrezzoCarrello(utenteLoggato)) + "€");
+        } catch (CampoNonValidoException e) {
+            JOptionPane.showMessageDialog(homeUtenteFrame,e.getMessage());
+        }
     }
 
     private void mostraForm() {
