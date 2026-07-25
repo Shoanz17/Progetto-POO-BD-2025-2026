@@ -895,38 +895,38 @@ public class Controller {
         }
     }
 
+    public EdizioneGioco getGiocoDaCarrello(Utente utenteLoggato, int indice) throws CampoNonValidoException {
+        return utenteLoggato.getCarrello().getListaGiochi().get(indice);
+    }
+
     public String getTitoloDaEdizioneGioco(EdizioneGioco edizioneGioco) {
         return edizioneGioco.getGioco().getTitolo();
     }
 
     public int getPrezzoCarrello(Utente utenteLoggato) {
-        try {
-            ArrayList<EdizioneGioco> giochi = getGiochiCarrello(utenteLoggato);
-            int totale = 0;
-            for (EdizioneGioco e : giochi) {
-                totale += e.getPrezzo();
-            }
-            return totale;
-        } catch (CampoNonValidoException e) {
-            return 0;
+        if (utenteLoggato.getCarrello() != null) {
+            return utenteLoggato.getCarrello().getTotale();
         }
+        return 0;
     }
 
     public void rimuoviDalCarrello(Utente utenteLoggato, EdizioneGioco edizioneGioco) throws CampoNonValidoException {
-        if (edizioneGioco == null) {
-            throw new CampoNonValidoException("Seleziona prima un gioco da rimuovere!");
-        }
-
         try {
             utenteDAO.eliminaCarrello(utenteLoggato.getId(), edizioneGioco.getId());
+
+            ArrayList<EdizioneGioco> listaGiochi = utenteLoggato.getCarrello().getListaGiochi();
+
+            for (int i = 0; i < listaGiochi.size(); i++) {
+                if (listaGiochi.get(i).getId() == edizioneGioco.getId()) {
+                    listaGiochi.remove(i);
+                    break;
+                }
+            }
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione Fallita");
         }
-
-        if (utenteLoggato.getCarrello() != null && utenteLoggato.getCarrello().getListaGiochi() != null) {
-            utenteLoggato.getCarrello().getListaGiochi().removeIf(ed -> ed.getId() == edizioneGioco.getId());
-        }
     }
+
     public void acquista(Utente utenteLoggato) throws CampoNonValidoException {
         if (utenteLoggato == null) {
             throw new CampoNonValidoException("Utente non valido!");

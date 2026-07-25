@@ -855,13 +855,13 @@ public class HomeUtente {
 
                 if (rigaSelezionata != -1) {
                     try {
-                        ArrayList<EdizioneGioco> giochiNelCarrello = controller.getGiochiCarrello(utenteLoggato);
-                        EdizioneGioco giocoDaRimuovere = giochiNelCarrello.get(rigaSelezionata);
+                        EdizioneGioco giocoDaRimuovere = controller.getGiocoDaCarrello(utenteLoggato, rigaSelezionata);
 
                         controller.rimuoviDalCarrello(utenteLoggato, giocoDaRimuovere);
 
-                        configuraInterfacciaCarrello();
+                        ((DefaultTableModel) tabellaGiochiCarrello.getModel()).removeRow(rigaSelezionata);
 
+                        testoTotaleCarrello.setText(controller.getPrezzoCarrello(utenteLoggato) + "€");
                     } catch (CampoNonValidoException ex) {
                         JOptionPane.showMessageDialog(homeUtenteFrame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                     }
