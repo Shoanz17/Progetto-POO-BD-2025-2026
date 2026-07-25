@@ -11,6 +11,16 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * Rappresenta la finestra personale dedicata all'{@link Utente} per consultare e gestire lo storico delle proprie valutazioni.
+ * Questa interfaccia grafica (View) mostra in formato tabellare tutte le {@link Recensione} rilasciate dall'utente loggato,
+ * recuperandole tramite le rispettive ricevute d'acquisto ({@link Fattura}).
+ * Le dinamiche principali gestite da questa schermata includono:
+ * - Lettura dei dettagli: cliccando su una specifica riga della tabella, viene estratto e mostrato il testo completo del parere.
+ * - Pentimento e rimozione: l'utente può decidere di cancellare definitivamente una propria recensione tramite l'apposito pulsante.
+ * - Ogni operazione di caricamento dati (select) o eliminazione (delete) è rigorosamente delegata al {@link Controller},
+ *   che aggiorna il database e conferma il successo dell'operazione alla View per aggiornare la tabella in tempo reale.
+ */
 public class VisualizzaRecensioni {
     private JPanel visualizzaRecensioniPanel;
     private JTable tabellaRecensioni;

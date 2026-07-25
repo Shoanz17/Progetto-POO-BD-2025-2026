@@ -9,6 +9,16 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Rappresenta la schermata di registrazione per i nuovi iscritti alla piattaforma.
+ * Questa interfaccia grafica (View) si adatta dinamicamente tramite Radio Button per permettere
+ * la creazione di due tipologie di account ben distinte:
+ * - {@link model.Utente}: richiede i classici dati personali come email, genere e data di nascita (inserita tramite maschera guidata).
+ * - {@link model.Sviluppatore}: nasconde i campi anagrafici e richiede invece la stesura di una bio/descrizione per la vetrina della software house.
+ * In pieno stile MVC, questa classe si limita a raccogliere le stringhe digitate nei campi di testo e
+ * le passa direttamente al {@link Controller}, delegando a quest'ultimo tutti i controlli di sicurezza,
+ * le conversioni di tipo (es. dalle stringhe alle LocalDate) e l'inserimento effettivo nel database.
+ */
 public class Registrati {
     private JPanel registratiPanel;
     private JRadioButton utenteRadioButton;
@@ -33,6 +43,7 @@ public class Registrati {
 
     public JFrame registratiFrame;
     private Controller controller;
+
 
     public Registrati(Controller controller, JFrame accediGUI) {
         this.controller = controller;

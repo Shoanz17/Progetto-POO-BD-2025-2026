@@ -14,6 +14,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+    /**
+     * Rappresenta il pannello di controllo (Dashboard) ad uso esclusivo dell'{@link Admin}.
+     * Questa interfaccia grafica (View) permette di gestire l'intera piattaforma "dietro le quinte",
+     * delegando rigorosamente tutti i salvataggi, i controlli e le query al database al {@link Controller}.
+     * Tramite un sistema a schede (TabbedPane), l'amministratore ha il potere di:
+     * - Moderare gli {@link Utente}: applicare ban, rimborsare acquisti e rimuovere recensioni inappropriate.
+     * - Gestire gli {@link Sviluppatore}: supervisionare i loro giochi e applicare il sistema disciplinare a strike.
+     * - Correggere i {@link Gioco}: modificare forzatamente dettagli errati come Titolo, PEGI, Categoria e Generi.
+     * - Amministrare il sistema: aggiungere nuove {@link PiattaformaDiGioco}, nuovi {@link Genere} e creare date per una {@link Promozione}.
+     */
 public class HomeAdmin {
     private JPanel adminPanel;
     private JTabbedPane tabbedPane;
@@ -90,7 +100,6 @@ public class HomeAdmin {
     private Controller controller;
     private Admin admin;
 
-    //DA FARE: aggiusta ordina per data
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
