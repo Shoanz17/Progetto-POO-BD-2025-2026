@@ -1,7 +1,12 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+/**
+ * Rappresenta un genere videoludico all'interno della piattaforma.
+ * Gestisce l'associazione con i vari {@link Gioco} che appartengono a questa categoria.
+ */
 public class Genere {
 
     private int id;
@@ -9,11 +14,24 @@ public class Genere {
     private ArrayList<Gioco> listaGiochi = new ArrayList<>();
 
     // Costruttore per il DAO
+    /**
+     * Costruttore utilizzato dal DAO per ricostruire un Genere già esistente nel Database.
+     *
+     * @param id L'identificativo univoco del genere nel Database.
+     * @param nome Il nome del genere.
+     */
     public Genere(int id ,String nome)
     {
         this.id = id;
         this.nome = nome;
     }
+
+    /**
+     * Costruttore utilizzato dalla GUI per creare un nuovo genere da zero.
+     *
+     * @param nome Il nome da assegnare al genere.
+     * @throws CampoNonValidoException Se il nome non rispetta i vincoli di formato o lunghezza.
+     */
     public Genere(String nome) throws CampoNonValidoException {
         setNome(nome);
     }
@@ -24,6 +42,12 @@ public class Genere {
 
     public String getNome() {return nome;}
 
+    /**
+     * Imposta o modifica il nome del genere verificandone la validità.
+     *
+     * @param nome Il nuovo nome del genere.
+     * @throws CampoNonValidoException Se il nome è nullo, supera i 24 caratteri o è composto da soli spazi vuoti.
+     */
     public void setNome(String nome) throws CampoNonValidoException {
         if (nome == null||nome.length() > 24) {
             throw new CampoNonValidoException("il nome che hai scelto \"" + nome + "\" è troppo lungo");
@@ -33,6 +57,12 @@ public class Genere {
         this.nome = nome;
     }
 
+    /**
+     * Associa un gioco a questo genere.
+     *
+     * @param gioco L'oggetto {@link Gioco} da aggiungere.
+     * @throws CampoNonValidoException Se il gioco è nullo o se risulta già associato a questo genere.
+     */
     public void addGioco(Gioco gioco) throws CampoNonValidoException
     {
         if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
@@ -42,6 +72,12 @@ public class Genere {
         this.listaGiochi.add(gioco);
     }
 
+    /**
+     * Rimuove l'associazione di un gioco da questo genere.
+     *
+     * @param gioco L'oggetto {@link Gioco} da rimuovere.
+     * @throws CampoNonValidoException Se il gioco è nullo o se non è presente all'interno del genere.
+     */
     public void removeGioco(Gioco gioco) throws CampoNonValidoException
     {
         if(gioco == null) throw new CampoNonValidoException("Il gioco non esiste");
@@ -66,7 +102,7 @@ public class Genere {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(id);
+        return Objects.hash(id);
     }
 
     @Override
@@ -74,6 +110,3 @@ public class Genere {
         return this.nome;
     }
 }
-
-
-
