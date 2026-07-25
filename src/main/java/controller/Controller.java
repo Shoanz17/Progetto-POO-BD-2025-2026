@@ -1331,7 +1331,7 @@ public class Controller {
     public void effettuaRimborso(Fattura fattura, Utente utente) throws CampoNonValidoException {
         try {
 
-            fatturaDAO.effettuaRimborso(fattura.getId(), utente.getId(), fattura.getPrezzoAcquisto(), fattura.getGioco().getGioco().getSviluppatore().getId());
+            fatturaDAO.effettuaRimborso(fattura.getId(), utente.getId(), fattura.getPrezzoAcquisto());
 
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");

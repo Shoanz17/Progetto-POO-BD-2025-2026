@@ -166,13 +166,20 @@ public class FatturaDAOPostgres implements FatturaDAO {
         ConnessioneDatabase.getInstance().eseguiUpdate(query, fattura.getUtente().getId(), fattura.getGioco().getId(), fattura.getPrezzoAcquisto(), fattura.getKey(), java.sql.Date.valueOf(fattura.getDataAcquisto()));
     }
 
-    public void effettuaRimborso(int idFattura, int idUtente, int idSviluppatore, int importo) throws SQLException {
+    public void effettuaRimborso(int idFattura, int idUtente, int importo) throws SQLException {
+
         String querySaldoUtente = "UPDATE UTENTE SET saldo = saldo + ? WHERE idUtente = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(querySaldoUtente, importo, idUtente);
 
-        String querySaldoDev = "UPDATE SVILUPPATORE SET saldo = saldo - ? WHERE idSviluppatore = ?";
-        ConnessioneDatabase.getInstance().eseguiUpdate(querySaldoDev, importo, idSviluppatore);
+        String queryFondiDev = "UPDATE SVILUPPATORE SET fondi = fondi - ? " +
+                "WHERE idSviluppatore = (SELECT g.idSviluppatore " +
+                "FROM FATTURA f " +
+                "JOIN EDIZIONE_GIOCO eg ON f.idEdizione = eg.idEdizione " +
+                "JOIN GIOCO g ON eg.idGioco = g.idGioco " +
+                "WHERE f.idFattura = ?)";
+        ConnessioneDatabase.getInstance().eseguiUpdate(queryFondiDev, importo, idFattura);
 
+        // 3. Elimina la fattura (grazie all'ON DELETE CASCADE la recensione salta da sola)
         String queryEliminaFattura = "DELETE FROM FATTURA WHERE idFattura = ?";
         ConnessioneDatabase.getInstance().eseguiUpdate(queryEliminaFattura, idFattura);
     }

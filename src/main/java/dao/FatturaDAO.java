@@ -46,5 +46,5 @@ public interface FatturaDAO {
      * @param importo L'importo economico da restituire.
      * @throws SQLException Se si verifica un errore durante l'aggiornamento dei dati nel Database.
      */
-    void effettuaRimborso(int idFattura, int idUtente, int importo, int idSviluppatore) throws SQLException;
+    void effettuaRimborso(int idFattura, int idUtente, int importo) throws SQLException;
 }
