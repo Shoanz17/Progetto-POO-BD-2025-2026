@@ -1135,32 +1135,35 @@ public class Controller {
         updateGeneriGioco(gioco, generi);
     }
 
-    public Gioco creaNuovoGioco
-            (String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
-             ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio, Sviluppatore autore) throws
-            CampoNonValidoException {
+    public Gioco creaNuovoGioco(String titolo, int pegi, Categoria categoria, ArrayList<Genere> generi,
+                                ArrayList<PiattaformaDiGioco> piattaforme, double prezzo, LocalDate dataRilascio, Sviluppatore autore) throws CampoNonValidoException {
 
-        Gioco nuovoGioco = new Gioco(titolo, categoria, pegi, autore, generi);
-
+        Gioco giocoTemporaneo = new Gioco(titolo, categoria, pegi, autore, generi);
+        int idGiocoGenerato;
 
         try {
-            int idGiocoGenerato = giocoDAO.inserisciGioco(nuovoGioco);
-
+            idGiocoGenerato = giocoDAO.inserisciGioco(giocoTemporaneo);
             genereDAO.collegaGeneriAGioco(idGiocoGenerato, generi);
 
+            Gioco giocoDefinitivo = new Gioco(autore, idGiocoGenerato, titolo, categoria, pegi);
+
+            for (Genere g : generi) {
+                giocoDefinitivo.getGeneri().add(g);
+            }
+
             for (PiattaformaDiGioco p : piattaforme) {
-                EdizioneGioco nuovaEdizione = new EdizioneGioco(nuovoGioco, p, (int) prezzo, dataRilascio);
-                nuovoGioco.addEdizione(nuovaEdizione);
+                EdizioneGioco nuovaEdizione = new EdizioneGioco(giocoDefinitivo, p, (int) prezzo, dataRilascio);
 
-
+                giocoDefinitivo.addEdizione(nuovaEdizione);
                 giocoDAO.inserisciEdizione(nuovaEdizione, idGiocoGenerato);
             }
 
-        } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione fallita!");
-        }
 
-        return nuovoGioco;
+            return giocoDefinitivo;
+
+        } catch (SQLException e) {
+            throw new CampoNonValidoException("Operazione fallita! " + e.getMessage());
+        }
     }
 
 
@@ -1341,6 +1344,24 @@ public class Controller {
             System.out.println("Errore nel conteggio dei seguaci: " + e.getMessage());
             return "0";
         }
+    }
+
+    public ArrayList<Gioco> cercaGiochiSviluppatore(Sviluppatore sviluppatore, String testoCercato) throws CampoNonValidoException {
+        ArrayList<Gioco> tuttiIGiochi = getListaGiochiSviluppatore(sviluppatore);
+        ArrayList<Gioco> risultati = new ArrayList<>();
+
+        if (testoCercato == null || testoCercato.trim().isEmpty()) {
+            return tuttiIGiochi;
+        }
+
+        String ricercaLower = testoCercato.toLowerCase();
+        for (Gioco gioco : tuttiIGiochi) {
+            if (gioco.getTitolo().toLowerCase().contains(ricercaLower)) {
+                risultati.add(gioco);
+            }
+        }
+
+        return risultati;
     }
 
 }
