@@ -76,7 +76,6 @@ public class HomeSviluppatore {
 
     private DefaultListModel<Gioco> modelPannelloControllo;
     private DefaultListModel<Gioco> modelLibreria;
-//    ArrayList<Gioco> listaCompletaGiochi = new ArrayList<>();
     private Controller controller;
     private Sviluppatore sviluppatoreCorrente;
     private JFrame sviluppatoreFrame;
@@ -86,11 +85,17 @@ public class HomeSviluppatore {
 
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
         if(sviluppatore == null) throw new IllegalArgumentException("Sviluppatore passato inesistente");
-
         this.controller = controller;
         this.sviluppatoreCorrente = sviluppatore;
 
         configuraInterfaccia();
+
+        if (controller.isSviluppatoreBannato(sviluppatore)){
+            JOptionPane.showMessageDialog(homeSviluppatore,"Sei bannato, impossibile eseguire l'accesso");
+            sviluppatoreFrame.dispose();
+            accediGUI.setVisible(true);
+            return;
+        }
 
         popolaListe();
         ricercaListaLib();
@@ -108,6 +113,8 @@ public class HomeSviluppatore {
 
 
     }
+
+
 
 
     private void configuraInterfaccia(){
