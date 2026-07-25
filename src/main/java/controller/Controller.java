@@ -1597,24 +1597,43 @@ public class Controller {
 
     /**
      * Iscrive formalmente un gioco a un evento promozionale definendo il margine di sconto.
+     * Applica rigidi controlli temporali per evitare l'uso di promozioni scadute e previene
+     * che il gioco abbia più di una promozione attiva contemporaneamente.
      *
      * @param gioco Il videogioco in esame.
      * @param promozione La sessione di sconti scelta.
      * @param percentualeSconto Il valore dello sconto, che deve rientrare tra 1 e 100.
-     * @throws CampoNonValidoException Se le soglie di sconto non sono rispettate o se il DAO fallisce l'inserimento.
+     * @throws CampoNonValidoException Se i vincoli (percentuale, date, conflitti) non vengono rispettati.
      */
-    public void partecipaAPromozione(Gioco gioco, Promozione promozione, int percentualeSconto) throws
-            CampoNonValidoException {
+    public void partecipaAPromozione(Gioco gioco, Promozione promozione, int percentualeSconto) throws CampoNonValidoException {
 
-        if (percentualeSconto <= 0 || percentualeSconto >= 100) {
-            throw new CampoNonValidoException("La percentuale di sconto deve essere compresa tra 1 e 99!");
+        if (percentualeSconto <= 0 || percentualeSconto > 100) {
+            throw new CampoNonValidoException("La percentuale di sconto deve essere compresa tra 1 e 100!");
+        }
+
+        if (promozione.getDataFine().isBefore(LocalDate.now())) {
+            throw new CampoNonValidoException("Non puoi aggiungere un gioco a una promozione storicamente già terminata!");
         }
 
         try {
+            ArrayList<GiocoInPromozione> storicoPromozioni = giocoInPromozioneDAO.getPromozioniPerGioco(gioco);
+
+            for (GiocoInPromozione gp : storicoPromozioni) {
+                Promozione pEsistente = gp.getPromozione();
+
+                if (pEsistente.getNome().equalsIgnoreCase(promozione.getNome())) {
+                    throw new CampoNonValidoException("Il gioco partecipa già a questa promozione!");
+                }
+
+                if (!pEsistente.getDataFine().isBefore(LocalDate.now())) {
+                    throw new CampoNonValidoException("Il gioco ha già una promozione attiva o in programma (" + pEsistente.getNome() + "). Aspetta che scada!");
+                }
+            }
+
             promozioneDAO.inserisciGiocoInPromozione(gioco.getId(), promozione.getId(), percentualeSconto);
 
         } catch (SQLException e) {
-            throw new CampoNonValidoException("Operazione fallita!");
+            throw new CampoNonValidoException("Operazione fallita sul database! " + e.getMessage());
         }
     }
 
