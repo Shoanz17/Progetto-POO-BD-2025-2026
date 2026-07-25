@@ -541,14 +541,22 @@ public class Controller {
     public String getProduttorePiattaforma(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.getProduttore();}
     public boolean isPortabile(PiattaformaDiGioco piattaformaDiGioco) {return piattaformaDiGioco.isPortatile();}
     public void createPiattaforma(String nome, String produttore, boolean portabile) throws CampoNonValidoException {
-        PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome, produttore, portabile);
+        controlloNomePiattaforma(nome);
+        PiattaformaDiGioco piattaformaDiGioco = new PiattaformaDiGioco(nome.trim(), produttore, portabile);
 
         try {
-
             piattaformaDiGiocoDAO.creaPiattaforma(piattaformaDiGioco);
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
+        }
+    }
+
+    private void controlloNomePiattaforma(String nome) throws CampoNonValidoException {
+        ArrayList<PiattaformaDiGioco> piattaforme = getPiattaformeDiGioco();
+        for (PiattaformaDiGioco p : piattaforme) {
+            if (p.getNome().equalsIgnoreCase(nome.trim())) {
+                throw new CampoNonValidoException("Esiste già una piattaforma con questo nome!");
+            }
         }
     }
 
@@ -641,16 +649,25 @@ public class Controller {
         }
     }
 
+    private void controlloNomePromozione(String nome) throws CampoNonValidoException {
+        ArrayList<Promozione> promozioni = getListaPromozioni();
+        for (Promozione p : promozioni) {
+            if (p.getNome().equalsIgnoreCase(nome.trim())) {
+                throw new CampoNonValidoException("Esiste già una promozione con questo nome!");
+            }
+        }
+    }
+
     public void createPromozione(String nome, String dataInizioStringa, String dataFineStringa) throws CampoNonValidoException {
+        controlloNomePromozione(nome);
+
         LocalDate dataInizio = convertiDataRigida(dataInizioStringa);
         LocalDate dataFine = convertiDataRigida(dataFineStringa);
 
-        Promozione promozione = new Promozione(nome, dataInizio, dataFine);
+        Promozione promozione = new Promozione(nome.trim(), dataInizio, dataFine);
 
         try {
-
             promozioneDAO.creaPromozione(promozione.getNome(), promozione.getDataInizio(), promozione.getDataFine());
-
         } catch (SQLException e) {
             throw new CampoNonValidoException("Operazione fallita");
         }

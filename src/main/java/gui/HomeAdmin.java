@@ -91,7 +91,6 @@ public class HomeAdmin {
     private Admin admin;
 
     //DA FARE: aggiusta ordina per data
-    //ogni aggiunta che fa l'admin va controllato se quello che si vuole inserire già esiste
 
     public HomeAdmin(Controller controller, JFrame accediGUI, Admin admin){
         if(controller == null) throw new IllegalArgumentException("Controller passato inesistente");
@@ -964,12 +963,13 @@ public class HomeAdmin {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-
                     controller.createPiattaforma(campoNomePiattaforma.getText(), campoProduttore.getText(), checkBoxPortabilita.isSelected());
+
                     filtraPiattaforme();
+                    svuotaDatiPiattaforma();
 
                 } catch (CampoNonValidoException ex) {
-                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage());
+                    JOptionPane.showMessageDialog(adminFrame, ex.getMessage(), "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
